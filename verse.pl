@@ -1,5 +1,6 @@
 :- set_prolog_flag(double_quotes, chars).   % Makes strings and list of characters equal.
 :- use_module(library(clpfd)).  % Constraint Logic Programming over Finite Domains.
+:- table e//1.
 
 interpret(VC, Result) :-
     desugar(VC, Result),
@@ -62,14 +63,14 @@ e(E) --> v(V1), v(V2),
 {
     append([V1, V2], E)
 }.
-% e(E) --> eq(Eq), "; ", e(E1),
-% {
-%     append([Eq, "; ", E1], E)
-% }.
-% e(E) --> e(E1), "|", e(E2),
-% {
-%     append([E1, "|", E2], E)
-% }.
+e(E) --> eq(Eq), "; ", e(E1),
+{
+    append([Eq, "; ", E1], E)
+}.
+e(E) --> e(E1), "|", e(E2),
+{
+    append([E1, "|", E2], E)
+}.
 eq(Eq) --> v(V), "=", e(E),
 {
     append([V, "=", E], Eq)
