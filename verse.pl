@@ -42,8 +42,7 @@ variable("g") --> "g".
 % Programs
 p --> "one{", e(E), "}", { fvs(E, 0) }.
 
-% Fake.
-fvs(_, 0).
+fvs(_, 0). % Not implemented.
 
 % Expressions
 e("fail") --> "fail".
