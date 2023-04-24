@@ -1,7 +1,8 @@
 :- set_prolog_flag(double_quotes, chars).   % Makes strings and list of characters equal.
 :- use_module(library(clpfd)).  % Constraint Logic Programming over Finite Domains.
-:- table e//1.
+:- table e//1.  % Change execution strategy for phrasing expressions. (Due to problem of nontermination)
 
+% No rewrites yet, only desugars and accepting.
 interpret(VC, Result) :-
     desugar(VC, Result),
     phrase(p, Result).
@@ -59,9 +60,9 @@ e(E) --> "E", variable(V), ". ", e(E1),
     append(["E", V, ". ", E1], E)
 }.
 e(X) --> v(X).
-e(E) --> v(V1), v(V2),
+e(E) --> v(V1), " ", v(V2),
 {
-    append([V1, V2], E)
+    append([V1, " ", V2], E)
 }.
 e(E) --> eq(Eq), "; ", e(E1),
 {
@@ -126,7 +127,7 @@ desugar_add(X) --> seq(Cs1), e(E1), ws, "+", ws, e(E2), seq(Cs2),
 % e1 > e2 means gt<e1, e2>
 desugar_gt(X) --> seq(Cs1), e(E1), ">", e(E2), seq(Cs2),
 {
-    append([Cs1, "gt<", E1, ", ", E2, ">", Cs2], X)
+    append([Cs1, "gt <", E1, ", ", E2, ">", Cs2], X)
 }.
 
 % x := e1; e2 means Ex. x=e1; e2
