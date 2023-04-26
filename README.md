@@ -1,2 +1,2 @@
-# Verse Calculus Interpreter
+# Verse Interpreter
  
