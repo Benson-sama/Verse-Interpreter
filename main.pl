@@ -1,8 +1,7 @@
 :- [syntax, desugaring, rewriting, tests].
 
 not_implemented :-
-    atom_string(A, "Not implemented yet."),
-    writeln(A),
+    writeln('Not implemented yet.'),
     false.
 
 interpret(VC, Result) :-
