@@ -1,0 +1,2 @@
+% Placeholder.
+rewrite(_, _).
