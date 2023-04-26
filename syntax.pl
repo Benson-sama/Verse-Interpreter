@@ -57,14 +57,10 @@ hnf(operator(O)) --> operator(O).
 hnf(tuple(T)) --> tuple(T).
 hnf(lambda(L)) --> lambda(L).
 
-% TODO: Change tuple implementation
 % Tuples
 tuple_v("") --> "".
-tuple_v(V) --> v(V).
-tuple_v(V) --> v(V1), ", ", tuple_v(V2),
-{
-    append([V1, ", ", V2], V)
-}.
+tuple_v([V]) --> v(V).
+tuple_v([V|Vs]) --> v(V), ", ", tuple_v(Vs).
 tuple(tuple(T)) --> "<", tuple_v(T), ">".
 
 % Lambdas
