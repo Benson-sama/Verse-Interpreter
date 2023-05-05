@@ -1,4 +1,4 @@
-:- [syntax, desugaring, rewriting, tests].
+:- [usings, syntax, desugaring, rewriting, tests].
 
 not_implemented :-
     writeln('Not implemented yet.'),
@@ -18,7 +18,26 @@ desugar(VC, Result) :-
     phrase(desugar(Result1), VC),
     desugar(Result1, Result).
 
+read_file(File, Content) :-
+    setup_call_cleanup(open(File, read, In),
+        read_string(In, _, Content),
+        close(In)).
+
+file_lines(File, Lines) :-
+    setup_call_cleanup(open(File, read, In),
+        stream_lines(In, Lines),
+        close(In)).
+
+stream_lines(In, Lines) :-
+    read_string(In, _, Str),
+    split_string(Str, "\n", "", Lines).
+
 tokenise(Cs, Ts) :- phrase(p(Ts), Cs).
+
+tokenise_file(File, Ts) :-
+    phrase_from_file(p(Ts), File).
+
+tokenise(Ts) :- tokenise_file("samples/main.verse", Ts).
 
 % Sample queries:
 

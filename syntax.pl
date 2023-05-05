@@ -1,5 +1,3 @@
-:- set_prolog_flag(double_quotes, chars).   % Makes strings and list of characters equal.
-:- use_module(library(clpfd)).  % Constraint Logic Programming over Finite Domains.
 :- table e//1.  % Change execution strategy for phrasing expressions. (Due to problem of nontermination)
 
 % Integers
@@ -16,7 +14,7 @@ digit('9') --> "9".
 digits([]) --> "".
 digits([D|Ds]) --> digit(D), digits(Ds).
 integer(0) --> digit('0').
-integer(I) --> digit(D0), digits(D1),
+integer(integer(I)) --> digit(D0), digits(D1),
 {
     number_chars(I, [D0|D1]),
     dif(D0, '0'),               % Thanks for the advise.
@@ -24,11 +22,11 @@ integer(I) --> digit(D0), digits(D1),
 }.
 
 % Variables
-variable(x) --> "x".
-variable(y) --> "y".
-variable(z) --> "z".
-variable(f) --> "f".
-variable(g) --> "g".
+variable(variable(x)) --> "x".
+variable(variable(y)) --> "y".
+variable(variable(z)) --> "z".
+variable(variable(f)) --> "f".
+variable(variable(g)) --> "g".
 
 % Programs
 p(one(E)) --> "one{", e(E), "}", { fvs(E, 0) }.
@@ -36,26 +34,31 @@ p(one(E)) --> "one{", e(E), "}", { fvs(E, 0) }.
 fvs(_, 0). % TODO.
 
 % Expressions
-e(fail) --> "fail".
-e(one(E)) --> "one{", e(E), "}".
-e(all(E)) --> "all{", e(E), "}".
-e(exists(V, E)) --> "E", variable(V), ". ", e(E).
-e(V) --> v(V).
-e(application(V1, V2)) --> v(V1), " ", v(V2).
+e(e(fail)) --> "fail".
+e(e(one(E))) --> "one{", e(E), "}".
+e(e(all(E))) --> "all{", e(E), "}".
+e(e(exists(V, E))) --> "E", variable(V), ". ", e(E).
+e(e(V)) --> v(V).
+e(e(application(V1, V2))) --> v(V1), " ", v(V2).
 e(eqe(Eq, E)) --> eq(Eq), "; ", e(E).
 e(choice(E1, E2)) --> e(E1), "|", e(E2).
+
+e(e(application(add, tuple(E1, E2)))) --> e(E1), "+", e(E2).    % Sugar.
+e(e(application(gt, tuple(E1, E2)))) --> e(E1), ">", e(E2). % Sugar.
+e(e(exists(V, e(eqe(eq(V, E1), E2))))) --> variable(V), ":=", e(eqe(E1, E2)).  % Sugar.
+
 eq(eq(V, E)) --> v(V), "=", e(E).
-eq(E) --> e(E).
+eq(eq(E)) --> e(E).
 
 % Values
-v(variable(V)) --> variable(V).
-v(hnf(H)) --> hnf(H).
+v(v(V)) --> variable(V).
+v(v(H)) --> hnf(H).
 
 % Head values
-hnf(integer(I)) --> integer(I).
-hnf(operator(O)) --> operator(O).
-hnf(tuple(T)) --> tuple(T).
-hnf(lambda(L)) --> lambda(L).
+hnf(hnf(I)) --> integer(I).
+hnf(hnf(O)) --> operator(O).
+hnf(hnf(T)) --> tuple(T).
+hnf(hnf(L)) --> lambda(L).
 
 % Tuples
 tuple_v("") --> "".
@@ -67,5 +70,5 @@ tuple(tuple(T)) --> "<", tuple_v(T), ">".
 lambda(lambda(V, E)) --> "\\", variable(V), ". ", e(E).
 
 % Primops
-operator(gt) --> "gt".
-operator(add) --> "add".
+operator(operator(gt)) --> "gt".
+operator(operator(add)) --> "add".
