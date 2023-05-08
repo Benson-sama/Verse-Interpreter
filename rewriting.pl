@@ -1,5 +1,7 @@
-% test_rewrite :-
-%     .
+rewrite(X, X) :- \+ rewrite(X, _).
+rewrite(X, Z) :-
+    rewrite(X, Y),
+    rewrite(Y, Z).
 
 rewrite(one(X), one(Y)) :-
     rewrite(X, Y).
