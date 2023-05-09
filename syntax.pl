@@ -22,12 +22,19 @@ integer(integer(I)) --> digit(D0), digits(D1),
 }.
 
 % Variables
-variable(variable([C|Cs])) --> [C], variable_body(Cs), { char_type(C, lower) }.
+variable(variable([C|Cs])) --> [C], variable_body(Cs),
+{
+    char_type(C, lower),
+    dif([C|Cs], "fail"),
+    dif([C|Cs], "add"),
+    dif([C|Cs], "one"),
+    dif([C|Cs], "all")
+}.
 variable_body([]) --> [].
 variable_body([C|Cs]) --> [C], variable_body(Cs), { char_type(C, csym) }.
 
 % Programs
-p(one(E)) --> "one{", e(E), "}", { fvs(E, 0) }.
+p(one(E)) --> e(E), { fvs(E, 0) }.
 
 fvs(_, 0). % TODO.
 
