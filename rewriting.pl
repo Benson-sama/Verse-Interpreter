@@ -3,12 +3,6 @@ rewrite(X, Z) :-
     rewrite(X, Y),
     rewrite(Y, Z).
 
-rewrite(one(X), one(Y)) :-
-    rewrite(X, Y).
-
-rewrite(e(X), e(Y)) :-
-    rewrite(X, Y).
-
 % -- Application --
 
 % APP-ADD
@@ -58,3 +52,23 @@ rewrite(one(v(X)), v(X)).
 
 % ONE-CHOICE
 rewrite(one(choice(v(V), e(_))), v(V)).
+
+% -- Traversals --
+
+rewrite(one(X), one(Y)) :-
+    rewrite(X, Y).
+
+rewrite(e(X), e(Y)) :-
+    rewrite(X, Y).
+
+rewrite(hnf(X), hnf(Y)) :-
+    rewrite(X, Y).
+
+rewrite(v(X), v(Y)) :-
+    rewrite(X, Y).
+
+rewrite((X), (Y)) :-
+    rewrite(X, Y).
+
+rewrite((X), (Y)) :-
+    rewrite(X, Y).
