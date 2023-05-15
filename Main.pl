@@ -14,8 +14,10 @@ tokenise(Cs, Ts) :- phrase(p(Ts), Cs).
 tokenise(Ts) :- tokenise_file('samples/main.verse', Ts).
 
 tokenise_file(File, Ts) :-
-    read_file_to_string(File, S, []),
-    write('Tokenising: '),
-    writeln(S),
-    string_chars(S, Cs),
-    phrase(p(Ts), Cs).
+    read_file_to_string(File, I, []),
+    write('Tokenising: \n'),
+    writeln(I),
+    string_chars(I, Cs),
+    phrase(lines(Ls), Cs),
+    phrase(seqq(Ls), S),
+    phrase(p(Ts), S).

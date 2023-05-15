@@ -33,6 +33,23 @@ variable(variable([C|Cs])) --> [C], variable_body(Cs),
 variable_body([]) --> [].
 variable_body([C|Cs]) --> [C], variable_body(Cs), { char_type(C, csym) }.
 
+% Code
+seq([])     --> [].
+seq([E|Es]) --> [E], seq(Es).
+
+seqq([]) --> [].
+seqq([Es|Ess]) -->
+        seq(Es),
+        seqq(Ess).
+
+lines([])     --> call(eos), !.
+lines([L|Ls]) --> line(L), lines(Ls).
+
+line([])     --> ( "\n" | call(eos) ), !.
+line([C|Cs]) --> [C], line(Cs).
+
+eos([], []).
+
 % Programs
 p(one(E)) --> e(E), { fvs(E, 0) }.
 
