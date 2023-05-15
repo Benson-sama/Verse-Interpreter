@@ -1,5 +1,9 @@
 :- [init, syntax, rewriting, tests].
 
+main :-
+    tokenise(Ts),
+    writeln(Ts).
+
 % Development predicate.
 not_implemented :-
     writeln('Not implemented yet.'),
