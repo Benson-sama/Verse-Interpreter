@@ -38,9 +38,7 @@ seq([])     --> [].
 seq([E|Es]) --> [E], seq(Es).
 
 seqq([]) --> [].
-seqq([Es|Ess]) -->
-        seq(Es),
-        seqq(Ess).
+seqq([Es|Ess]) --> seq(Es), seqq(Ess).
 
 lines([])     --> call(eos), !.
 lines([L|Ls]) --> line(L), lines(Ls).
@@ -65,9 +63,19 @@ e(e(application(V1, V2))) --> v(V1), " ", v(V2).
 e(eqe(Eq, E)) --> eq(Eq), "; ", e(E).
 e(choice(E1, E2)) --> e(E1), "|", e(E2).
 
-e(e(application(add, tuple(E1, E2)))) --> e(E1), "+", e(E2).    % Sugar.
-e(e(application(gt, tuple(E1, E2)))) --> e(E1), ">", e(E2). % Sugar.
-e(e(exists(V, e(eqe(eq(V, E1), E2))))) --> variable(V), ":=", e(eqe(E1, E2)).  % Sugar.
+e(e(
+    application(
+        v(hnf(operator(add))),
+        v(hnf(tuple([E1, E2])))
+    )
+)) --> e(e(E1)), "+", e(e(E2)).    % Sugar.
+e(e(
+    application(
+        v(hnf(operator(gt))),
+        v(hnf(tuple([E1, E2])))
+    )
+)) --> e(e(E1)), ">", e(e(E2)). % Sugar.
+e(e(exists(V, eqe(eq(v(V), E1), E2)))) --> variable(V), ":=", e(eqe(eq(E1), E2)).  % Sugar.
 
 eq(eq(V, E)) --> v(V), "=", e(E).
 eq(eq(E)) --> e(E).
