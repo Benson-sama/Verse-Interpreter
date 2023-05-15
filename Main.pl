@@ -15,7 +15,7 @@ tokenise(Ts) :- tokenise_file('samples/main.verse', Ts).
 
 tokenise_file(File, Ts) :-
     read_file_to_string(File, I, []),
-    write('Tokenising: \n'),
+    writeln('Tokenising:'),
     writeln(I),
     string_chars(I, Cs),
     phrase(lines(Ls), Cs),
