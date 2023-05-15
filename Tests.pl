@@ -30,6 +30,6 @@ test_app_gt :-
     ).
 
 test_desugar_variable_initialisation :-
-    phrase(p(X), "Epeter. peter=fail, fail")
-    phrase(p(X), "peter:=fail; fail", []),
-    X=one(e(exists(variable("peter"), e(eqe(eq(variable("peter"), eq(e(fail))), e(fail)))))).
+    phrase(p(X), "Epeter. peter=fail; fail"),
+    phrase(p(X), "peter:=fail; fail"),
+    X=one(e(exists(variable("peter"), eqe(eq(v(variable("peter")), e(fail)), e(fail))))).
