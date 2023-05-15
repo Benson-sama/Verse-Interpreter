@@ -6,28 +6,49 @@ rewrite(X, Z) :-
 % -- Application --
 
 % APP-ADD
-rewrite(application(v(hnf(operator(add))),
-        v(hnf(
-            tuple([v(hnf(integer(K1))),
-                   v(hnf(integer(K2)))])))), integer(K3)) :-
-    K3 is K1 + K2.
+rewrite(
+    application(
+        v(hnf(operator(add))),
+        v(hnf(tuple([
+            v(hnf(integer(K1))),
+            v(hnf(integer(K2)))
+        ])))
+    ),
+    integer(K3)
+) :- K3 is K1 + K2.
 
 % APP-GT
-rewrite(application(v(hnf(operator(gt))),
-        v(hnf(
-            tuple([v(hnf(integer(K1))),
-                   v(hnf(integer(K2)))])))), integer(K1)) :-
-    K1 > K2.
+rewrite(
+    application(
+        v(hnf(operator(gt))),
+        v(hnf(tuple([
+            v(hnf(integer(K1))),
+            v(hnf(integer(K2)))
+        ])))
+    ),
+    integer(K1)
+) :- K1 > K2.
 
 % APP-GT-FAIL
-rewrite(application(v(hnf(operator(gt))),
-        v(hnf(
-            tuple([v(hnf(integer(K1))),
-                   v(hnf(integer(K2)))])))), e(fail)) :-
-    K1 =< K2.
+rewrite(
+    application(
+        v(hnf(operator(gt))),
+        v(hnf(tuple([
+            v(hnf(integer(K1))),
+            v(hnf(integer(K2)))
+        ])))
+    ),
+    e(fail)
+) :- K1 =< K2.
 
 % APP-TUP-0
-rewrite(application(v(hnf(tuple([]))), v(_)), e(fail)).
+rewrite(
+    application(
+        v(hnf(tuple([]))),
+        v(_)
+    ),
+    e(fail)
+).
 
 % -- Unification --
 
@@ -58,17 +79,29 @@ rewrite(one(choice(v(V), e(_))), v(V)).
 rewrite(one(X), one(Y)) :-
     rewrite(X, Y).
 
-rewrite(e(X), e(Y)) :-
+rewrite(all(X), all(Y)) :-
     rewrite(X, Y).
 
-rewrite(hnf(X), hnf(Y)) :-
-    rewrite(X, Y).
+rewrite(exists(V, E1), exists(V, E2)) :-
+    rewrite(E1, E2).
 
 rewrite(v(X), v(Y)) :-
     rewrite(X, Y).
 
-rewrite((X), (Y)) :-
+rewrite(application(V1, V2), application(V3, V4)) :-
+    rewrite(V1, V3),
+    rewrite(V2, V4).
+
+rewrite(eqe(Eq1, E1), eqe(Eq2, E2)) :-
+    rewrite(Eq1, Eq2),
+    rewrite(E1, E2).
+
+rewrite(choice(E1, E2), choice(E3, E4)) :-
+    rewrite(E1, E3),
+    rewrite(E2, E4).
+
+rewrite(e(X), e(Y)) :-
     rewrite(X, Y).
 
-rewrite((X), (Y)) :-
+rewrite(hnf(X), hnf(Y)) :-
     rewrite(X, Y).
