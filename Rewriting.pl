@@ -1,45 +1,57 @@
-rewrite(X, X) :- \+ rewrite(X, _).
-rewrite(X, Z) :-
+% Core rewrite loop.
+apply_rewrite(X, X) :- \+ rewrite(X, _).
+apply_rewrite(X, Z) :-
     rewrite(X, Y),
-    rewrite(Y, Z).
+    apply_rewrite(Y, Z).
+
+% Most of the rewrite rules still require adjustments and many are still missing.
 
 % -- Application --
 
 % APP-ADD
 rewrite(
-    application(
-        v(hnf(operator(add))),
-        v(hnf(tuple([
-            v(hnf(integer(K1))),
-            v(hnf(integer(K2)))
-        ])))
+    e(
+        application(
+            v(hnf(operator(add))),
+            v(hnf(tuple([
+                v(hnf(integer(K1))),
+                v(hnf(integer(K2)))
+            ])))
+        )
     ),
-    integer(K3)
-) :- K3 is K1 + K2.
+    e(v(hnf(integer(K3))))
+) :- K3 is K1 + K2,
+     write('~[APP-ADD]').
 
 % APP-GT
 rewrite(
-    application(
-        v(hnf(operator(gt))),
-        v(hnf(tuple([
-            v(hnf(integer(K1))),
-            v(hnf(integer(K2)))
-        ])))
+    e(
+        application(
+            v(hnf(operator(gt))),
+            v(hnf(tuple([
+                v(hnf(integer(K1))),
+                v(hnf(integer(K2)))
+            ])))
+        )
     ),
-    integer(K1)
-) :- K1 > K2.
+    e(v(hnf(integer(K1))))
+) :- K1 > K2,
+     write('~[APP-GT]').
 
 % APP-GT-FAIL
 rewrite(
-    application(
-        v(hnf(operator(gt))),
-        v(hnf(tuple([
-            v(hnf(integer(K1))),
-            v(hnf(integer(K2)))
-        ])))
+    e(
+        application(
+            v(hnf(operator(gt))),
+            v(hnf(tuple([
+                v(hnf(integer(K1))),
+                v(hnf(integer(K2)))
+            ])))
+        )
     ),
     e(fail)
-) :- K1 =< K2.
+) :- K1 =< K2,
+     write('~[APP-GT-FAIL]').
 
 % APP-TUP-0
 rewrite(
@@ -54,7 +66,8 @@ rewrite(
 
 % U-LIT
 rewrite(eqe(eq(integer(K1), integer(K2)), e(E)), e(E)) :-
-    K1 = K2.
+    K1 = K2,
+    write('~[u-lit]').
 
 % -- Elimination --
 
@@ -66,10 +79,10 @@ rewrite(eqe(v(_), e(E)), e(E)).
 % -- Choice --
 
 % ONE-FAIL
-rewrite(one(e(fail)), fail).
+rewrite(one(e(fail)), e(fail)) :- write('~[ONE-FAIL]').
 
 % ONE-VALUE
-rewrite(one(v(X)), v(X)).
+rewrite(one(e(v(hnf(integer(X))))), e(v(hnf(integer(X))))) :- write('~[ONE-VALUE]').
 
 % ONE-CHOICE
 rewrite(one(choice(v(V), e(_))), v(V)).
