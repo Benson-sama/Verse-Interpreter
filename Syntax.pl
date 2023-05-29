@@ -1,5 +1,8 @@
 :- table e//1.  % Change execution strategy for phrasing expressions. (Due to problem of nontermination)
 
+% Strings
+string(S) --> "\"", seq(S), "\"".
+
 % Integers
 digit('0') --> "0".
 digit('1') --> "1".
@@ -17,7 +20,7 @@ integer(0) --> digit('0').
 integer(integer(I)) --> digit(D0), digits(D1),
 {
     number_chars(I, [D0|D1]),
-    dif(D0, '0'),               % Thanks for the advise.
+    dif(D0, '0'),
     I #< 2_147_483_648
 }.
 
@@ -76,6 +79,7 @@ e(e(
     )
 )) --> e(e(E1)), ">", e(e(E2)). % Sugar.
 e(e(exists(V, eqe(eq(v(V), E1), E2)))) --> variable(V), ":=", e(eqe(eq(E1), E2)).  % Sugar.
+% TODO: More sugar.
 
 eq(eq(V, E)) --> v(V), "=", e(E).
 eq(eq(E)) --> e(E).
@@ -85,6 +89,7 @@ v(v(V)) --> variable(V).
 v(v(H)) --> hnf(H).
 
 % Head values
+hnf(hnf(S)) --> string(S).
 hnf(hnf(I)) --> integer(I).
 hnf(hnf(O)) --> operator(O).
 hnf(hnf(T)) --> tuple(T).
