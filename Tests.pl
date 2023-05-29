@@ -14,7 +14,10 @@ test_app_add :-
                 v(hnf(integer(20)))
             ])))
         ))
-    ).
+    ),
+    writeln(X),
+    apply_rewrite(X, Y),
+    writeln(Y).
 
 test_app_gt :-
     phrase(p(X), "10>20"),
