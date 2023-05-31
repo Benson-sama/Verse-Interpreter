@@ -1,8 +1,8 @@
 % Core rewrite loop.
-apply_rewrite(X, X) :- \+ rewrite(X, _).
 apply_rewrite(X, Z) :-
     rewrite(X, Y),
     apply_rewrite(Y, Z).
+apply_rewrite(X, X) :- \+ rewrite(X, _).
 
 % Most of the rewrite rules still require adjustments and many are still missing.
 
