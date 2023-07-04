@@ -1,26 +1,16 @@
-﻿using System.Net.WebSockets;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 
-namespace Verse_Interpreter;
+Console.WriteLine("Hello World!");
 
-public class Program
+string input = "42 + 69";
+ICharStream stream = CharStreams.fromString(input);
+ITokenSource lexer = new VerseLexer(stream);
+ITokenStream tokens = new CommonTokenStream(lexer);
+VerseParser parser = new(tokens)
 {
-    static void Main(string[] args)
-    {
-        _ = args;
-        Console.WriteLine("Hello World!");
+    BuildParseTree = true
+};
 
-        string input = "42 + 69";
-        ICharStream stream = CharStreams.fromString(input);
-        ITokenSource lexer = new VerseLexer(stream);
-        ITokenStream tokens = new CommonTokenStream(lexer);
-        VerseParser parser = new(tokens)
-        {
-            BuildParseTree = true
-        };
+var tree = parser.expression();
 
-        var tree = parser.operation();
-
-        Console.WriteLine(tree.ToStringTree());
-    }
-}
+Console.WriteLine(tree.ToStringTree());
