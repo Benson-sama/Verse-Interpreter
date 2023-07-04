@@ -363,4 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # ANTLR - auto-generated code
+.antlr/
 ANTLR/
