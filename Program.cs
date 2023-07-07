@@ -2,7 +2,7 @@
 
 Console.WriteLine("Hello World!");
 
-string input = "42 + 69";
+string input = File.OpenText(@"..\..\..\Input.verse").ReadToEnd();
 ICharStream stream = CharStreams.fromString(input);
 ITokenSource lexer = new VerseLexer(stream);
 ITokenStream tokens = new CommonTokenStream(lexer);
