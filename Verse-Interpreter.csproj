@@ -25,7 +25,7 @@
 	</ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="call antlr4 -Dlanguage=CSharp -o ANTLR Verse.g4" LogStandardErrorAsError="true" />
+		<Exec Command="call antlr4 -Dlanguage=CSharp -o ANTLR\C# Verse.g4" LogStandardErrorAsError="true" />
 	</Target>
 
 </Project>
