@@ -1,15 +1,13 @@
 grammar Verse;
 
-/*
- * Lexer Rules
- */
+// Lexer Rules
 
-NUMBER		: [0-9]+ ;
+INTEGER		: [0-9]+ ;
 // VARIABLE    : 
 WS			: ' ' -> skip ;
 
-/*
- * Parser Rules
- */
+// Parser Rules
 
-expression	: NUMBER '+' NUMBER ;
+expression	:
+	| INTEGER
+	| expression '+' expression;
