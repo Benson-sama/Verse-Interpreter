@@ -11,6 +11,6 @@ VerseParser parser = new(tokens)
     BuildParseTree = true
 };
 
-var tree = parser.expression();
+var tree = parser.program();
 
 Console.WriteLine(tree.ToStringTree());
