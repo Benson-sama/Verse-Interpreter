@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net7.0</TargetFramework>
+		<RootNamespace>Verse_Interpreter.Console</RootNamespace>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+		<Exec Command="call antlr4 -Dlanguage=CSharp -o ..\ANTLR\C# Verse.g4" LogStandardErrorAsError="true" />
+	</Target>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Verse-Interpreter.Model\Verse-Interpreter.Model.csproj" />
+	</ItemGroup>
+
+</Project>
