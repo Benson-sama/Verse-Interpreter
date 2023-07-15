@@ -19,8 +19,54 @@ Console.WriteLine(tree.ToStringTree());
 
 Console.WriteLine("-- Verse-Interpreter Console --");
 
-Node integer = new Integer();
-Node value = new Value();
+Variable x = new(nameof(x));
+Variable y = new(nameof(y));
 
-Console.WriteLine(integer is Value);
-Console.WriteLine(value is Value);
+Verse_Interpreter.Model.Program program = new()
+{
+    Wrapper = new One()
+    {
+        E = new Exists()
+        {
+            V = x,
+            E = new Exists()
+            {
+                V = y,
+                E = new Eqe()
+                {
+                    Eq = new Equation()
+                    {
+                        V = x,
+                        E = new Choice()
+                        {
+                            E1 = new Integer(7),
+                            E2 = new Integer(22)
+                        }
+                    },
+                    E = new Eqe()
+                    {
+                        Eq = new Equation()
+                        {
+                            V = y,
+                            E = new Choice()
+                            {
+                                E1 = new Integer(31),
+                                E2 = new Integer(5)
+                            }
+                        },
+                        E = new Verse_Interpreter.Model.Tuple()
+                        {
+                            Values = new Value[]
+                            {
+                                x,
+                                y
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+};
+
+Console.WriteLine("Done.");
