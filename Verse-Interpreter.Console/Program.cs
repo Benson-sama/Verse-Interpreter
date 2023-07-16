@@ -1,21 +1,10 @@
 ﻿using Verse_Interpreter.Model;
 
-/*
-using Antlr4.Runtime;
-
+VerseInterpreter verseInterpreter = new();
 string input = File.OpenText(@"C:\Users\User\Documents\GitHub\Verse-Interpreter\Input.verse").ReadToEnd();
-ICharStream stream = CharStreams.fromString(input);
-ITokenSource lexer = new VerseLexer(stream);
-ITokenStream tokens = new CommonTokenStream(lexer);
-VerseParser parser = new(tokens)
-{
-    BuildParseTree = true
-};
+VerseParser.ProgramContext programContext = verseInterpreter.GenerateParseTreeFromString(input);
 
-var tree = parser.program();
-
-Console.WriteLine(tree.ToStringTree());
-*/
+Console.WriteLine(programContext.ToStringTree());
 
 Console.WriteLine("-- Verse-Interpreter Console --");
 
