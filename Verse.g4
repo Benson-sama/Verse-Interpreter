@@ -16,7 +16,9 @@ ASSIGN		: ':=' ;
 MINUS		: '-' ;
 ASTERISK	: '*' ;
 SLASH		: '/' ;
-GT			: '>' ;
+GREATERTHAN	: '>' ;
+LESSTHAN	: '<' ;
+LAMBDA		: '=>' ;
 INTEGER		: [0-9]+ ;
 VARIABLE    : LOWERCASE (LOWERCASE | UPPERCASE)* ;
 NEWLINE		: [\r\n] -> skip ;
@@ -31,7 +33,8 @@ e			: '(' e ')'								#parenthesisExp
 			| comment e?							#commentExp
 			| e (ASTERISK | SLASH) e				#multDivExp
 			| e (PLUS | MINUS) e					#plusMinusExp
-			| e GT e								#greaterThanExp
+			| e GREATERTHAN e						#greaterThanExp
+			| e LESSTHAN e							#lessThanExp
 			| VARIABLE ASSIGN e (';' e)?			#assignmentExp
 			| v										#valueExp
 			// | 'E' VARIABLE '. ' e				#existsExp
@@ -48,8 +51,7 @@ e			: '(' e ')'								#parenthesisExp
 			| v EQUALS e (';' e)?					#eqeExp
 			;
 v 			: VARIABLE | hnf ;
-hnf			: INTEGER | op | tuple | lambda ;
+hnf			: INTEGER | tuple | lambda ;
 tuple		: '(' elements? ')' ;
 elements	: v (', ' elements)* ;
 lambda		: '\\' VARIABLE '. ' e ;
-op 			: GT | ADD ;
