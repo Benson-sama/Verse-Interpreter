@@ -7,11 +7,11 @@
       <FileName>Node.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Verse_Interpreter.Model.Program">
+  <Class Name="Verse_Interpreter.Model.VerseProgram">
     <Position X="0.5" Y="2" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Program.cs</FileName>
+      <FileName>VerseProgram.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.Equation">

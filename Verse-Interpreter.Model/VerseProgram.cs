@@ -1,6 +1,6 @@
 ﻿namespace Verse_Interpreter.Model;
 
-public class Program : Node
+public class VerseProgram : Node
 {
     public required Wrapper Wrapper { get; set; }
 }
