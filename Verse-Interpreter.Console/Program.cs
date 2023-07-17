@@ -1,17 +1,28 @@
-﻿using Verse_Interpreter.Model;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Verse_Interpreter.Model;
 
-VerseInterpreter verseInterpreter = new();
-string input = File.OpenText(@"C:\Users\User\Documents\GitHub\Verse-Interpreter\Input.verse").ReadToEnd();
-VerseParser.ProgramContext programContext = verseInterpreter.GenerateParseTreeFromString(input);
+var host = Host.CreateDefaultBuilder(args)
+    .ConfigureServices(services =>
+    {
+        services.AddLogging();
+        services.AddSingleton<IVerseVisitor<Node>, VerseVisitor>();
+        services.AddSingleton<IVerseSyntaxTreeBuilder, VerseSyntaxTreeBuilder>();
+        services.AddSingleton<VerseInterpreter>();
+    })
+    .Build();
 
-Console.WriteLine(programContext.ToStringTree());
+VerseInterpreter verseInterpreter = host.Services.GetRequiredService<VerseInterpreter>();
+string input = File.OpenText(@"C:\Users\User\Documents\GitHub\Verse-Interpreter\Input.verse")
+                   .ReadToEnd();
+VerseProgram verseProgram = verseInterpreter.GenerateParseTreeFromString(input);
 
 Console.WriteLine("-- Verse-Interpreter Console --");
 
 Variable x = new(nameof(x));
 Variable y = new(nameof(y));
 
-Verse_Interpreter.Model.Program program = new()
+VerseProgram customVerseProgram = new()
 {
     Wrapper = new One()
     {
