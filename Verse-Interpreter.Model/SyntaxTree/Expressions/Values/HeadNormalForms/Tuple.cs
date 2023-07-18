@@ -1,4 +1,4 @@
-﻿namespace Verse_Interpreter.Model;
+﻿namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 
 public class Tuple : HeadNormalForm
 {

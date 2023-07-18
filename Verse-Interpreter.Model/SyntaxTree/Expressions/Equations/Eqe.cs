@@ -1,4 +1,4 @@
-﻿namespace Verse_Interpreter.Model;
+﻿namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
 
 public class Eqe : Expression
 {

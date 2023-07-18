@@ -1,4 +1,6 @@
-﻿namespace Verse_Interpreter.Model;
+﻿using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
+
+namespace Verse_Interpreter.Model.SyntaxTree.Expressions;
 
 public class Exists : Expression
 {
