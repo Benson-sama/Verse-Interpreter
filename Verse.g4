@@ -5,14 +5,11 @@ grammar Verse;
 fragment LOWERCASE	:	[a-z] ;
 fragment UPPERCASE	:	[A-Z] ;
 
+ASSIGN		: ':=' ;
 EQUALS		: '=' ;
-ONE			: 'one' ;
-ALL			: 'all' ;
 CHOICE		: '|' ;
 FAIL		: 'false?' ;
-ADD			: 'add' ;
 PLUS		: '+' ;
-ASSIGN		: ':=' ;
 MINUS		: '-' ;
 ASTERISK	: '*' ;
 SLASH		: '/' ;
@@ -21,23 +18,23 @@ LESSTHAN	: '<' ;
 LAMBDA		: '=>' ;
 INTEGER		: [0-9]+ ;
 VARIABLE    : LOWERCASE (LOWERCASE | UPPERCASE)* ;
-NEWLINE		: [\r\n] -> skip ;
+NEWLINE		: [\r?\n] -> skip ;
 TAB			: '\t' -> skip ;
 WS			: ' ' -> skip ;
+COMMENT		: '#' ~[\r?\n]* [\r?\n] -> skip;
 
 // Parser Rules
 
-comment		: '#' ~NEWLINE* NEWLINE ;
 program		: e ;
 e			: '(' e ')'								#parenthesisExp
-			| comment e?							#commentExp
-			| e (ASTERISK | SLASH) e				#multDivExp
-			| e (PLUS | MINUS) e					#plusMinusExp
+			| e ASTERISK e							#multExp
+			| e SLASH e								#DivExp
+			| e PLUS e								#plusExp
+			| e MINUS e								#minusExp
 			| e GREATERTHAN e						#greaterThanExp
 			| e LESSTHAN e							#lessThanExp
 			| VARIABLE ASSIGN e (';' e)?			#assignmentExp
 			| v										#valueExp
-			// | 'E' VARIABLE '. ' e				#existsExp
 			| FAIL									#failExp
 			| INTEGER '..' INTEGER					#rangeChoiceExp
 			| e CHOICE e							#choiceExp
@@ -46,8 +43,6 @@ e			: '(' e ')'								#parenthesisExp
 			| e EQUALS e							#expEquationExp
 			| 'if' '(' e ')' ':' e 'else:' e		#ifElseExp
 			| 'for' '(' e ')' 'do' e				#forExp
-			// | ONE '{' e '}'						#oneExp
-			// | ALL '{' e '}'						#allExp
 			| v EQUALS e (';' e)?					#eqeExp
 			;
 v 			: VARIABLE | hnf ;
