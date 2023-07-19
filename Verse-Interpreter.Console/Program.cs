@@ -2,13 +2,19 @@
 using Microsoft.Extensions.Hosting;
 using Verse_Interpreter.Model;
 using Verse_Interpreter.Model.SyntaxTree;
+using Verse_Interpreter.Model.SyntaxTree.Expressions;
+using Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
+using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
+using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
+using Tuple = Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Tuple;
+
+Console.WriteLine("-- Verse-Interpreter Console --");
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddLogging();
-        services.AddSingleton<IVerseVisitor<Node>, VerseVisitor>();
         services.AddSingleton<IVerseSyntaxTreeBuilder, VerseSyntaxTreeBuilder>();
         services.AddSingleton<VerseInterpreter>();
     })
@@ -18,8 +24,6 @@ VerseInterpreter verseInterpreter = host.Services.GetRequiredService<VerseInterp
 string input = File.OpenText(@"C:\Users\User\Documents\GitHub\Verse-Interpreter\Input.verse")
                    .ReadToEnd();
 VerseProgram verseProgram = verseInterpreter.GenerateParseTreeFromString(input);
-
-Console.WriteLine("-- Verse-Interpreter Console --");
 
 Variable x = new(nameof(x));
 Variable y = new(nameof(y));
@@ -56,7 +60,7 @@ VerseProgram customVerseProgram = new()
                                 E2 = new Integer(5)
                             }
                         },
-                        E = new Verse_Interpreter.Model.Tuple()
+                        E = new Tuple()
                         {
                             Values = new Value[]
                             {
