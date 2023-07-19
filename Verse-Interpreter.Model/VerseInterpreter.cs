@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Microsoft.Extensions.Logging;
+using Verse_Interpreter.Model.SyntaxTree;
 
 namespace Verse_Interpreter.Model;
 
@@ -30,6 +31,6 @@ public class VerseInterpreter
 
         _logger.LogInformation("Finished generating parse tree. Converting and desugaring...");
         VerseParser.ProgramContext programContext = parser.program();
-        return _syntaxTreeBuilder.BuildCustomSyntaxTree(programContext);
+        return _syntaxTreeBuilder.BuildCustomSyntaxTreeWrappedInOne(programContext);
     }
 }
