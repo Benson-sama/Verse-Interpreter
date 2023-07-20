@@ -131,7 +131,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         Expression e2 = GetExpression(context.e(1));
         return new Eqe()
         {
-            Eq = eq,
+            Eq = exists,
             E = e2
         };
     }
@@ -173,8 +173,29 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
     private Expression GetConcreteExpression(VerseParser.ExpApplicationExpContext context)
     {
-        // TODO: Implement.
-        return new Expression();
+        // TODO: Ensure freshness!
+        Expression e1 = GetExpression(context.e(0));
+        Expression e2 = GetExpression(context.e(1));
+        Variable f = new(Guid.NewGuid().ToString());
+        Variable x = new(Guid.NewGuid().ToString());
+
+        return new Eqe
+        {
+            Eq = new Exists
+            {
+                V = f,
+                E = new Equation { V = f, E = e1 }
+            },
+            E = new Eqe
+            {
+                Eq = new Exists
+                {
+                    V = x,
+                    E = new Equation { V = x, E = e2 }
+                },
+                E = new Application { V1 = f, V2 = x }
+            }
+        };
     }
 
     private Expression GetConcreteExpression(VerseParser.ExpEquationExpContext context)
