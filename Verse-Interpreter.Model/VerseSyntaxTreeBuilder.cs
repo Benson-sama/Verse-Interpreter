@@ -59,7 +59,6 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
     private Expression GetConcreteExpression(VerseParser.MultExpContext context)
     {
-        // TODO: Ensure freshness!
         Expression e1 = GetExpression(context.e(0));
         Expression e2 = GetExpression(context.e(1));
         Operator mult = new Mult();
@@ -69,7 +68,6 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
     private Expression GetConcreteExpression(VerseParser.DivExpContext context)
     {
-        // TODO: Ensure freshness!
         Expression e1 = GetExpression(context.e(0));
         Expression e2 = GetExpression(context.e(1));
         Operator div = new Div();
@@ -79,7 +77,6 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
     private Expression GetConcreteExpression(VerseParser.PlusExpContext context)
     {
-        // TODO: Ensure freshness!
         Expression e1 = GetExpression(context.e(0));
         Expression e2 = GetExpression(context.e(1));
         Operator add = new Add();
@@ -89,7 +86,6 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
     private Expression GetConcreteExpression(VerseParser.MinusExpContext context)
     {
-        // TODO: Ensure freshness!
         Expression e1 = GetExpression(context.e(0));
         Expression e2 = GetExpression(context.e(1));
         Operator sub = new Sub();
@@ -99,7 +95,6 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
     private Expression GetConcreteExpression(VerseParser.GreaterThanExpContext context)
     {
-        // TODO: Ensure freshness!
         Expression e1 = GetExpression(context.e(0));
         Expression e2 = GetExpression(context.e(1));
         Operator greaterThan = new Gt();
@@ -109,7 +104,6 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
     private Expression GetConcreteExpression(VerseParser.LessThanExpContext context)
     {
-        // TODO: Ensure freshness!
         Expression e1 = GetExpression(context.e(0));
         Expression e2 = GetExpression(context.e(1));
         Operator lessThan = new Lt();
