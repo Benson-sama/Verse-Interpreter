@@ -121,7 +121,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
             E = new Equation()
             {
                 V = x,
-            E = e1
+                E = e1
             }
         };
 
@@ -200,8 +200,24 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
     private Expression GetConcreteExpression(VerseParser.ExpEquationExpContext context)
     {
-        // TODO: Implement.
-        return new Expression();
+        // TODO: Ensure freshness!
+        Expression e1 = GetExpression(context.e(0));
+        Expression e2 = GetExpression(context.e(1));
+        Variable x = new(Guid.NewGuid().ToString());
+
+        return new Eqe
+        {
+            Eq = new Exists
+            {
+                V = x,
+                E = new Equation { V = x, E = e1 }
+            },
+            E = new Eqe
+            {
+                Eq = new Equation { V = x, E = e2 },
+                E = x
+            }
+        };
     }
 
     private Expression GetConcreteExpression(VerseParser.IfElseExpContext context)
@@ -271,6 +287,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
     private static Exists BuildArithmeticExpression(Expression e1, Operator op, Expression e2)
     {
+        // TODO: Ensure freshness!
         Variable v1 = new(Guid.NewGuid().ToString());
         Variable v2 = new(Guid.NewGuid().ToString());
 
