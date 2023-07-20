@@ -114,15 +114,19 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
     private Expression GetConcreteExpression(VerseParser.AssignmentExpContext context)
     {
         Expression e1 = GetExpression(context.e(0));
-        Variable v = new(context.VARIABLE().GetText());
-        Equation eq = new()
+        Variable x = new(context.VARIABLE().GetText());
+        Exists exists = new()
         {
-            V = v,
+            V = x,
+            E = new Equation()
+            {
+                V = x,
             E = e1
+            }
         };
 
         if (context.ChildCount is 3)
-            return eq;
+            return exists;
 
         Expression e2 = GetExpression(context.e(1));
         return new Eqe()
