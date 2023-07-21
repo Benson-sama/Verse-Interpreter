@@ -2,5 +2,9 @@
 
 public class Tuple : HeadNormalForm
 {
-    public required Value[] Values { get; set; }
+    private static readonly Tuple _empty = new() { Values = Array.Empty<Value>() };
+
+    public static Tuple Empty { get => _empty; }
+
+    public required IEnumerable<Value> Values { get; set; }
 }
