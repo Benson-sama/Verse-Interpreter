@@ -12,6 +12,7 @@ e			: '(' e ')'								#parenthesisExp
 			| e LESSTHAN e							#lessThanExp
 			| VARIABLE ASSIGN e (';' e)?			#assignmentExp
 			| v										#valueExp
+			| '(' e (', ' e)* ')'					#expTupleExp
 			| FAIL									#failExp
 			| INTEGER '..' INTEGER					#rangeChoiceExp
 			| <assoc=right> e CHOICE e				#choiceExp
@@ -31,7 +32,7 @@ hnf			: INTEGER								#integerHnf
 			;
 tuple		: '(' elements? ')' ;
 elements	: v (', ' elements)* ;
-lambda		: '\\' VARIABLE '. ' e ;
+lambda		: tuple LAMBDA e ;
 
 // -- Lexer Rules --
 
