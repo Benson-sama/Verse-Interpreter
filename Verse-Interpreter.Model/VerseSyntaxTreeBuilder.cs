@@ -136,6 +136,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
+    // TODO: Make parsing more robust.
     private Expression GetConcreteExpression(VerseParser.RangeChoiceExpContext context)
     {
         int i1 = int.Parse(context.INTEGER(0).GetText());
@@ -171,9 +172,9 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
+    // TODO: Ensure freshness!
     private Expression GetConcreteExpression(VerseParser.ExpApplicationExpContext context)
     {
-        // TODO: Ensure freshness!
         Expression e1 = GetExpression(context.e(0));
         Expression e2 = GetExpression(context.e(1));
         Variable f = new(Guid.NewGuid().ToString());
@@ -198,9 +199,9 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
+    // TODO: Ensure freshness!
     private Expression GetConcreteExpression(VerseParser.ExpEquationExpContext context)
     {
-        // TODO: Ensure freshness!
         Expression e1 = GetExpression(context.e(0));
         Expression e2 = GetExpression(context.e(1));
         Variable x = new(Guid.NewGuid().ToString());
@@ -220,21 +221,21 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
+    // TODO: Implement.
     private Expression GetConcreteExpression(VerseParser.IfElseExpContext context)
     {
-        // TODO: Implement.
         return new Expression();
     }
 
+    // TODO: Implement.
     private Expression GetConcreteExpression(VerseParser.ForExpContext context)
     {
-        // TODO: Implement.
         return new Expression();
     }
 
+    // TODO: Implement.
     private Expression GetConcreteExpression(VerseParser.EqeExpContext context)
     {
-        // TODO: Implement.
         return new Expression();
     }
 
@@ -249,12 +250,13 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
+    // TODO: Implement Tuple parsing.
     private Tuple GetTuple(VerseParser.TupleContext tupleContext)
     {
-        // TODO: Implement Tuple parsing.
         return new Tuple() { Values = Array.Empty<Tuple>() };
     }
 
+    // TODO: Make parsing more robust.
     private HeadNormalForm GetHeadNormalForm(VerseParser.HnfContext context)
     {
         return context switch
@@ -267,9 +269,9 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
+    // TODO: Implement lambda parsing.
     private Lambda GetLambda(VerseParser.LambdaContext lambdaContext)
     {
-        // TODO: Implement lambda parsing.
         return new Lambda();
     }
 
@@ -285,9 +287,9 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
+    // TODO: Ensure freshness!
     private static Exists BuildArithmeticExpression(Expression e1, Operator op, Expression e2)
     {
-        // TODO: Ensure freshness!
         Variable v1 = new(Guid.NewGuid().ToString());
         Variable v2 = new(Guid.NewGuid().ToString());
 
