@@ -221,10 +221,13 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
-    // TODO: Implement.
     private Expression GetConcreteExpression(VerseParser.IfElseExpContext context)
     {
-        return new Expression();
+        Expression e1 = GetExpression(context.e(0));
+        Expression e2 = GetExpression(context.e(1));
+        Expression e3 = GetExpression(context.e(2));
+
+        return Desugar.IfThenElse(e1, e2, e3);
     }
 
     // TODO: Implement.
