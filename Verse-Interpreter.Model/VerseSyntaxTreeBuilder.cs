@@ -1,4 +1,5 @@
-﻿using Verse_Interpreter.Model.SyntaxTree;
+﻿using Antlr4.Runtime.Tree;
+using Verse_Interpreter.Model.SyntaxTree;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
@@ -136,11 +137,10 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
-    // TODO: Make parsing more robust.
     private Expression GetConcreteExpression(VerseParser.RangeChoiceExpContext context)
     {
-        int i1 = int.Parse(context.INTEGER(0).GetText());
-        int i2 = int.Parse(context.INTEGER(1).GetText());
+        int i1 = GetInteger(context.INTEGER(0));
+        int i2 = GetInteger(context.INTEGER(1));
 
         if (i1 > i2)
             throw new Exception("Invalid range expression, the first value cannot be greater than the second.");
@@ -233,10 +233,25 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         return new Expression();
     }
 
-    // TODO: Implement.
     private Expression GetConcreteExpression(VerseParser.EqeExpContext context)
     {
-        return new Expression();
+        Value v = GetValue(context.v());
+        Expression e1 = GetExpression(context.e(0));
+        Equation eq = new()
+        {
+            V = v,
+            E = e1
+        };
+
+        if (context.ChildCount is 3)
+            return eq;
+
+        Expression e2 = GetExpression(context.e(1));
+        return new Eqe()
+        {
+            Eq = eq,
+            E = e2
+        };
     }
 
     private Value GetValue(VerseParser.VContext context)
@@ -256,12 +271,11 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         return new Tuple() { Values = Array.Empty<Tuple>() };
     }
 
-    // TODO: Make parsing more robust.
     private HeadNormalForm GetHeadNormalForm(VerseParser.HnfContext context)
     {
         return context switch
         {
-            VerseParser.IntegerHnfContext c => new Integer(int.Parse(c.INTEGER().GetText())),
+            VerseParser.IntegerHnfContext c => new Integer(GetInteger(c.INTEGER())),
             VerseParser.TupleHnfContext c => GetTuple(c.tuple()),
             VerseParser.LambdaHnfContext c => GetLambda(c.lambda()),
             { } => throw new Exception("Unable to match value context."),
@@ -273,6 +287,18 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
     private Lambda GetLambda(VerseParser.LambdaContext lambdaContext)
     {
         return new Lambda();
+    }
+
+    private static int GetInteger(ITerminalNode terminalNode)
+    {
+        try
+        {
+            return int.Parse(terminalNode.GetText());
+        }
+        catch (Exception)
+        {
+            throw new Exception($"Unable to parse integer with value: {terminalNode.GetText()}");
+        }
     }
 
     private static Expression BuildIntegerChoiceRecursively(int min, int max)
