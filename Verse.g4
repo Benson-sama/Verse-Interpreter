@@ -12,7 +12,7 @@ e			: '(' e ')'								#parenthesisExp
 			| e LESSTHAN e							#lessThanExp
 			| VARIABLE ASSIGN e (';' e)?			#assignmentExp
 			| v										#valueExp
-			| '(' e (', ' e)* ')'					#expTupleExp
+			| '(' e (', ' e)+ ')'					#expTupleExp
 			| FAIL									#failExp
 			| INTEGER '..' INTEGER					#rangeChoiceExp
 			| <assoc=right> e CHOICE e				#choiceExp
