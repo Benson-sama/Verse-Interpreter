@@ -45,6 +45,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         VerseParser.LessThanExpContext c => GetConcreteExpression(c),
         VerseParser.AssignmentExpContext c => GetConcreteExpression(c),
         VerseParser.ValueExpContext c => GetValue(c.v()),
+        VerseParser.ExpTupleExpContext c => GetExpressionTuple(c),
         VerseParser.FailExpContext => new Fail(),
         VerseParser.RangeChoiceExpContext c => GetConcreteExpression(c),
         VerseParser.ChoiceExpContext c => GetConcreteExpression(c),
@@ -171,6 +172,8 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
             V2 = v2
         };
     }
+
+    private Value GetExpressionTuple(VerseParser.ExpTupleExpContext c) => throw new NotImplementedException();
 
     // TODO: Ensure freshness!
     private Expression GetConcreteExpression(VerseParser.ExpApplicationExpContext context)
