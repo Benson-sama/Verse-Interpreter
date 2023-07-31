@@ -62,7 +62,10 @@ public static class Desugar
 
     public static Eqe ExpressionTuple(IEnumerable<Expression> expressions)
     {
-        throw new NotImplementedException();
+        if (expressions.Count() is 0)
+            throw new Exception("Unable to parse empty expression tuple.");
+
+        return BuildExpressionTupleRecursively(expressions, Enumerable.Empty<Variable>());
     }
 
     // TODO: Ensure freshness!
@@ -85,8 +88,8 @@ public static class Desugar
     // TODO: Ensure freshness!
     public static Lambda Lambda(IEnumerable<Variable> parameters, Expression e)
     {
-        if (parameters.Count() is 0)
-            throw new Exception("Cannot desugar lambda with zero parameters.");
+        if (parameters.Count() is <0)
+            throw new Exception("Cannot desugar lambda with less than zero parameters.");
 
         Variable p = new(Guid.NewGuid().ToString());
 
@@ -131,5 +134,15 @@ public static class Desugar
         };
 
         return ExpressionApplication(one, Tuple.Empty);
+    }
+
+    private static Eqe BuildExpressionTupleRecursively(IEnumerable<Expression> expressions, IEnumerable<Variable> variables)
+    {
+        Variable x = new(Guid.NewGuid().ToString());
+
+        if (expressions.Count() is 1)
+            return Assignment(x, expressions.First(), new Tuple { Values = variables.Append(x) });
+
+        return Assignment(x, expressions.First(), BuildExpressionTupleRecursively(expressions.Skip(1), variables.Append(x)));
     }
 }
