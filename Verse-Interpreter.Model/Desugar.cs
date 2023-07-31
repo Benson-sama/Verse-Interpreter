@@ -45,9 +45,9 @@ public static class Desugar
         };
     }
 
+    // TODO: Ensure freshness!
     public static Expression ExpressionApplication(Expression e1, Expression e2)
     {
-        // TODO: Ensure freshness!
         Variable f = new(Guid.NewGuid().ToString());
         Variable x = new(Guid.NewGuid().ToString());
 
@@ -65,9 +65,9 @@ public static class Desugar
         throw new NotImplementedException();
     }
 
+    // TODO: Ensure freshness!
     public static Expression ExpressionEquation(Expression e1, Expression e2)
     {
-        // TODO: Ensure freshness!
         Variable x = new(Guid.NewGuid().ToString());
         Eqe eqe = new()
         {
@@ -82,12 +82,12 @@ public static class Desugar
         return Assignment(x, e1, eqe);
     }
 
+    // TODO: Ensure freshness!
     public static Lambda Lambda(IEnumerable<Variable> parameters, Expression e)
     {
         if (parameters.Count() is 0)
             throw new Exception("Cannot desugar lambda with zero parameters.");
 
-        // TODO: Ensure freshness!
         Variable p = new(Guid.NewGuid().ToString());
 
         Eqe eqe = new()
@@ -102,7 +102,7 @@ public static class Desugar
 
         return new Lambda
         {
-            Parameters = parameters,
+            Parameter = p,
             E = MultipleExists(parameters, eqe)
         };
     }
@@ -118,13 +118,13 @@ public static class Desugar
                     Eq = e1,
                     E = new Lambda
                     {
-                        Parameters = Enumerable.Empty<Variable>(),
+                        Parameter = null,
                         E = e2
                     }
                 },
                 E2 = new Lambda
                 {
-                    Parameters = Enumerable.Empty<Variable>(),
+                    Parameter = null,
                     E = e3
                 }
             }
