@@ -233,7 +233,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
     // TODO: Implement.
     private Expression GetConcreteExpression(VerseParser.ForExpContext context)
     {
-        return new Expression();
+        throw new NotImplementedException();
     }
 
     private Expression GetConcreteExpression(VerseParser.EqeExpContext context)
@@ -269,7 +269,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
     }
 
     // TODO: Implement Tuple parsing.
-    private Tuple GetTuple(VerseParser.TupleContext tupleContext)
+    private Tuple GetTuple(VerseParser.TupleContext context)
     {
         return new Tuple() { Values = Array.Empty<Tuple>() };
     }
@@ -286,10 +286,16 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
-    // TODO: Implement lambda parsing.
-    private Lambda GetLambda(VerseParser.LambdaContext lambdaContext)
+    private Lambda GetLambda(VerseParser.LambdaContext context)
     {
-        return new Lambda();
+        Tuple tuple = GetTuple(context.tuple());
+
+        if (tuple.Values is not IEnumerable<Variable> variables)
+            throw new Exception("Lambda parameters must be variables.");
+
+        Expression e = GetExpression(context.e());
+
+        return Desugar.Lambda(variables, e);
     }
 
     private static int GetInteger(ITerminalNode terminalNode)
