@@ -14,8 +14,8 @@ var host = Host.CreateDefaultBuilder(args)
     .Build();
 
 VerseInterpreter verseInterpreter = host.Services.GetRequiredService<VerseInterpreter>();
-string verseCode = File.OpenText(@"C:\Users\User\source\repos\Benson-sama\Verse-Interpreter\Input.verse")
+string verseCode = File.OpenText(@"C:\Users\Benjamin\source\repos\Benson-sama\Verse-Interpreter\Input.verse")
                        .ReadToEnd();
-verseInterpreter.Interpret(verseCode);
+verseInterpreter.Interpret("xs:=(1,2); head(xs)");
 
 Console.WriteLine("Done.");

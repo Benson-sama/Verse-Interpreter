@@ -1,5 +1,5 @@
 ﻿namespace Verse_Interpreter.Model.SyntaxTree;
 
-public class Node
+public abstract class Node
 {
 }

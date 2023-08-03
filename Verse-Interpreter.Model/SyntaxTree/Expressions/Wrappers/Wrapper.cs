@@ -1,5 +1,5 @@
 ﻿namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
 
-public class Wrapper : Expression
+public abstract class Wrapper : Expression
 {
 }

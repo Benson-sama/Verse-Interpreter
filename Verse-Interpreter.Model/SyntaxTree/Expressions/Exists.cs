@@ -7,4 +7,6 @@ public class Exists : Expression
     public required Variable V { get; set; }
 
     public required Expression E { get; set; }
+
+    public override string ToString() => $"∃{V}. {E}";
 }

@@ -6,4 +6,6 @@ public class Variable : Value
         Name = name;
 
     public string Name { get; set; }
+
+    public override string ToString() => Name;
 }

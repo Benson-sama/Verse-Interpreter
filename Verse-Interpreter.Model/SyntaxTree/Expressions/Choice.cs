@@ -5,4 +5,6 @@ public class Choice : Expression
     public required Expression E1 { get; set; }
 
     public required Expression E2 { get; set; }
+
+    public override string ToString() => $"{E1} | {E2}";
 }

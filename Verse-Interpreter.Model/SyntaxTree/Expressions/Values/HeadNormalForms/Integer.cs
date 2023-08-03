@@ -6,4 +6,6 @@ public class Integer : HeadNormalForm
         Value = value;
 
     public int Value { get; set; }
+
+    public override string ToString() => $"{Value}";
 }
