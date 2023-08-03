@@ -31,7 +31,7 @@ hnf			: INTEGER								#integerHnf
 			| lambda								#lambdaHnf
 			;
 tuple		: '(' elements? ')' ;
-elements	: v (', ' elements)* ;
+elements	: v (',' elements)* ;
 lambda		: tuple LAMBDA e ;
 
 // -- Lexer Rules --
