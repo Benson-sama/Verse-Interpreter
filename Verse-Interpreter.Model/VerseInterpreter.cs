@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Microsoft.Extensions.Logging;
 using Verse_Interpreter.Model.SyntaxTree;
+using Verse_Interpreter.Model.SyntaxTree.Expressions;
 
 namespace Verse_Interpreter.Model;
 
@@ -14,6 +15,15 @@ public class VerseInterpreter
         _logger = logger;
         _syntaxTreeBuilder = syntaxTreeBuilder;
     }
+
+    public Expression Interpret(string verseCode)
+    {
+        VerseProgram verseProgram = GenerateParseTreeFromString(verseCode);
+        return Rewrite(verseProgram);
+    }
+
+    private Expression Rewrite(VerseProgram verseProgram)
+        => throw new NotImplementedException();
 
     public VerseProgram GenerateParseTreeFromString(string input)
     {
