@@ -138,7 +138,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
-    private Expression GetConcreteExpression(VerseParser.RangeChoiceExpContext context)
+    private static Expression GetConcreteExpression(VerseParser.RangeChoiceExpContext context)
     {
         int i1 = GetInteger(context.INTEGER(0));
         int i2 = GetInteger(context.INTEGER(1));
@@ -271,10 +271,28 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
-    // TODO: Implement Tuple parsing.
     private Tuple GetTuple(VerseParser.TupleContext context)
     {
-        return new Tuple() { Values = Array.Empty<Tuple>() };
+        if (context.ChildCount is 0)
+            return new Tuple() { Values = Enumerable.Empty<Value>() };
+        else
+            return new Tuple() { Values = GetTupleElements(context.elements()) };
+    }
+
+    private IEnumerable<Value> GetTupleElements(VerseParser.ElementsContext context)
+    {
+        if (context.ChildCount is 0)
+            yield break;
+
+        yield return GetValue(context.v());
+
+        if (context.ChildCount is 1)
+            yield break;
+
+        foreach (Value value in GetTupleElements(context.elements(0)))
+        {
+            yield return value;
+        }
     }
 
     private HeadNormalForm GetHeadNormalForm(VerseParser.HnfContext context)
