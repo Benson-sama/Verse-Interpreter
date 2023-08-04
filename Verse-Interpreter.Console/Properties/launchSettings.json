@@ -1,0 +1,23 @@
+{
+  "profiles": {
+    "Code Command": {
+      "commandName": "Project",
+      "commandLineArgs": "-code \"x := 1; x\""
+    },
+    "Interactive Command": {
+      "commandName": "Project",
+      "commandLineArgs": "-interactive"
+    },
+    "File Command": {
+      "commandName": "Project",
+      "commandLineArgs": "-file \"Input.verse\""
+    },
+    "Missing Command": {
+      "commandName": "Project"
+    },
+    "Unknown Command": {
+      "commandName": "Project",
+      "commandLineArgs": "-unknown command"
+    }
+  }
+}
