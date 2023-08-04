@@ -7,5 +7,10 @@ public class Variable : Value
 
     public string Name { get; set; }
 
-    public override string ToString() => Name;
+    public override string ToString()
+    {
+        return Name.Length <= 5 ?
+            Name
+            : string.Concat(Name.Take(5).Concat("²"));
+    }
 }
