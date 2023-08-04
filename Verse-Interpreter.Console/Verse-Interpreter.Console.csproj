@@ -9,6 +9,7 @@
 	</PropertyGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+		<Exec Command="copy ..\Input.Verse bin\Debug\net7.0\Input.verse" />
 		<Exec Command="call antlr4 -no-listener -visitor -Dlanguage=CSharp -o ../Verse-Interpreter.Model/ANTLR ../Verse.g4" LogStandardErrorAsError="true" />
 	</Target>
 
