@@ -9,6 +9,7 @@ var host = Host.CreateDefaultBuilder(args)
     {
         services.AddLogging();
         services.AddSingleton<IVerseSyntaxTreeBuilder, VerseSyntaxTreeBuilder>();
+        services.AddSingleton<IRewriter, Rewriter>();
         services.AddSingleton<VerseInterpreter>();
     })
     .Build();
