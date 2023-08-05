@@ -85,23 +85,23 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers.All">
-    <Position X="18.5" Y="5.75" Width="2" />
+    <Position X="18.25" Y="6.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>SyntaxTree\Expressions\Wrappers\All.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers.One">
-    <Position X="20.75" Y="5.75" Width="2" />
+    <Position X="20" Y="6.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>SyntaxTree\Expressions\Wrappers\One.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers.Wrapper">
-    <Position X="19.75" Y="4.25" Width="1.5" />
+    <Position X="18.75" Y="4.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
       <FileName>SyntaxTree\Expressions\Wrappers\Wrapper.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -134,7 +134,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Fail">
-    <Position X="22.5" Y="4.25" Width="1.5" />
+    <Position X="21.5" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>SyntaxTree\Expressions\Fail.cs</FileName>
@@ -155,14 +155,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.VerseInterpreter">
-    <Position X="0.5" Y="13.25" Width="6" />
+    <Position X="0.5" Y="13.25" Width="7" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAACAAAAAAAgAAAAAAAIAAAAAAAAgAAAAAgAAA=</HashCode>
+      <HashCode>AAAAAAAACAAAAAAAgAAAAAAAIAIAAAAAAgAAAAAgAAA=</HashCode>
       <FileName>VerseInterpreter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.VerseSyntaxTreeBuilder">
-    <Position X="7.25" Y="13.25" Width="5.25" />
+    <Position X="7.75" Y="13.25" Width="5.25" />
     <TypeIdentifier>
       <HashCode>AAAQIAAAICAAAJAAoAAAAACAAQEAAEAEAAAAAAAAAAA=</HashCode>
       <FileName>VerseSyntaxTreeBuilder.cs</FileName>
@@ -191,14 +191,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.Desugar">
-    <Position X="13" Y="13.25" Width="7" />
+    <Position X="13.25" Y="13.25" Width="7" />
     <TypeIdentifier>
       <HashCode>ACgAAAAAAAAAAEEAAAAQAQAAAABAACAAACAAAACAAAA=</HashCode>
       <FileName>Desugar.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="Verse_Interpreter.Model.IVerseSyntaxTreeBuilder">
-    <Position X="0.5" Y="16" Width="5.25" />
+    <Position X="0.5" Y="17.5" Width="5.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IVerseSyntaxTreeBuilder.cs</FileName>
