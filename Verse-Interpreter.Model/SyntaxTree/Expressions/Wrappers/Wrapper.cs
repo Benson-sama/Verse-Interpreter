@@ -2,4 +2,5 @@
 
 public abstract class Wrapper : Expression
 {
+    public required Expression E { get; set; }
 }
