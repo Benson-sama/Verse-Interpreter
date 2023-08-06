@@ -112,7 +112,7 @@ public class Rewriter : IRewriter
 
     private Expression TryRewriteWithValElim(Expression expression)
     {
-        if (expression is Eqe { Eq: Value v, E: Expression e })
+        if (expression is Eqe { Eq: Value, E: Expression e })
         {
             RuleApplied = true;
             // TODO: Output ~VAL-ELIM
@@ -125,7 +125,7 @@ public class Rewriter : IRewriter
 
     private Expression TryRewriteWithExiSwap(Expression expression)
     {
-        if (expression is Exists { V: Variable x, E: Exists { V: Variable y, E: Expression e } existsY } existsX)
+        if (expression is Exists { V: Variable, E: Exists { V: Variable, E: Expression e } existsY } existsX)
         {
             RuleApplied = true;
             // TODO: Output ~EXI-SWAP
