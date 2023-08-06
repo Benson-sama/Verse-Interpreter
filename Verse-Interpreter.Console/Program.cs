@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Verse_Interpreter.Model;
+using Verse_Interpreter.Model.SyntaxTree.Expressions;
 
 Console.WriteLine("-- Verse-Interpreter Console --");
 
@@ -38,7 +39,9 @@ void ExecuteCodeCommand(string? verseCode)
         return;
     }
 
-    verseInterpreter.Interpret(verseCode);
+    Expression result = verseInterpreter.Interpret(verseCode);
+    Console.WriteLine("\n");
+    Console.WriteLine("Result: " + result);
 }
 
 void ExecuteInteractiveCommand()
