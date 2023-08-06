@@ -2,4 +2,5 @@
 
 public class Add : Operator
 {
+    public override string ToString() => "Add";
 }

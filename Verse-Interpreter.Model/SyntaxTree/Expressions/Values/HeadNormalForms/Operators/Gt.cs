@@ -2,4 +2,5 @@
 
 public class Gt : Operator
 {
+    public override string ToString() => "Gt";
 }
