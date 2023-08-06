@@ -10,10 +10,12 @@ namespace Verse_Interpreter.Model;
 
 public class Rewriter : IRewriter
 {
+    private readonly IVerseLogger _logger;
     private readonly Func<Expression, Expression>[] _rewriteRules;
 
-    public Rewriter()
+    public Rewriter(IVerseLogger logger)
     {
+        _logger = logger;
         _rewriteRules = new Func<Expression, Expression>[]
         {
             // Application.
@@ -56,8 +58,7 @@ public class Rewriter : IRewriter
             if (values.Count() is 2 && values.ElementAt(0) is Integer i1 && values.ElementAt(1) is Integer i2)
             {
                 Expression rewrittenExpression = new Integer(i1.Value + i2.Value);
-                // TODO: Output ~APP-ADD
-                Console.Write("[~APP-ADD] ");
+                _logger.LogRuleApplied("APP-ADD");
                 RuleApplied = true;
                 return rewrittenExpression;
             }
@@ -76,16 +77,14 @@ public class Rewriter : IRewriter
                 {
                     Expression rewrittenExpression = i1;
                     RuleApplied = true;
-                    // TODO: Output ~APP-GT
-                    Console.Write("[~APP-GT] ");
+                    _logger.LogRuleApplied("APP-GT");
                     return rewrittenExpression;
                 }
                 else
                 {
                     Expression rewrittenExpression = new Fail();
                     RuleApplied = true;
-                    // TODO: Output ~APP-GT-FAIL
-                    Console.Write("[~APP-GT-FAIL] ");
+                    _logger.LogRuleApplied("APP-GT-FAIL");
                     return rewrittenExpression;
                 }
             }
@@ -101,8 +100,7 @@ public class Rewriter : IRewriter
             if (k1.Value == k2.Value)
             {
                 RuleApplied = true;
-                // TODO: Output ~U-LIT
-                Console.Write("[~U-LIT] ");
+                _logger.LogRuleApplied("U-LIT");
                 return e;
             }
         }
@@ -115,8 +113,7 @@ public class Rewriter : IRewriter
         if (expression is Eqe { Eq: Value, E: Expression e })
         {
             RuleApplied = true;
-            // TODO: Output ~VAL-ELIM
-            Console.Write("[~VAL-ELIM] ");
+            _logger.LogRuleApplied("VAL-ELIM");
             return e;
         }
 
@@ -128,8 +125,7 @@ public class Rewriter : IRewriter
         if (expression is Exists { V: Variable, E: Exists { V: Variable, E: Expression e } existsY } existsX)
         {
             RuleApplied = true;
-            // TODO: Output ~EXI-SWAP
-            Console.Write("[~EXI-SWAP] ");
+            _logger.LogRuleApplied("EXI-SWAP");
             return existsY.E = existsX.E = e;
         }
 
@@ -141,8 +137,7 @@ public class Rewriter : IRewriter
         if (expression is One { E: Fail fail })
         {
             RuleApplied = true;
-            // TODO: Output ~ONE-FAIL
-            Console.Write("[~ONE-FAIL] ");
+            _logger.LogRuleApplied("ONE-FAIL");
             return fail;
         }
 
@@ -154,8 +149,7 @@ public class Rewriter : IRewriter
         if (expression is One { E: Value value })
         {
             RuleApplied = true;
-            // TODO: Output ~ONE-VALUE
-            Console.Write("[~ONE-VALUE] ");
+            _logger.LogRuleApplied("ONE-VALUE");
             return value;
         }
 

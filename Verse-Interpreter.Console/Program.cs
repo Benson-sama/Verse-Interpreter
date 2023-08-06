@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Verse_Interpreter.Console;
 using Verse_Interpreter.Model;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 
@@ -8,7 +9,7 @@ Console.WriteLine("-- Verse-Interpreter Console --");
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
-        services.AddLogging();
+        services.AddSingleton<IVerseLogger, ConsoleVerseLogger>();
         services.AddSingleton<IVerseSyntaxTreeBuilder, VerseSyntaxTreeBuilder>();
         services.AddSingleton<IRewriter, Rewriter>();
         services.AddSingleton<VerseInterpreter>();
@@ -17,7 +18,6 @@ var host = Host.CreateDefaultBuilder(args)
 
 VerseInterpreter verseInterpreter = host.Services.GetRequiredService<VerseInterpreter>();
 GetRequestedCommand(args)();
-Console.WriteLine("Done.");
 
 Action GetRequestedCommand(string[] args)
 {
