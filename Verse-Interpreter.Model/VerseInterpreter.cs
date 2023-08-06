@@ -3,8 +3,11 @@ using Microsoft.Extensions.Logging;
 using Verse_Interpreter.Model.SyntaxTree;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
+using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
+using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
+using Tuple = Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Tuple;
 
 namespace Verse_Interpreter.Model;
 
@@ -64,7 +67,7 @@ public class VerseInterpreter
             if (!_rewriter.RuleApplied)
                 Rewrite(verseProgram.Wrapper.E);
         }
-        while (!_rewriter.RuleApplied);
+        while (_rewriter.RuleApplied);
 
         return _rewriter.TryRewrite(verseProgram.Wrapper);
     }
@@ -116,7 +119,12 @@ public class VerseInterpreter
 
     private void Rewrite(Wrapper wrapper)
     {
-        throw new NotImplementedException();
+        wrapper.E = _rewriter.TryRewrite(wrapper.E);
+
+        if (_rewriter.RuleApplied)
+            return;
+
+        Rewrite(wrapper.E);
     }
 
     public VerseProgram GenerateParseTreeFromString(string input)
