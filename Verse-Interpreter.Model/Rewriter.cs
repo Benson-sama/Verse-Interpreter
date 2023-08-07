@@ -1,4 +1,5 @@
-﻿using Verse_Interpreter.Model.SyntaxTree.Expressions;
+﻿using Verse_Interpreter.Model.SyntaxTree;
+using Verse_Interpreter.Model.SyntaxTree.Expressions;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
@@ -10,39 +11,53 @@ namespace Verse_Interpreter.Model;
 
 public class Rewriter : IRewriter
 {
-    private readonly IVerseLogger _logger;
+    private readonly IRenderer _logger;
     private readonly Func<Expression, Expression>[] _rewriteRules;
 
-    public Rewriter(IVerseLogger logger)
+    public Rewriter(IRenderer logger)
     {
         _logger = logger;
         _rewriteRules = new Func<Expression, Expression>[]
         {
             // Application.
-            TryRewriteWithAppAdd,
-            TryRewriteWithAppGtAndAppGtFail,
+            AppAdd,
+            AppGtAndAppGtFail,
             // Unification.
-            TryRewriteWithULit,
+            ULit,
             // Elimination.
-            TryRewriteWithValElim,
+            ValElim,
             // Normalisation.
-            TryRewriteWithExiSwap,
+            ExiSwap,
             // Choice.
-            TryRewriteWithOneFail,
-            TryRewriteWithOneValue
+            OneFail,
+            OneValue
         };
     }
 
-    public bool RuleApplied { get; private set; }
+    private bool RuleApplied { get; set; }
 
-    public Expression TryRewrite(Expression expression)
+    public Expression Rewrite(VerseProgram verseProgram)
+    {
+        do
+        {
+            verseProgram.Wrapper.E = ApplyRules(verseProgram.Wrapper.E);
+
+            if (!RuleApplied)
+                RewriteInnerExpressions(verseProgram.Wrapper.E);
+        }
+        while (RuleApplied);
+
+        return ApplyRules(verseProgram.Wrapper);
+    }
+
+    public Expression ApplyRules(Expression expression)
     {
         RuleApplied = false;
         Expression rewrittenExpression = expression;
 
-        foreach (Func<Expression, Expression> tryRewriteWithNextRule in _rewriteRules)
+        foreach (Func<Expression, Expression> applyRule in _rewriteRules)
         {
-            rewrittenExpression = tryRewriteWithNextRule(expression);
+            rewrittenExpression = applyRule(expression);
 
             if (RuleApplied)
                 return rewrittenExpression;
@@ -51,14 +66,119 @@ public class Rewriter : IRewriter
         return rewrittenExpression;
     }
 
-    private Expression TryRewriteWithAppAdd(Expression expression)
+    private void RewriteInnerExpressions(Expression expression)
+    {
+        switch (expression)
+        {
+            case Eqe eqe:
+                Rewrite(eqe);
+                break;
+            case Equation eq:
+                Rewrite(eq);
+                break;
+            case Lambda lambda:
+                Rewrite(lambda);
+                break;
+            case Choice choice:
+                Rewrite(choice);
+                break;
+            case Exists exists:
+                Rewrite(exists);
+                break;
+            case Wrapper wrapper:
+                Rewrite(wrapper);
+                break;
+        }
+    }
+
+    private void Rewrite(Eqe eqe)
+    {
+        eqe.Eq = ApplyRules(eqe.Eq);
+
+        if (RuleApplied)
+            return;
+
+        RewriteInnerExpressions(eqe.Eq);
+
+        if (RuleApplied)
+            return;
+
+        eqe.E = ApplyRules(eqe.E);
+
+        if (RuleApplied)
+            return;
+
+        RewriteInnerExpressions(eqe.E);
+    }
+
+    private void Rewrite(Equation eq)
+    {
+        eq.E = ApplyRules(eq.E);
+
+        if (RuleApplied)
+            return;
+
+        RewriteInnerExpressions(eq.E);
+    }
+
+    private void Rewrite(Lambda lambda)
+    {
+        lambda.E = ApplyRules(lambda.E);
+
+        if (RuleApplied)
+            return;
+
+        RewriteInnerExpressions(lambda.E);
+    }
+
+    private void Rewrite(Choice choice)
+    {
+        choice.E1 = ApplyRules(choice.E1);
+
+        if (RuleApplied)
+            return;
+
+        RewriteInnerExpressions(choice.E1);
+
+        if (RuleApplied)
+            return;
+
+        choice.E2 = ApplyRules(choice.E2);
+
+        if (RuleApplied)
+            return;
+
+        RewriteInnerExpressions(choice.E2);
+    }
+
+    private void Rewrite(Exists exists)
+    {
+        exists.E = ApplyRules(exists.E);
+
+        if (RuleApplied)
+            return;
+
+        RewriteInnerExpressions(exists.E);
+    }
+
+    private void Rewrite(Wrapper wrapper)
+    {
+        wrapper.E = ApplyRules(wrapper.E);
+
+        if (RuleApplied)
+            return;
+
+        RewriteInnerExpressions(wrapper.E);
+    }
+
+    private Expression AppAdd(Expression expression)
     {
         if (expression is Application { V1: Add, V2: Tuple { Values: IEnumerable<Value> values } })
         {
             if (values.Count() is 2 && values.ElementAt(0) is Integer i1 && values.ElementAt(1) is Integer i2)
             {
                 Expression rewrittenExpression = new Integer(i1.Value + i2.Value);
-                _logger.LogRuleApplied("APP-ADD");
+                _logger.DisplayRuleApplied("APP-ADD");
                 RuleApplied = true;
                 return rewrittenExpression;
             }
@@ -67,7 +187,7 @@ public class Rewriter : IRewriter
         return expression;
     }
 
-    private Expression TryRewriteWithAppGtAndAppGtFail(Expression expression)
+    private Expression AppGtAndAppGtFail(Expression expression)
     {
         if (expression is Application { V1: Gt, V2: Tuple { Values: IEnumerable<Value> values } })
         {
@@ -77,14 +197,14 @@ public class Rewriter : IRewriter
                 {
                     Expression rewrittenExpression = i1;
                     RuleApplied = true;
-                    _logger.LogRuleApplied("APP-GT");
+                    _logger.DisplayRuleApplied("APP-GT");
                     return rewrittenExpression;
                 }
                 else
                 {
                     Expression rewrittenExpression = new Fail();
                     RuleApplied = true;
-                    _logger.LogRuleApplied("APP-GT-FAIL");
+                    _logger.DisplayRuleApplied("APP-GT-FAIL");
                     return rewrittenExpression;
                 }
             }
@@ -93,14 +213,14 @@ public class Rewriter : IRewriter
         return expression;
     }
 
-    private Expression TryRewriteWithULit(Expression expression)
+    private Expression ULit(Expression expression)
     {
         if (expression is Eqe { Eq: Equation { V: Integer k1, E: Integer k2 }, E: Expression e })
         {
             if (k1.Value == k2.Value)
             {
                 RuleApplied = true;
-                _logger.LogRuleApplied("U-LIT");
+                _logger.DisplayRuleApplied("U-LIT");
                 return e;
             }
         }
@@ -108,63 +228,51 @@ public class Rewriter : IRewriter
         return expression;
     }
 
-    private Expression TryRewriteWithValElim(Expression expression)
+    private Expression ValElim(Expression expression)
     {
         if (expression is Eqe { Eq: Value, E: Expression e })
         {
             RuleApplied = true;
-            _logger.LogRuleApplied("VAL-ELIM");
+            _logger.DisplayRuleApplied("VAL-ELIM");
             return e;
         }
 
         return expression;
     }
 
-    private Expression TryRewriteWithExiSwap(Expression expression)
+    private Expression ExiSwap(Expression expression)
     {
         if (expression is Exists { V: Variable, E: Exists { V: Variable, E: Expression e } existsY } existsX)
         {
             RuleApplied = true;
-            _logger.LogRuleApplied("EXI-SWAP");
+            _logger.DisplayRuleApplied("EXI-SWAP");
             return existsY.E = existsX.E = e;
         }
 
         return expression;
     }
 
-    private Expression TryRewriteWithOneFail(Expression expression)
+    private Expression OneFail(Expression expression)
     {
         if (expression is One { E: Fail fail })
         {
             RuleApplied = true;
-            _logger.LogRuleApplied("ONE-FAIL");
+            _logger.DisplayRuleApplied("ONE-FAIL");
             return fail;
         }
 
         return expression;
     }
 
-    private Expression TryRewriteWithOneValue(Expression expression)
+    private Expression OneValue(Expression expression)
     {
         if (expression is One { E: Value value })
         {
             RuleApplied = true;
-            _logger.LogRuleApplied("ONE-VALUE");
+            _logger.DisplayRuleApplied("ONE-VALUE");
             return value;
         }
 
         return expression;
     }
-
-    //[Obsolete]
-    //private RewriteResult TryRewriteAppAddWithSwitch(Expression expression)
-    //{
-    //    return expression switch
-    //    {
-    //        Application { V1: Add, V2: Tuple { Values: IEnumerable<Value> values } }
-    //            when values.Count() is 2 && values.ElementAt(0) is Integer i1 && values.ElementAt(1) is Integer i2 =>
-    //                new RewriteResult(RuleApplied: true, RewrittenExpression: new Integer(i1.Value + i2.Value), AppliedRuleName: "APP-ADD"),
-    //        _ => new RewriteResult(RuleApplied: false, expression)
-    //    };
-    //}
 }

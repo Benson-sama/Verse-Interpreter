@@ -2,14 +2,24 @@
 using Microsoft.Extensions.Hosting;
 using Verse_Interpreter.Console;
 using Verse_Interpreter.Model;
-using Verse_Interpreter.Model.SyntaxTree.Expressions;
 
-Console.WriteLine("-- Verse-Interpreter Console --");
+Console.ForegroundColor = ConsoleColor.Blue;
+Console.WriteLine("""
+     _   _                      _____      _                           _              __   _____ 
+    | | | |                    |_   _|    | |                         | |            /  | |  _  |
+    | | | | ___ _ __ ___  ___    | | _ __ | |_ ___ _ __ _ __  _ __ ___| |_ ___ _ __  `| | | |/' |
+    | | | |/ _ \ '__/ __|/ _ \   | || '_ \| __/ _ \ '__| '_ \| '__/ _ \ __/ _ \ '__|  | | |  /| |
+    \ \_/ /  __/ |  \__ \  __/  _| || | | | ||  __/ |  | |_) | | |  __/ ||  __/ |    _| |_\ |_/ /
+     \___/ \___|_|  |___/\___|  \___/_| |_|\__\___|_|  | .__/|_|  \___|\__\___|_|    \___(_)___/ 
+                                                       | |                                       
+                                                       |_|                                       
+    """);
+Console.ResetColor();
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
-        services.AddSingleton<IVerseLogger, ConsoleVerseLogger>();
+        services.AddSingleton<IRenderer, ConsoleRenderer>();
         services.AddSingleton<IVerseSyntaxTreeBuilder, VerseSyntaxTreeBuilder>();
         services.AddSingleton<IRewriter, Rewriter>();
         services.AddSingleton<VerseInterpreter>();
@@ -39,9 +49,7 @@ void ExecuteCodeCommand(string? verseCode)
         return;
     }
 
-    Expression result = verseInterpreter.Interpret(verseCode);
-    Console.WriteLine("\n");
-    Console.WriteLine("Result: " + result);
+    verseInterpreter.Interpret(verseCode);
 }
 
 void ExecuteInteractiveCommand()

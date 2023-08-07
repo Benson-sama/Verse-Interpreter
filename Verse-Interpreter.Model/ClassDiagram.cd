@@ -155,14 +155,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.VerseInterpreter">
-    <Position X="0.5" Y="13.25" Width="7" />
+    <Position X="0.5" Y="13.25" Width="6.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAACAAAAAAAgAAAAAAAIAIAAAAAAgAAAAAgAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAEAIAAAAAAAAAAAAgAAA=</HashCode>
       <FileName>VerseInterpreter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.VerseSyntaxTreeBuilder">
-    <Position X="7.75" Y="13.25" Width="5.25" />
+    <Position X="12" Y="13.25" Width="5.25" />
     <TypeIdentifier>
       <HashCode>AAAQIAAAICAAAJAAoAAAAACAAQEAAEAEAAAAAAAAAAA=</HashCode>
       <FileName>VerseSyntaxTreeBuilder.cs</FileName>
@@ -191,17 +191,39 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.Desugar">
-    <Position X="13.25" Y="13.25" Width="7" />
+    <Position X="0.5" Y="15.75" Width="7" />
     <TypeIdentifier>
       <HashCode>ACgAAAAAAAAAAEEAAAAQAQAAAABAACAAACAAAACAAAA=</HashCode>
       <FileName>Desugar.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="Verse_Interpreter.Model.Rewriter">
+    <Position X="8" Y="13.25" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABACAAgQCAAAAAAABiAIAAAAAAAAEAQDAAAAAA=</HashCode>
+      <FileName>Rewriter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
   <Interface Name="Verse_Interpreter.Model.IVerseSyntaxTreeBuilder">
-    <Position X="0.5" Y="17.5" Width="5.25" />
+    <Position X="17.5" Y="16.25" Width="5.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IVerseSyntaxTreeBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Verse_Interpreter.Model.IRewriter">
+    <Position X="17.5" Y="15" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IRewriter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Verse_Interpreter.Model.IRenderer">
+    <Position X="17.5" Y="13.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>IRenderer.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />
