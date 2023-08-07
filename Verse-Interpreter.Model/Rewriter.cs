@@ -22,6 +22,7 @@ public class Rewriter : IRewriter
             // Application.
             AppAdd,
             AppGtAndAppGtFail,
+            AppTup0,
             // Unification.
             ULit,
             // Elimination.
@@ -30,7 +31,13 @@ public class Rewriter : IRewriter
             ExiSwap,
             // Choice.
             OneFail,
-            OneValue
+            OneValue,
+            OneChoice,
+            AllFail,
+            AllValue,
+            ChooseL,
+            ChooseR,
+            ChooseAssoc
         };
     }
 
@@ -171,6 +178,8 @@ public class Rewriter : IRewriter
         RewriteInnerExpressions(wrapper.E);
     }
 
+    #region Application
+
     [RewriteRule]
     private Expression AppAdd(Expression expression)
     {
@@ -216,6 +225,39 @@ public class Rewriter : IRewriter
     }
 
     [RewriteRule]
+    private Expression AppBeta(Expression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    [RewriteRule]
+    private Expression AppTup(Expression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    [RewriteRule]
+    private Expression AppTup0(Expression expression)
+    {
+        if (expression is Application { V1: Tuple { Values: IEnumerable<Value> values }, V2: Value })
+        {
+            if (values.Count() is 0)
+            {
+                Expression rewrittenExpression = new Fail();
+                _logger.DisplayRuleApplied("APP-TUP-0");
+                RuleApplied = true;
+                return rewrittenExpression;
+            }
+        }
+
+        return expression;
+    }
+
+    #endregion
+
+    #region Unification
+
+    [RewriteRule]
     private Expression ULit(Expression expression)
     {
         if (expression is Eqe { Eq: Equation { V: Integer k1, E: Integer k2 }, E: Expression e })
@@ -232,6 +274,53 @@ public class Rewriter : IRewriter
     }
 
     [RewriteRule]
+    private Expression UTup(Expression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    [RewriteRule]
+    private Expression UFail(Expression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    [RewriteRule]
+    private Expression UOccurs(Expression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    [RewriteRule]
+    private Expression Subst(Expression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+
+    [RewriteRule]
+    private Expression HnfSwap(Expression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    [RewriteRule]
+    private Expression VarSwap(Expression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    [RewriteRule]
+    private Expression SeqSwap(Expression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
+
+    #region Elimination
+
+    [RewriteRule]
     private Expression ValElim(Expression expression)
     {
         if (expression is Eqe { Eq: Value, E: Expression e })
@@ -242,6 +331,46 @@ public class Rewriter : IRewriter
         }
 
         return expression;
+    }
+
+    [RewriteRule]
+    private Expression ExiElim(Expression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    [RewriteRule]
+    private Expression EqnElim(Expression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    [RewriteRule]
+    private Expression FailElim(Expression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
+
+    #region Normalisation
+
+    [RewriteRule]
+    private Expression ExiFloat(Expression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    [RewriteRule]
+    private Expression SeqAssoc(Expression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    [RewriteRule]
+    private Expression EqnFloat(Expression expression)
+    {
+        throw new NotImplementedException();
     }
 
     [RewriteRule]
@@ -256,6 +385,10 @@ public class Rewriter : IRewriter
 
         return expression;
     }
+
+    #endregion
+
+    #region Choice
 
     [RewriteRule]
     private Expression OneFail(Expression expression)
@@ -282,4 +415,105 @@ public class Rewriter : IRewriter
 
         return expression;
     }
+
+    [RewriteRule]
+    private Expression OneChoice(Expression expression)
+    {
+        if (expression is One { E: Choice { E1: Value v, E2: Expression } })
+        {
+            RuleApplied = true;
+            _logger.DisplayRuleApplied("ONE-CHOICE");
+            return v;
+        }
+
+        return expression;
+    }
+
+    [RewriteRule]
+    private Expression AllFail(Expression expression)
+    {
+        if (expression is All { E: Fail })
+        {
+            RuleApplied = true;
+            _logger.DisplayRuleApplied("ALL-FAIL");
+            return Tuple.Empty;
+        }
+
+        return expression;
+    }
+
+    [RewriteRule]
+    private Expression AllValue(Expression expression)
+    {
+        if (expression is All { E: Value v })
+        {
+            RuleApplied = true;
+            _logger.DisplayRuleApplied("ALL-VALUE");
+            return new Tuple { Values = new Value[] { v } };
+        }
+
+        return expression;
+    }
+
+    [RewriteRule]
+    private Expression AllChoice(Expression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    [RewriteRule]
+    private Expression ChooseR(Expression expression)
+    {
+        if (expression is Choice { E1: Fail, E2: Expression e })
+        {
+            RuleApplied = true;
+            _logger.DisplayRuleApplied("CHOOSE-R");
+            return e;
+        }
+
+        return expression;
+    }
+
+    [RewriteRule]
+    private Expression ChooseL(Expression expression)
+    {
+        if (expression is Choice { E1: Expression e, E2: Fail, })
+        {
+            RuleApplied = true;
+            _logger.DisplayRuleApplied("CHOOSE-R");
+            return e;
+        }
+
+        return expression;
+    }
+
+    [RewriteRule]
+    private Expression ChooseAssoc(Expression expression)
+    {
+        if (expression is Choice { E1: Choice { E1: Expression e1, E2: Expression e2 } innerChoice, E2: Expression e3 } outerChoice)
+        {
+            Expression rewrittenExpression = new Choice
+            {
+                E1 = e1,
+                E2 = new Choice
+                {
+                    E1 = e2,
+                    E2 = e3
+                }
+            };
+            RuleApplied = true;
+            _logger.DisplayRuleApplied("CHOOSE-ASSOC");
+            return rewrittenExpression;
+        }
+
+        return expression;
+    }
+
+    [RewriteRule]
+    private Expression Choose(Expression expression)
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
 }
