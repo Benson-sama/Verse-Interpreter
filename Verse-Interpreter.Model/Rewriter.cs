@@ -171,6 +171,7 @@ public class Rewriter : IRewriter
         RewriteInnerExpressions(wrapper.E);
     }
 
+    [RewriteRule]
     private Expression AppAdd(Expression expression)
     {
         if (expression is Application { V1: Add, V2: Tuple { Values: IEnumerable<Value> values } })
@@ -187,6 +188,7 @@ public class Rewriter : IRewriter
         return expression;
     }
 
+    [RewriteRule]
     private Expression AppGtAndAppGtFail(Expression expression)
     {
         if (expression is Application { V1: Gt, V2: Tuple { Values: IEnumerable<Value> values } })
@@ -213,6 +215,7 @@ public class Rewriter : IRewriter
         return expression;
     }
 
+    [RewriteRule]
     private Expression ULit(Expression expression)
     {
         if (expression is Eqe { Eq: Equation { V: Integer k1, E: Integer k2 }, E: Expression e })
@@ -228,6 +231,7 @@ public class Rewriter : IRewriter
         return expression;
     }
 
+    [RewriteRule]
     private Expression ValElim(Expression expression)
     {
         if (expression is Eqe { Eq: Value, E: Expression e })
@@ -240,6 +244,7 @@ public class Rewriter : IRewriter
         return expression;
     }
 
+    [RewriteRule]
     private Expression ExiSwap(Expression expression)
     {
         if (expression is Exists { V: Variable, E: Exists { V: Variable, E: Expression e } existsY } existsX)
@@ -252,6 +257,7 @@ public class Rewriter : IRewriter
         return expression;
     }
 
+    [RewriteRule]
     private Expression OneFail(Expression expression)
     {
         if (expression is One { E: Fail fail })
@@ -264,6 +270,7 @@ public class Rewriter : IRewriter
         return expression;
     }
 
+    [RewriteRule]
     private Expression OneValue(Expression expression)
     {
         if (expression is One { E: Value value })

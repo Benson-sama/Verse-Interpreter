@@ -205,6 +205,13 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
+  <Class Name="Verse_Interpreter.Model.RewriteRuleAttribute">
+    <Position X="8" Y="18.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RewriteRuleAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Interface Name="Verse_Interpreter.Model.IVerseSyntaxTreeBuilder">
     <Position X="17.5" Y="16.25" Width="5.25" />
     <TypeIdentifier>
