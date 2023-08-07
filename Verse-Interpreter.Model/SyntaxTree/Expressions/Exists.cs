@@ -8,5 +8,5 @@ public class Exists : Expression
 
     public required Expression E { get; set; }
 
-    public override string ToString() => $"∃{V}. {E}";
+    public override string ToString() => $"E{V}. {E}";
 }
