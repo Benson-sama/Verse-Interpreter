@@ -415,7 +415,14 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression ExiElim(Expression expression)
     {
-        throw new NotImplementedException();
+        if (expression is Exists { V: Variable v, E: Expression e } && !FreeVariablesOf(e).Contains(v))
+        {
+            RuleApplied = true;
+            _logger.DisplayRuleApplied("EXI-ELIM");
+            return e;
+        }
+
+        return expression;
     }
 
     [RewriteRule]
