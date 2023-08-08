@@ -17,14 +17,14 @@
   <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators.Add">
     <Position X="0.5" Y="11.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Operators\Add.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators.Gt">
     <Position X="4" Y="11.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Operators\Gt.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -200,13 +200,13 @@
   <Class Name="Verse_Interpreter.Model.Rewriter">
     <Position X="8" Y="13.25" Width="3.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAABACAAgQCAAAAAAABiAIAAAAAAAAEAQDAAAAAA=</HashCode>
+      <HashCode>IQAIABhACQQgQCAAA4gAALiBIEAQAEAAAUCQDQABACE=</HashCode>
       <FileName>Rewriter.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Verse_Interpreter.Model.RewriteRuleAttribute">
-    <Position X="8" Y="18.75" Width="1.75" />
+    <Position X="5.75" Y="19" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>RewriteRuleAttribute.cs</FileName>

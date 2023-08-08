@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Verse_Interpreter.Model.SyntaxTree;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
+using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
 
 namespace Verse_Interpreter.Model;
 
@@ -27,6 +28,14 @@ public class VerseInterpreter
         VerseParser.ProgramContext programContext = parser.program();
         _renderer.DisplayMessage("Converting and desugaring parse tree...");
         VerseProgram verseProgram = _syntaxTreeBuilder.BuildCustomSyntaxTreeWrappedInOne(programContext);
+        IEnumerable<Variable> freeVariablesOfE = _rewriter.FreeVariablesOf(verseProgram.Wrapper.E);
+
+        if (freeVariablesOfE.Count() is not 0)
+        {
+            _renderer.DisplayMessage("Invalid verse program, free variables must be zero.");
+            return verseProgram.Wrapper;
+        }
+
         _renderer.DisplayMessage("Rewriting parse tree...");
         Expression result = _rewriter.Rewrite(verseProgram);
         _renderer.DisplayResult(result);

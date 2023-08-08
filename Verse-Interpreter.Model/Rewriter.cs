@@ -73,6 +73,85 @@ public class Rewriter : IRewriter
         return rewrittenExpression;
     }
 
+    public IEnumerable<Variable> FreeVariablesOf(Expression expression)
+        => FreeVariablesOf(expression, new VariableBuffer());
+
+    private IEnumerable<Variable> FreeVariablesOf(Expression expression, VariableBuffer variableBuffer)
+    {
+        return expression switch
+        {
+            Eqe eqe => FreeVariablesOf(eqe, variableBuffer),
+            Equation eq => FreeVariablesOf(eq, variableBuffer),
+            Lambda lambda => FreeVariablesOf(lambda, variableBuffer),
+            Tuple tuple => FreeVariablesOf(tuple, variableBuffer),
+            Variable variable => FreeVariablesOf(variable, variableBuffer),
+            Application application => FreeVariablesOf(application, variableBuffer),
+            Choice choice => FreeVariablesOf(choice, variableBuffer),
+            Exists exists => FreeVariablesOf(exists, variableBuffer),
+            Wrapper wrapper => FreeVariablesOf(wrapper, variableBuffer),
+            _ => Enumerable.Empty<Variable>()
+        };
+    }
+
+    private IEnumerable<Variable> FreeVariablesOf(Eqe eqe, VariableBuffer variableBuffer)
+    {
+        FreeVariablesOf(eqe.Eq, variableBuffer);
+        return FreeVariablesOf(eqe.E, variableBuffer);
+    }
+
+    private IEnumerable<Variable> FreeVariablesOf(Equation eq, VariableBuffer variableBuffer)
+    {
+        FreeVariablesOf(eq.V, variableBuffer);
+        return FreeVariablesOf(eq.E, variableBuffer);
+    }
+
+    private IEnumerable<Variable> FreeVariablesOf(Lambda lambda, VariableBuffer variableBuffer)
+    {
+        if (lambda.Parameter is not null)
+            variableBuffer.BoundVariables = variableBuffer.BoundVariables.Append(lambda.Parameter);
+
+        return FreeVariablesOf(lambda.E, variableBuffer);
+    }
+
+    private IEnumerable<Variable> FreeVariablesOf(Tuple tuple, VariableBuffer variableBuffer)
+    {
+        foreach (Value value in tuple.Values)
+        {
+            FreeVariablesOf(value, variableBuffer);
+        }
+
+        return variableBuffer.FreeVariables;
+    }
+
+    private static IEnumerable<Variable> FreeVariablesOf(Variable variable, VariableBuffer variableBuffer)
+    {
+        if (!variableBuffer.BoundVariables.Contains(variable))
+            variableBuffer.FreeVariables = variableBuffer.FreeVariables.Append(variable);
+
+        return variableBuffer.FreeVariables;
+    }
+
+    private IEnumerable<Variable> FreeVariablesOf(Application application, VariableBuffer variableBuffer)
+    {
+        FreeVariablesOf(application.V1, variableBuffer);
+        return FreeVariablesOf(application.V2, variableBuffer);
+    }
+
+    private IEnumerable<Variable> FreeVariablesOf(Choice choice, VariableBuffer variableBuffer)
+    {
+        FreeVariablesOf(choice.E1, variableBuffer);
+        return FreeVariablesOf(choice.E2, variableBuffer);
+    }
+
+    private IEnumerable<Variable> FreeVariablesOf(Exists exists, VariableBuffer variableBuffer)
+    {
+        variableBuffer.BoundVariables = variableBuffer.BoundVariables.Append(exists.V);
+        return FreeVariablesOf(exists.E, variableBuffer);
+    }
+
+    private IEnumerable<Variable> FreeVariablesOf(Wrapper wrapper, VariableBuffer variableBuffer)
+        => FreeVariablesOf(wrapper.E, variableBuffer);
+
     private void RewriteInnerExpressions(Expression expression)
     {
         switch (expression)
