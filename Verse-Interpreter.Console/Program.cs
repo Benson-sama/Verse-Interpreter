@@ -35,7 +35,7 @@ Action GetRequestedCommand(string[] args)
     {
         "-code" => () => ExecuteCodeCommand(args.ElementAtOrDefault(1)),
         "-interactive" => ExecuteInteractiveCommand,
-        "-file" => ExecuteFileCommand,
+        "-file" => () => ExecuteFileCommand(args.ElementAtOrDefault(1)),
         { } => ExecuteUnknownCommand,
         _ => ExecuteMissingCommand
     };
@@ -63,10 +63,9 @@ void ExecuteInteractiveCommand()
         verseInterpreter.Interpret(verseCode);
 }
 
-void ExecuteFileCommand()
+void ExecuteFileCommand(string? filePath)
 {
-    string filePath = GetFilePathFromUser();
-    using StreamReader sr = File.OpenText(filePath);
+    using StreamReader sr = File.OpenText(filePath ?? GetFilePathFromUser());
     string verseCode = sr.ReadToEnd();
     verseInterpreter.Interpret(verseCode);
 }
