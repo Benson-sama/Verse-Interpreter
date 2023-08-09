@@ -27,6 +27,7 @@ public class Rewriter : IRewriter
             ULit,
             UTup,
             UFail,
+            HnfSwap,
             // Elimination.
             ValElim,
             ExiElim,
@@ -338,7 +339,15 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression HnfSwap(Expression expression)
     {
-        throw new NotImplementedException();
+        if (expression is Eqe { Eq: Equation { V: HeadNormalForm hnf, E: Variable v } eq, E: Expression } eqe)
+        {
+            eq.V = v;
+            eq.E = hnf;
+            RuleApplied = true;
+            Renderer.DisplayRuleApplied("HNF-SWAP");
+        }
+
+        return expression;
     }
 
     [RewriteRule]
