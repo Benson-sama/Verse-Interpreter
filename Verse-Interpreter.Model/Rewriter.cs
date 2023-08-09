@@ -11,12 +11,12 @@ namespace Verse_Interpreter.Model;
 
 public class Rewriter : IRewriter
 {
-    private readonly IRenderer _logger;
+    private readonly IRenderer _renderer;
     private readonly Func<Expression, Expression>[] _rewriteRules;
 
-    public Rewriter(IRenderer logger)
+    public Rewriter(IRenderer renderer)
     {
-        _logger = logger;
+        _renderer = renderer;
         _rewriteRules = new Func<Expression, Expression>[]
         {
             // Application.
@@ -25,6 +25,8 @@ public class Rewriter : IRewriter
             AppTup0,
             // Unification.
             ULit,
+            UTup,
+            UFail,
             // Elimination.
             ValElim,
             ExiElim,
@@ -41,6 +43,8 @@ public class Rewriter : IRewriter
             ChooseAssoc
         };
     }
+
+    private IRenderer Renderer { get => _renderer; }
 
     private bool RuleApplied { get; set; }
 
@@ -192,7 +196,7 @@ public class Rewriter : IRewriter
             if (values.Count() is 2 && values.ElementAt(0) is Integer i1 && values.ElementAt(1) is Integer i2)
             {
                 Expression rewrittenExpression = new Integer(i1.Value + i2.Value);
-                _logger.DisplayRuleApplied("APP-ADD");
+                Renderer.DisplayRuleApplied("APP-ADD");
                 RuleApplied = true;
                 return rewrittenExpression;
             }
@@ -212,14 +216,14 @@ public class Rewriter : IRewriter
                 {
                     Expression rewrittenExpression = i1;
                     RuleApplied = true;
-                    _logger.DisplayRuleApplied("APP-GT");
+                    Renderer.DisplayRuleApplied("APP-GT");
                     return rewrittenExpression;
                 }
                 else
                 {
                     Expression rewrittenExpression = new Fail();
                     RuleApplied = true;
-                    _logger.DisplayRuleApplied("APP-GT-FAIL");
+                    Renderer.DisplayRuleApplied("APP-GT-FAIL");
                     return rewrittenExpression;
                 }
             }
@@ -248,7 +252,7 @@ public class Rewriter : IRewriter
             if (values.Count() is 0)
             {
                 Expression rewrittenExpression = new Fail();
-                _logger.DisplayRuleApplied("APP-TUP-0");
+                Renderer.DisplayRuleApplied("APP-TUP-0");
                 RuleApplied = true;
                 return rewrittenExpression;
             }
@@ -269,7 +273,7 @@ public class Rewriter : IRewriter
             if (k1.Value == k2.Value)
             {
                 RuleApplied = true;
-                _logger.DisplayRuleApplied("U-LIT");
+                Renderer.DisplayRuleApplied("U-LIT");
                 return e;
             }
         }
@@ -280,13 +284,43 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression UTup(Expression expression)
     {
-        throw new NotImplementedException();
+        if (expression is Eqe { Eq: Equation { V: Tuple t1, E: Tuple t2 }, E: Expression e })
+        {
+            if (t1.Values.Count() == t2.Values.Count())
+            {
+                RuleApplied = true;
+                Renderer.DisplayRuleApplied("U-TUP");
+                return BuildTupleEqeRecursively(t1.Values.Zip(t2.Values), e);
+            }
+        }
+
+        return expression;
+    }
+
+    private Expression BuildTupleEqeRecursively(IEnumerable<(Value leftSideValue, Value rightSideValue)> values, Expression e)
+    {
+        if (values.Count() is 0)
+            return e;
+
+        Equation equation = new() { V = values.First().leftSideValue, E = values.First().rightSideValue };
+
+        if (values.Count() is 1)
+            return new Eqe { Eq = equation, E = e };
+
+        return new Eqe { Eq = equation, E = BuildTupleEqeRecursively(values.Skip(1), e) };
     }
 
     [RewriteRule]
     private Expression UFail(Expression expression)
     {
-        throw new NotImplementedException();
+        if (expression is Eqe { Eq: Equation { V: HeadNormalForm, E: HeadNormalForm }, E: Expression })
+        {
+            RuleApplied = true;
+            Renderer.DisplayRuleApplied("U-FAIL");
+            return new Fail();
+        }
+
+        return expression;
     }
 
     [RewriteRule]
@@ -300,7 +334,6 @@ public class Rewriter : IRewriter
     {
         throw new NotImplementedException();
     }
-
 
     [RewriteRule]
     private Expression HnfSwap(Expression expression)
@@ -330,7 +363,7 @@ public class Rewriter : IRewriter
         if (expression is Eqe { Eq: Value, E: Expression e })
         {
             RuleApplied = true;
-            _logger.DisplayRuleApplied("VAL-ELIM");
+            Renderer.DisplayRuleApplied("VAL-ELIM");
             return e;
         }
 
@@ -343,7 +376,7 @@ public class Rewriter : IRewriter
         if (expression is Exists { V: Variable v, E: Expression e } && !FreeVariablesOf(e).Contains(v))
         {
             RuleApplied = true;
-            _logger.DisplayRuleApplied("EXI-ELIM");
+            Renderer.DisplayRuleApplied("EXI-ELIM");
             return e;
         }
 
@@ -390,7 +423,7 @@ public class Rewriter : IRewriter
         if (expression is Exists { V: Variable, E: Exists { V: Variable, E: Expression e } existsY } existsX)
         {
             RuleApplied = true;
-            _logger.DisplayRuleApplied("EXI-SWAP");
+            Renderer.DisplayRuleApplied("EXI-SWAP");
             return existsY.E = existsX.E = e;
         }
 
@@ -407,7 +440,7 @@ public class Rewriter : IRewriter
         if (expression is One { E: Fail fail })
         {
             RuleApplied = true;
-            _logger.DisplayRuleApplied("ONE-FAIL");
+            Renderer.DisplayRuleApplied("ONE-FAIL");
             return fail;
         }
 
@@ -420,7 +453,7 @@ public class Rewriter : IRewriter
         if (expression is One { E: Value value })
         {
             RuleApplied = true;
-            _logger.DisplayRuleApplied("ONE-VALUE");
+            Renderer.DisplayRuleApplied("ONE-VALUE");
             return value;
         }
 
@@ -433,7 +466,7 @@ public class Rewriter : IRewriter
         if (expression is One { E: Choice { E1: Value v, E2: Expression } })
         {
             RuleApplied = true;
-            _logger.DisplayRuleApplied("ONE-CHOICE");
+            Renderer.DisplayRuleApplied("ONE-CHOICE");
             return v;
         }
 
@@ -446,7 +479,7 @@ public class Rewriter : IRewriter
         if (expression is All { E: Fail })
         {
             RuleApplied = true;
-            _logger.DisplayRuleApplied("ALL-FAIL");
+            Renderer.DisplayRuleApplied("ALL-FAIL");
             return Tuple.Empty;
         }
 
@@ -459,7 +492,7 @@ public class Rewriter : IRewriter
         if (expression is All { E: Value v })
         {
             RuleApplied = true;
-            _logger.DisplayRuleApplied("ALL-VALUE");
+            Renderer.DisplayRuleApplied("ALL-VALUE");
             return new Tuple { Values = new Value[] { v } };
         }
 
@@ -478,7 +511,7 @@ public class Rewriter : IRewriter
         if (expression is Choice { E1: Fail, E2: Expression e })
         {
             RuleApplied = true;
-            _logger.DisplayRuleApplied("CHOOSE-R");
+            Renderer.DisplayRuleApplied("CHOOSE-R");
             return e;
         }
 
@@ -491,7 +524,7 @@ public class Rewriter : IRewriter
         if (expression is Choice { E1: Expression e, E2: Fail, })
         {
             RuleApplied = true;
-            _logger.DisplayRuleApplied("CHOOSE-R");
+            Renderer.DisplayRuleApplied("CHOOSE-L");
             return e;
         }
 
@@ -513,7 +546,7 @@ public class Rewriter : IRewriter
                 }
             };
             RuleApplied = true;
-            _logger.DisplayRuleApplied("CHOOSE-ASSOC");
+            Renderer.DisplayRuleApplied("CHOOSE-ASSOC");
             return rewrittenExpression;
         }
 
