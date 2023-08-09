@@ -22,16 +22,27 @@ public class Rewriter : IRewriter
             // Application.
             AppAdd,
             AppGtAndAppGtFail,
+            //AppBeta,
+            //AppTup,
             AppTup0,
             // Unification.
             ULit,
             UTup,
             UFail,
+            //UOccurs,
+            //Subst,
             HnfSwap,
+            //VarSwap,
+            //SeqSwap,
             // Elimination.
             ValElim,
             ExiElim,
+            //EqnElim,
+            //FailElim,
             // Normalisation.
+            //ExiFloat,
+            //SeqAssoc,
+            //EqnFloat,
             ExiSwap,
             // Choice.
             OneFail,
@@ -39,9 +50,11 @@ public class Rewriter : IRewriter
             OneChoice,
             AllFail,
             AllValue,
-            ChooseL,
+            //AllChoice,
             ChooseR,
-            ChooseAssoc
+            ChooseL,
+            ChooseAssoc,
+            //Choose
         };
     }
 
