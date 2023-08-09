@@ -43,7 +43,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.HeadNormalForm">
-    <Position X="6.75" Y="6" Width="1.5" />
+    <Position X="9.25" Y="6" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\HeadNormalForm.cs</FileName>
@@ -71,14 +71,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.Value">
-    <Position X="7.75" Y="4.25" Width="1.5" />
+    <Position X="8.25" Y="4.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>SyntaxTree\Expressions\Values\Value.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.Variable">
-    <Position X="8.75" Y="6" Width="2" />
+    <Position X="6.75" Y="6" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAEgAAAAAQAAAAAAIAAAAAAAAAAAAA=</HashCode>
       <FileName>SyntaxTree\Expressions\Values\Variable.cs</FileName>
@@ -163,7 +163,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.VerseSyntaxTreeBuilder">
-    <Position X="12" Y="14" Width="5.25" />
+    <Position X="15.25" Y="14" Width="5.25" />
     <TypeIdentifier>
       <HashCode>AAAQIAAAICAAAJAAoAAAAACAAQEAAEAEAAAAAAAAAAA=</HashCode>
       <FileName>VerseSyntaxTreeBuilder.cs</FileName>
@@ -199,36 +199,43 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Verse_Interpreter.Model.Rewriter">
-    <Position X="8" Y="14" Width="3.75" />
+    <Position X="8" Y="14" Width="6.5" />
     <TypeIdentifier>
-      <HashCode>IQAIABhACQQgQCAAA4gAALiBIEAQAEAAAUCQDQABACE=</HashCode>
+      <HashCode>YQAIABhACQQgQCAAA4gAALiBEEAQAEAAAUCQDQABACE=</HashCode>
       <FileName>Rewriter.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Verse_Interpreter.Model.RewriteRuleAttribute">
-    <Position X="5.75" Y="19.75" Width="1.75" />
+    <Position X="5.75" Y="22" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>RewriteRuleAttribute.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="Verse_Interpreter.Model.VariableBuffer">
+    <Position X="4" Y="19.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAQAAAIAAAAAAAAgAAAAA=</HashCode>
+      <FileName>VariableBuffer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Interface Name="Verse_Interpreter.Model.IVerseSyntaxTreeBuilder">
-    <Position X="17.5" Y="17" Width="5.25" />
+    <Position X="21" Y="17.25" Width="5.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IVerseSyntaxTreeBuilder.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Verse_Interpreter.Model.IRewriter">
-    <Position X="17.5" Y="15.75" Width="3.5" />
+    <Position X="21" Y="15.75" Width="4.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
       <FileName>IRewriter.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Verse_Interpreter.Model.IRenderer">
-    <Position X="17.5" Y="14" Width="3" />
+    <Position X="21" Y="14" Width="3" />
     <TypeIdentifier>
       <HashCode>AAAAAIAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAABAAAA=</HashCode>
       <FileName>IRenderer.cs</FileName>
