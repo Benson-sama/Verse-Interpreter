@@ -19,8 +19,10 @@ Console.ResetColor();
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
+        services.AddSingleton<IVariableFactory, VariableFactory>();
         services.AddSingleton<IRenderer, ConsoleRenderer>();
         services.AddSingleton<IVerseSyntaxTreeBuilder, VerseSyntaxTreeBuilder>();
+        services.AddSingleton<Desugar>();
         services.AddSingleton<IRewriter, Rewriter>();
         services.AddSingleton<VerseInterpreter>();
     })
