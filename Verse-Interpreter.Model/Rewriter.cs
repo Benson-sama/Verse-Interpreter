@@ -50,7 +50,7 @@ public class Rewriter : IRewriter
             OneChoice,
             AllFail,
             AllValue,
-            //AllChoice,
+            AllChoice,
             ChooseR,
             ChooseL,
             ChooseAssoc,
@@ -571,7 +571,34 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression AllChoice(Expression expression)
     {
-        throw new NotImplementedException();
+        if (expression is All { E:Choice choice } && IsChoiceWithOnlyValues(choice))
+        {
+            RuleApplied = true;
+            Renderer.DisplayRuleApplied("ALL-CHOICE");
+            return BuildTupleFromChoiceRecursively(choice);
+        }
+
+        return expression;
+    }
+
+    private static bool IsChoiceWithOnlyValues(Choice choice)
+    {
+        return (choice.E1, choice.E2) switch
+        {
+            (Value, Choice nestedChoice) => IsChoiceWithOnlyValues(nestedChoice),
+            (Value, Value) => true,
+            _ => false
+        };
+    }
+
+    private static VerseTuple BuildTupleFromChoiceRecursively(Choice choice)
+    {
+        return (choice.E1, choice.E2) switch
+        {
+            (Value v1, Choice nestedChoice) => new VerseTuple(BuildTupleFromChoiceRecursively(nestedChoice).Prepend(v1)),
+            (Value v1, Value v2) => new VerseTuple(v1, v2),
+            _ => throw new Exception("Unable to build tuple from choice. Pattern must be (Value, Choice) or (Value, Value).")
+        };
     }
 
     [RewriteRule]
