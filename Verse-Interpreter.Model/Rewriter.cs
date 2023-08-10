@@ -41,8 +41,8 @@ public class Rewriter : IRewriter
             //FailElim,
             // Normalisation.
             //ExiFloat,
-            //SeqAssoc,
-            //EqnFloat,
+            SeqAssoc,
+            EqnFloat,
             ExiSwap,
             // Choice.
             OneFail,
@@ -430,13 +430,47 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression SeqAssoc(Expression expression)
     {
-        throw new NotImplementedException();
+        if (expression is Eqe { Eq: Eqe { Eq: Expression eq, E: Expression e1 }, E: Expression e2 })
+        {
+            RuleApplied = true;
+            Renderer.DisplayRuleApplied("SEQ-ASSOC");
+            return new Eqe
+            {
+                Eq = eq,
+                E = new Eqe
+                {
+                    Eq = e1,
+                    E = e2
+                }
+            };
+        }
+
+        return expression;
     }
 
     [RewriteRule]
     private Expression EqnFloat(Expression expression)
     {
-        throw new NotImplementedException();
+        if (expression is Eqe { Eq: Equation { V: Value v, E: Eqe { Eq: Expression eq, E: Expression e1 }, E: Expression e2 } })
+        {
+            RuleApplied = true;
+            Renderer.DisplayRuleApplied("EQN-FLOAT");
+            return new Eqe
+            {
+                Eq = eq,
+                E = new Eqe
+                {
+                    Eq = new Equation
+                    {
+                        V = v,
+                        E = e1
+                    },
+                    E = e2
+                }
+            };
+        }
+
+        return expression;
     }
 
     [RewriteRule]
