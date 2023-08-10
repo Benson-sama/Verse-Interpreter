@@ -36,6 +36,7 @@ public class VerseInterpreter
             return verseProgram.Wrapper;
         }
 
+        _renderer.DisplayMessage(verseProgram.ToString());
         _renderer.DisplayMessage("Rewriting parse tree...");
         Expression result = _rewriter.Rewrite(verseProgram);
         _renderer.DisplayResult(result);
