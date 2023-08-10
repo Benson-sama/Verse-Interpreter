@@ -13,20 +13,4 @@ public class VariableBuffer
 
     public bool IsFree(Variable variable)
         => !IsBound(variable);
-
-    //public void AddBoundVariable(Variable variable)
-    //{
-    //    if (BoundVariables.Contains(variable))
-    //        throw new Exception("Variable is already bound.");
-
-    //    BoundVariables = BoundVariables.Append(variable);
-    //}
-
-    //public void AddFreeVariable(Variable variable)
-    //{
-    //    if (IsBound(variable))
-    //        throw new Exception("Free variable is already bound.");
-
-    //    BoundVariables = BoundVariables.Append(variable);
-    //}
 }

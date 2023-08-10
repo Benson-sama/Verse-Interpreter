@@ -4,7 +4,6 @@ using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
-using Tuple = Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Tuple;
 
 namespace Verse_Interpreter.Model;
 
@@ -88,7 +87,7 @@ public static class Desugar
     // TODO: Ensure freshness!
     public static Lambda Lambda(IEnumerable<Variable> parameters, Expression e)
     {
-        if (parameters.Count() is <0)
+        if (parameters.Count() is < 0)
             throw new Exception("Cannot desugar lambda with less than zero parameters.");
 
         Variable p = new(Guid.NewGuid().ToString());
@@ -98,7 +97,7 @@ public static class Desugar
             Eq = new Equation
             {
                 V = p,
-                E = new Tuple { Values = parameters }
+                E = new VerseTuple(parameters)
             },
             E = e
         };
@@ -133,7 +132,7 @@ public static class Desugar
             }
         };
 
-        return ExpressionApplication(one, Tuple.Empty);
+        return ExpressionApplication(one, VerseTuple.Empty);
     }
 
     private static Eqe BuildExpressionTupleRecursively(IEnumerable<Expression> expressions, IEnumerable<Variable> variables)
@@ -141,7 +140,7 @@ public static class Desugar
         Variable x = new(Guid.NewGuid().ToString());
 
         if (expressions.Count() is 1)
-            return Assignment(x, expressions.First(), new Tuple { Values = variables.Append(x) });
+            return Assignment(x, expressions.First(), new VerseTuple(variables.Append(x)));
 
         return Assignment(x, expressions.First(), BuildExpressionTupleRecursively(expressions.Skip(1), variables.Append(x)));
     }
