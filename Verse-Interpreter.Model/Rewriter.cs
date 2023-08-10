@@ -20,7 +20,8 @@ public class Rewriter : IRewriter
         {
             // Application.
             AppAdd,
-            AppGtAndAppGtFail,
+            AppGt,
+            AppGtFail,
             //AppBeta,
             //AppTup,
             AppTup0,
@@ -219,7 +220,7 @@ public class Rewriter : IRewriter
     }
 
     [RewriteRule]
-    private Expression AppGtAndAppGtFail(Expression expression)
+    private Expression AppGt(Expression expression)
     {
         if (expression is Application { V1: Gt, V2: VerseTuple tuple })
         {
@@ -232,7 +233,20 @@ public class Rewriter : IRewriter
                     Renderer.DisplayRuleApplied("APP-GT");
                     return rewrittenExpression;
                 }
-                else
+            }
+        }
+
+        return expression;
+    }
+
+    [RewriteRule]
+    private Expression AppGtFail(Expression expression)
+    {
+        if (expression is Application { V1: Gt, V2: VerseTuple tuple })
+        {
+            if (tuple.Count() is 2 && tuple.ElementAt(0) is Integer i1 && tuple.ElementAt(1) is Integer i2)
+            {
+                if (i1.Value <= i2.Value)
                 {
                     Expression rewrittenExpression = new Fail();
                     RuleApplied = true;
