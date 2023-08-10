@@ -1,4 +1,5 @@
 ﻿using Verse_Interpreter.Model;
+using Verse_Interpreter.Model.SyntaxTree;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 
 namespace Verse_Interpreter.Console;
@@ -13,10 +14,20 @@ public class ConsoleRenderer : IRenderer
 
     public void DisplayResult(Expression expression)
     {
-        System.Console.Write("\nResult is: ");
+        System.Console.Write("\n\nResult: ");
+        WriteMessageInColor(expression.ToString(), ConsoleColor.Blue);
+    }
 
+    public void DisplayParsedProgram(VerseProgram verseProgram)
+    {
+        System.Console.Write("\nVerse program: ");
+        WriteMessageInColor(verseProgram.ToString(), ConsoleColor.Red);
+    }
+
+    private static void WriteMessageInColor(string? message, ConsoleColor consoleColor)
+    {
         System.Console.ForegroundColor = ConsoleColor.Blue;
-        System.Console.WriteLine(expression);
+        System.Console.WriteLine(message);
 
         System.Console.ResetColor();
     }
