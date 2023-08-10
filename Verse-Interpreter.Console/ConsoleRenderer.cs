@@ -15,18 +15,18 @@ public class ConsoleRenderer : IRenderer
     public void DisplayResult(Expression expression)
     {
         System.Console.Write("\n\nResult: ");
-        WriteMessageInColor(expression.ToString(), ConsoleColor.Blue);
+        WriteMessageInColor(expression.ToString(), ConsoleColor.Green);
     }
 
     public void DisplayParsedProgram(VerseProgram verseProgram)
     {
         System.Console.Write("\nVerse program: ");
-        WriteMessageInColor(verseProgram.ToString(), ConsoleColor.Red);
+        WriteMessageInColor(verseProgram.ToString(), ConsoleColor.Blue);
     }
 
     private static void WriteMessageInColor(string? message, ConsoleColor consoleColor)
     {
-        System.Console.ForegroundColor = ConsoleColor.Blue;
+        System.Console.ForegroundColor = consoleColor;
         System.Console.WriteLine(message);
 
         System.Console.ResetColor();
