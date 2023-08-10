@@ -11,6 +11,12 @@ namespace Verse_Interpreter.Model;
 
 public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 {
+    private readonly IVariableFactory _variableFactory;
+    private readonly Desugar _desugar;
+
+    public VerseSyntaxTreeBuilder(IVariableFactory variableFactory, Desugar desugar)
+        => (_variableFactory, _desugar) = (variableFactory, desugar);
+
     public VerseProgram BuildCustomSyntaxTreeWrappedInOne(VerseParser.ProgramContext context)
     {
         return new VerseProgram()
@@ -116,25 +122,28 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
     {
         Expression e1 = GetExpression(context.e(0));
         Variable x = new(context.VARIABLE().GetText());
+        _variableFactory.RegisterUsedName(x.Name);
+        Equation eq = new()
+        {
+            V = x,
+            E = e1
+        };
         Exists exists = new()
         {
             V = x,
-            E = new Equation()
-            {
-                V = x,
-                E = e1
-            }
+            E = eq
         };
 
         if (context.ChildCount is 3)
             return exists;
 
-        Expression e2 = GetExpression(context.e(1));
-        return new Eqe()
+        exists.E = new Eqe
         {
-            Eq = exists,
-            E = e2
+            Eq = eq,
+            E = GetExpression(context.e(1))
         };
+
+        return exists;
     }
 
     private static Expression GetConcreteExpression(VerseParser.RangeChoiceExpContext context)
@@ -172,15 +181,15 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
+    // TODO: Implement.
     private Value GetExpressionTuple(VerseParser.ExpTupleExpContext c) => throw new NotImplementedException();
 
-    // TODO: Ensure freshness!
     private Expression GetConcreteExpression(VerseParser.ExpApplicationExpContext context)
     {
         Expression e1 = GetExpression(context.e(0));
         Expression e2 = GetExpression(context.e(1));
-        Variable f = new(Guid.NewGuid().ToString());
-        Variable x = new(Guid.NewGuid().ToString());
+        Variable f = _variableFactory.Next();
+        Variable x = _variableFactory.Next();
 
         return new Eqe
         {
@@ -201,12 +210,11 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
-    // TODO: Ensure freshness!
     private Expression GetConcreteExpression(VerseParser.ExpEquationExpContext context)
     {
         Expression e1 = GetExpression(context.e(0));
         Expression e2 = GetExpression(context.e(1));
-        Variable x = new(Guid.NewGuid().ToString());
+        Variable x = _variableFactory.Next();
 
         return new Eqe
         {
@@ -229,7 +237,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         Expression e2 = GetExpression(context.e(1));
         Expression e3 = GetExpression(context.e(2));
 
-        return Desugar.IfThenElse(e1, e2, e3);
+        return _desugar.IfThenElse(e1, e2, e3);
     }
 
     // TODO: Implement.
@@ -263,7 +271,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
     {
         return context switch
         {
-            VerseParser.VariableValueContext c => new Variable(c.VARIABLE().GetText()),
+            VerseParser.VariableValueContext c => GetVariable(c),
             VerseParser.HnfValueContext c => GetHeadNormalForm(c.hnf()),
             { } => throw new Exception("Unable to match value context."),
             _ => throw new ArgumentNullException(nameof(context), "Cannot be null.")
@@ -315,7 +323,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
         Expression e = GetExpression(context.e());
 
-        return Desugar.Lambda(variables, e);
+        return _desugar.Lambda(variables, e);
     }
 
     private static int GetInteger(ITerminalNode terminalNode)
@@ -330,6 +338,12 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         }
     }
 
+    private Variable GetVariable(VerseParser.VariableValueContext c)
+    {
+        string name = c.VARIABLE().GetText();
+        return new Variable(name);
+    }
+
     private static Expression BuildIntegerChoiceRecursively(int min, int max)
     {
         if (min == max)
@@ -342,11 +356,10 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
-    // TODO: Ensure freshness!
-    private static Exists BuildArithmeticExpression(Expression e1, Operator op, Expression e2)
+    private Exists BuildArithmeticExpression(Expression e1, Operator op, Expression e2)
     {
-        Variable v1 = new(Guid.NewGuid().ToString());
-        Variable v2 = new(Guid.NewGuid().ToString());
+        Variable v1 = _variableFactory.Next();
+        Variable v2 = _variableFactory.Next();
 
         return new Exists()
         {

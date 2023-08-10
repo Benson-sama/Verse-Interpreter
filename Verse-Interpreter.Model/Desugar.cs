@@ -7,12 +7,17 @@ using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
 
 namespace Verse_Interpreter.Model;
 
-public static class Desugar
+public class Desugar
 {
-    public static Expression Plus(Expression e1, Expression e2) =>
+    private readonly IVariableFactory _variableFactory;
+
+    public Desugar(IVariableFactory variableFactory)
+        => _variableFactory = variableFactory;
+
+    public Expression Plus(Expression e1, Expression e2) =>
         ExpressionApplication(new Add(), ExpressionTuple(new Expression[] { e1, e2 }));
 
-    public static Expression GreaterThan(Expression e1, Expression e2) =>
+    public Expression GreaterThan(Expression e1, Expression e2) =>
         ExpressionApplication(new Gt(), ExpressionTuple(new Expression[] { e1, e2 }));
 
     public static Expression MultipleExists(IEnumerable<Variable> variables, Expression e)
@@ -44,11 +49,10 @@ public static class Desugar
         };
     }
 
-    // TODO: Ensure freshness!
-    public static Expression ExpressionApplication(Expression e1, Expression e2)
+    public Expression ExpressionApplication(Expression e1, Expression e2)
     {
-        Variable f = new(Guid.NewGuid().ToString());
-        Variable x = new(Guid.NewGuid().ToString());
+        Variable f = _variableFactory.Next();
+        Variable x = _variableFactory.Next();
 
         Application application = new()
         {
@@ -59,7 +63,7 @@ public static class Desugar
         return Assignment(f, e1, Assignment(x, e2, application));
     }
 
-    public static Eqe ExpressionTuple(IEnumerable<Expression> expressions)
+    public Eqe ExpressionTuple(IEnumerable<Expression> expressions)
     {
         if (expressions.Count() is 0)
             throw new Exception("Unable to parse empty expression tuple.");
@@ -67,10 +71,9 @@ public static class Desugar
         return BuildExpressionTupleRecursively(expressions, Enumerable.Empty<Variable>());
     }
 
-    // TODO: Ensure freshness!
-    public static Expression ExpressionEquation(Expression e1, Expression e2)
+    public Expression ExpressionEquation(Expression e1, Expression e2)
     {
-        Variable x = new(Guid.NewGuid().ToString());
+        Variable x = _variableFactory.Next();
         Eqe eqe = new()
         {
             Eq = new Equation
@@ -84,13 +87,12 @@ public static class Desugar
         return Assignment(x, e1, eqe);
     }
 
-    // TODO: Ensure freshness!
-    public static Lambda Lambda(IEnumerable<Variable> parameters, Expression e)
+    public Lambda Lambda(IEnumerable<Variable> parameters, Expression e)
     {
         if (parameters.Count() is < 0)
             throw new Exception("Cannot desugar lambda with less than zero parameters.");
 
-        Variable p = new(Guid.NewGuid().ToString());
+        Variable p = _variableFactory.Next();
 
         Eqe eqe = new()
         {
@@ -109,7 +111,7 @@ public static class Desugar
         };
     }
 
-    public static Expression IfThenElse(Expression e1, Expression e2, Expression e3)
+    public Expression IfThenElse(Expression e1, Expression e2, Expression e3)
     {
         One one = new()
         {
@@ -135,9 +137,9 @@ public static class Desugar
         return ExpressionApplication(one, VerseTuple.Empty);
     }
 
-    private static Eqe BuildExpressionTupleRecursively(IEnumerable<Expression> expressions, IEnumerable<Variable> variables)
+    private Eqe BuildExpressionTupleRecursively(IEnumerable<Expression> expressions, IEnumerable<Variable> variables)
     {
-        Variable x = new(Guid.NewGuid().ToString());
+        Variable x = _variableFactory.Next();
 
         if (expressions.Count() is 1)
             return Assignment(x, expressions.First(), new VerseTuple(variables.Append(x)));

@@ -8,6 +8,9 @@ namespace Verse_Interpreter.Model;
 
 public static class Extensions
 {
+    public static IEnumerable<Variable> FreeVariables(this Expression expression)
+        => expression.FreeVariables(new VariableBuffer());
+
     public static IEnumerable<Variable> FreeVariables(this Expression expression, VariableBuffer variableBuffer)
     {
         return expression switch
