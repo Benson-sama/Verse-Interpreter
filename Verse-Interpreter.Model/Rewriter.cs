@@ -5,7 +5,6 @@ using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
-using Tuple = Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Tuple;
 
 namespace Verse_Interpreter.Model;
 
@@ -205,9 +204,9 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression AppAdd(Expression expression)
     {
-        if (expression is Application { V1: Add, V2: Tuple { Values: IEnumerable<Value> values } })
+        if (expression is Application { V1: Add, V2: VerseTuple tuple })
         {
-            if (values.Count() is 2 && values.ElementAt(0) is Integer i1 && values.ElementAt(1) is Integer i2)
+            if (tuple.Count() is 2 && tuple.ElementAt(0) is Integer i1 && tuple.ElementAt(1) is Integer i2)
             {
                 Expression rewrittenExpression = new Integer(i1.Value + i2.Value);
                 Renderer.DisplayRuleApplied("APP-ADD");
@@ -222,9 +221,9 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression AppGtAndAppGtFail(Expression expression)
     {
-        if (expression is Application { V1: Gt, V2: Tuple { Values: IEnumerable<Value> values } })
+        if (expression is Application { V1: Gt, V2: VerseTuple tuple })
         {
-            if (values.Count() is 2 && values.ElementAt(0) is Integer i1 && values.ElementAt(1) is Integer i2)
+            if (tuple.Count() is 2 && tuple.ElementAt(0) is Integer i1 && tuple.ElementAt(1) is Integer i2)
             {
                 if (i1.Value > i2.Value)
                 {
@@ -261,9 +260,9 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression AppTup0(Expression expression)
     {
-        if (expression is Application { V1: Tuple { Values: IEnumerable<Value> values }, V2: Value })
+        if (expression is Application { V1: VerseTuple tuple, V2: Value })
         {
-            if (values.Count() is 0)
+            if (tuple.Count() is 0)
             {
                 Expression rewrittenExpression = new Fail();
                 Renderer.DisplayRuleApplied("APP-TUP-0");
@@ -298,13 +297,13 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression UTup(Expression expression)
     {
-        if (expression is Eqe { Eq: Equation { V: Tuple t1, E: Tuple t2 }, E: Expression e })
+        if (expression is Eqe { Eq: Equation { V: VerseTuple t1, E: VerseTuple t2 }, E: Expression e })
         {
-            if (t1.Values.Count() == t2.Values.Count())
+            if (t1.Count() == t2.Count())
             {
                 RuleApplied = true;
                 Renderer.DisplayRuleApplied("U-TUP");
-                return BuildTupleEqeRecursively(t1.Values.Zip(t2.Values), e);
+                return BuildTupleEqeRecursively(t1.Zip(t2), e);
             }
         }
 
@@ -502,7 +501,7 @@ public class Rewriter : IRewriter
         {
             RuleApplied = true;
             Renderer.DisplayRuleApplied("ALL-FAIL");
-            return Tuple.Empty;
+            return VerseTuple.Empty;
         }
 
         return expression;
@@ -515,7 +514,7 @@ public class Rewriter : IRewriter
         {
             RuleApplied = true;
             Renderer.DisplayRuleApplied("ALL-VALUE");
-            return new Tuple { Values = new Value[] { v } };
+            return new VerseTuple(new Value[] { v });
         }
 
         return expression;

@@ -6,7 +6,6 @@ using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
-using Tuple = Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Tuple;
 
 namespace Verse_Interpreter.Model;
 
@@ -271,12 +270,12 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
-    private Tuple GetTuple(VerseParser.TupleContext context)
+    private VerseTuple GetTuple(VerseParser.TupleContext context)
     {
         if (context.ChildCount is 0)
-            return new Tuple() { Values = Enumerable.Empty<Value>() };
+            return VerseTuple.Empty;
         else
-            return new Tuple() { Values = GetTupleElements(context.elements()) };
+            return new VerseTuple(GetTupleElements(context.elements()));
     }
 
     private IEnumerable<Value> GetTupleElements(VerseParser.ElementsContext context)
@@ -309,9 +308,9 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
     private Lambda GetLambda(VerseParser.LambdaContext context)
     {
-        Tuple tuple = GetTuple(context.tuple());
+        VerseTuple tuple = GetTuple(context.tuple());
 
-        if (tuple.Values is not IEnumerable<Variable> variables)
+        if (tuple is not IEnumerable<Variable> variables)
             throw new Exception("Lambda parameters must be variables.");
 
         Expression e = GetExpression(context.e());
@@ -372,14 +371,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
                         E = new Application()
                         {
                             V1 = op,
-                            V2 = new Tuple()
-                            {
-                                Values = new Value[]
-                                {
-                                    v1,
-                                    v2
-                                }
-                            }
+                            V2 = new VerseTuple(v1, v2)
                         }
                     }
                 }

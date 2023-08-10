@@ -3,7 +3,6 @@ using Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
-using Tuple = Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Tuple;
 
 namespace Verse_Interpreter.Model;
 
@@ -16,7 +15,7 @@ public static class Extensions
             Eqe eqe => eqe.FreeVariables(variableBuffer),
             Equation eq => eq.FreeVariables(variableBuffer),
             Lambda lambda => lambda.FreeVariables(variableBuffer),
-            Tuple tuple => tuple.FreeVariables(variableBuffer),
+            VerseTuple tuple => tuple.FreeVariables(variableBuffer),
             Variable variable => variable.FreeVariables(variableBuffer),
             Application application => application.FreeVariables(variableBuffer),
             Choice choice => choice.FreeVariables(variableBuffer),
@@ -46,9 +45,9 @@ public static class Extensions
         return lambda.E.FreeVariables(variableBuffer);
     }
 
-    private static IEnumerable<Variable> FreeVariables(this Tuple tuple, VariableBuffer variableBuffer)
+    private static IEnumerable<Variable> FreeVariables(this VerseTuple tuple, VariableBuffer variableBuffer)
     {
-        foreach (Value value in tuple.Values)
+        foreach (Value value in tuple)
         {
             value.FreeVariables(variableBuffer);
         }
