@@ -32,20 +32,20 @@ public class Desugar
         };
     }
 
-    public static Eqe Assignment(Variable x, Expression e1, Expression e2)
+    public static Exists Assignment(Variable x, Expression e1, Expression e2)
     {
-        return new Eqe
+        return new Exists
         {
-            Eq = new Exists
+            V = x,
+            E = new Eqe
             {
-                V = x,
-                E = new Equation
+                Eq = new Equation
                 {
                     V = x,
                     E = e1
-                }
-            },
-            E = e2
+                },
+                E = e2
+            }
         };
     }
 
@@ -63,7 +63,7 @@ public class Desugar
         return Assignment(f, e1, Assignment(x, e2, application));
     }
 
-    public Eqe ExpressionTuple(IEnumerable<Expression> expressions)
+    public Exists ExpressionTuple(IEnumerable<Expression> expressions)
     {
         if (expressions.Count() is 0)
             throw new Exception("Unable to parse empty expression tuple.");
@@ -137,7 +137,7 @@ public class Desugar
         return ExpressionApplication(one, VerseTuple.Empty);
     }
 
-    private Eqe BuildExpressionTupleRecursively(IEnumerable<Expression> expressions, IEnumerable<Variable> variables)
+    private Exists BuildExpressionTupleRecursively(IEnumerable<Expression> expressions, IEnumerable<Variable> variables)
     {
         Variable x = _variableFactory.Next();
 
