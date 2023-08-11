@@ -11,12 +11,12 @@ e			: '(' e ')'								#parenthesisExp
 			| e GREATERTHAN e						#greaterThanExp
 			| e LESSTHAN e							#lessThanExp
 			| VARIABLE ASSIGN e (';' e)?			#assignmentExp
+			| v '(' v ')'							#valueApplicationExp
 			| v										#valueExp
 			| '(' e (',' e)+ ')'					#expTupleExp
 			| FAIL									#failExp
 			| INTEGER '..' INTEGER					#rangeChoiceExp
 			| <assoc=right> e CHOICE e				#choiceExp
-			| v v									#valueApplicationExp
 			| e e									#expApplicationExp
 			| e EQUALS e							#expEquationExp
 			| 'if' '(' e ')' ':' e 'else:' e		#ifElseExp
