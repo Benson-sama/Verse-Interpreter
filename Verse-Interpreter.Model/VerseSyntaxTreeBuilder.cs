@@ -177,23 +177,13 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         Variable f = _variableFactory.Next();
         Variable x = _variableFactory.Next();
 
-        return new Eqe
+        Application application = new()
         {
-            Eq = new Exists
-            {
-                V = f,
-                E = new Equation { V = f, E = e1 }
-            },
-            E = new Eqe
-            {
-                Eq = new Exists
-                {
-                    V = x,
-                    E = new Equation { V = x, E = e2 }
-                },
-                E = new Application { V1 = f, V2 = x }
-            }
+            V1 = f,
+            V2 = x
         };
+
+        return Desugar.Assignment(f, e1, Desugar.Assignment(x, e2, application));
     }
 
     private Expression GetConcreteExpression(VerseParser.ExpEquationExpContext context)
