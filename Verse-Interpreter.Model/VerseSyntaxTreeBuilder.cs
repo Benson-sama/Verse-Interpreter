@@ -17,25 +17,11 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
     public VerseSyntaxTreeBuilder(IVariableFactory variableFactory, Desugar desugar)
         => (_variableFactory, _desugar) = (variableFactory, desugar);
 
-    public VerseProgram BuildCustomSyntaxTreeWrappedInOne(VerseParser.ProgramContext context)
+    public VerseProgram BuildCustomSyntaxTree(VerseParser.ProgramContext context, Func<Expression, Wrapper> wrapperFactory)
     {
         return new VerseProgram()
         {
-            Wrapper = new One()
-            {
-                E = GetExpression(context.e())
-            }
-        };
-    }
-
-    public VerseProgram BuildCustomSyntaxTreeWrappedInAll(VerseParser.ProgramContext context)
-    {
-        return new VerseProgram()
-        {
-            Wrapper = new All()
-            {
-                E = GetExpression(context.e())
-            }
+            Wrapper = wrapperFactory(GetExpression(context.e()))
         };
     }
 
@@ -338,7 +324,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         }
     }
 
-    private Variable GetVariable(VerseParser.VariableValueContext c)
+    private static Variable GetVariable(VerseParser.VariableValueContext c)
     {
         string name = c.VARIABLE().GetText();
         return new Variable(name);

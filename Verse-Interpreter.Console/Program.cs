@@ -2,9 +2,11 @@
 using Microsoft.Extensions.Hosting;
 using Verse_Interpreter.Console;
 using Verse_Interpreter.Model;
+using Verse_Interpreter.Model.SyntaxTree.Expressions;
+using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
 
-Console.ForegroundColor = ConsoleColor.Blue;
-Console.WriteLine("""
+ConsoleRenderer renderer = new();
+string header = """
      _   _                      _____      _                           _            
     | | | |                    |_   _|    | |                         | |           
     | | | | ___ _ __ ___  ___    | | _ __ | |_ ___ _ __ _ __  _ __ ___| |_ ___ _ __ 
@@ -13,14 +15,14 @@ Console.WriteLine("""
      \___/ \___|_|  |___/\___|  \___/_| |_|\__\___|_|  | .__/|_|  \___|\__\___|_|   
                                                        | |                                       
     ---------------------------------------------------|_|--------------------------                                       
-    """);
-Console.ResetColor();
+    """;
+renderer.DisplayHeader(header);
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddSingleton<IVariableFactory, VariableFactory>();
-        services.AddSingleton<IRenderer, ConsoleRenderer>();
+        services.AddSingleton<IRenderer>(renderer);
         services.AddSingleton<IVerseSyntaxTreeBuilder, VerseSyntaxTreeBuilder>();
         services.AddSingleton<Desugar>();
         services.AddSingleton<IRewriter, Rewriter>();
@@ -33,17 +35,33 @@ GetRequestedCommand(args)();
 
 Action GetRequestedCommand(string[] args)
 {
-    return args.FirstOrDefault() switch
+    if (args.Length < 2)
+        return ExecuteInvalidArgumentsCommand;
+
+    string mode = args[0];
+    string command = args[1];
+
+    Func<Expression, Wrapper>? wrapperFactory = mode switch
     {
-        "-code" => () => ExecuteCodeCommand(args.ElementAtOrDefault(1)),
-        "-interactive" => ExecuteInteractiveCommand,
-        "-file" => () => ExecuteFileCommand(args.ElementAtOrDefault(1)),
+        "-one" => (e) => new One() { E = e },
+        "-all" => (e) => new All() { E = e },
+        _ => null
+    };
+
+    if (wrapperFactory is null)
+        return ExecuteInvalidArgumentsCommand;
+
+    return command switch
+    {
+        "-code" => () => ExecuteCodeCommand(args.ElementAtOrDefault(2), wrapperFactory),
+        "-interactive" => () => ExecuteInteractiveCommand(wrapperFactory),
+        "-file" => () => ExecuteFileCommand(args.ElementAtOrDefault(2), wrapperFactory),
         { } => ExecuteUnknownCommand,
-        _ => ExecuteMissingCommand
+        _ => ExecuteInvalidArgumentsCommand
     };
 }
 
-void ExecuteCodeCommand(string? verseCode)
+void ExecuteCodeCommand(string? verseCode, Func<Expression, Wrapper> wrapperFactory)
 {
     if (verseCode is null)
     {
@@ -51,10 +69,10 @@ void ExecuteCodeCommand(string? verseCode)
         return;
     }
 
-    verseInterpreter.Interpret(verseCode);
+    verseInterpreter.Interpret(verseCode, wrapperFactory);
 }
 
-void ExecuteInteractiveCommand()
+void ExecuteInteractiveCommand(Func<Expression, Wrapper> wrapperFactory)
 {
     Console.WriteLine("Please enter your Verse code:\n");
     string? verseCode = Console.ReadLine();
@@ -62,29 +80,33 @@ void ExecuteInteractiveCommand()
     if (verseCode is null)
         Console.WriteLine("No verse code entered.");
     else
-        verseInterpreter.Interpret(verseCode);
+        verseInterpreter.Interpret(verseCode, wrapperFactory);
 }
 
-void ExecuteFileCommand(string? filePath)
+void ExecuteFileCommand(string? filePath, Func<Expression, Wrapper> wrapperFactory)
 {
     using StreamReader sr = File.OpenText(filePath ?? GetFilePathFromUser());
     string verseCode = sr.ReadToEnd();
-    verseInterpreter.Interpret(verseCode);
+    verseInterpreter.Interpret(verseCode, wrapperFactory);
 }
 
 void ExecuteUnknownCommand()
-    => Console.WriteLine("Unknown command specified.");
+{
+    Console.WriteLine("Unknown command specified.");
+    Environment.Exit(1);
+}
 
-void ExecuteMissingCommand()
+void ExecuteInvalidArgumentsCommand()
 {
     Console.WriteLine("""
-        No command specified. Possible commands are:
+        Command line arguments are not valid. The following format is required:
 
-          -code {code}
-          -interactive
-          -file {filePath}
-        
+          {mode} {command}
+
+          {mode}: -one | -all
+          {command}: -code {code} | -interactive | -file {filePath}
         """);
+    Environment.Exit(1);
 }
 
 static string GetFilePathFromUser()
@@ -95,7 +117,7 @@ static string GetFilePathFromUser()
     {
         Console.WriteLine("Please enter the path of the file containing the verse code.");
         path = Console.ReadLine();
-    } while (!File.Exists(path));
+    } while (!File.Exists(path?.Trim('"')));
 
     return path;
 }

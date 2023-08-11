@@ -26,9 +26,14 @@ public class ConsoleRenderer : IRenderer
 
     private static void WriteMessageInColor(string? message, ConsoleColor consoleColor)
     {
+        ConsoleColor previousForegroundColor = System.Console.ForegroundColor;
+
         System.Console.ForegroundColor = consoleColor;
         System.Console.WriteLine(message);
 
-        System.Console.ResetColor();
+        System.Console.ForegroundColor = previousForegroundColor;
     }
+
+    public void DisplayHeader(string header)
+        => WriteMessageInColor(header, ConsoleColor.Blue);
 }

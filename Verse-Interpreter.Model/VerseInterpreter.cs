@@ -2,6 +2,7 @@
 using Verse_Interpreter.Model.SyntaxTree;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
+using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
 
 namespace Verse_Interpreter.Model;
 
@@ -14,7 +15,7 @@ public class VerseInterpreter
     public VerseInterpreter(IRenderer renderer, IVerseSyntaxTreeBuilder syntaxTreeBuilder, IRewriter rewriter)
         => (_renderer, _syntaxTreeBuilder, _rewriter) = (renderer, syntaxTreeBuilder, rewriter);
 
-    public Expression Interpret(string verseCode)
+    public Expression Interpret(string verseCode, Func<Expression, Wrapper> wrapperFactory)
     {
         _renderer.DisplayMessage("Getting character stream...");
         ICharStream stream = CharStreams.fromString(verseCode);
@@ -27,7 +28,7 @@ public class VerseInterpreter
 
         VerseParser.ProgramContext programContext = parser.program();
         _renderer.DisplayMessage("Converting and desugaring parse tree...");
-        VerseProgram verseProgram = _syntaxTreeBuilder.BuildCustomSyntaxTreeWrappedInOne(programContext);
+        VerseProgram verseProgram = _syntaxTreeBuilder.BuildCustomSyntaxTree(programContext, wrapperFactory);
         IEnumerable<Variable> freeVariablesOfE = _rewriter.FreeVariablesOf(verseProgram.Wrapper.E);
 
         if (freeVariablesOfE.Count() is not 0)
