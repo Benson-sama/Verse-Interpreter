@@ -11,11 +11,15 @@ namespace Verse_Interpreter.Model;
 public class Rewriter : IRewriter
 {
     private readonly IRenderer _renderer;
+
+    private readonly IVariableFactory _variableFactory;
+
     private readonly Func<Expression, Expression>[] _rewriteRules;
 
-    public Rewriter(IRenderer renderer)
+    public Rewriter(IRenderer renderer, IVariableFactory variableFactory)
     {
         _renderer = renderer;
+        _variableFactory = variableFactory;
         _rewriteRules = new Func<Expression, Expression>[]
         {
             // Application.
@@ -23,7 +27,7 @@ public class Rewriter : IRewriter
             AppGt,
             AppGtFail,
             //AppBeta,
-            //AppTup,
+            AppTup,
             AppTup0,
             // Unification.
             ULit,
@@ -268,7 +272,92 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression AppTup(Expression expression)
     {
-        throw new NotImplementedException();
+        if (expression is Application { V1: VerseTuple tuple, V2: Value value })
+        {
+            int count = tuple.Count();
+
+            if (count is > 0)
+            {
+                RuleApplied = true;
+                Renderer.DisplayRuleApplied("APP-TUP");
+
+                Variable variable = _variableFactory.Next();
+
+                if (FreeVariablesOf(tuple).Contains(variable))
+                    throw new Exception($"Variable {variable} must not be an element of fvs({tuple})");
+
+                if (count is 1)
+                {
+                    return new Eqe
+                    {
+                        Eq = new Equation
+                        {
+                            V = variable,
+                            E = new Integer(0)
+                        },
+                        E = tuple.First()
+                    };
+                }
+
+                return new Exists
+                {
+                    V = variable,
+                    E = new Eqe
+                    {
+                        Eq = new Equation
+                        {
+                            V = variable,
+                            E = value
+                        },
+                        E = BuildChoiceFromTupleRecursively(tuple, variable, 0)
+                    }
+                };
+            }
+        }
+
+        return expression;
+    }
+
+    private static Choice BuildChoiceFromTupleRecursively(IEnumerable<Value> tuple, Variable variable, int i)
+    {
+        return tuple.Count() switch
+        {
+            > 2 => new Choice
+            {
+                E1 = new Eqe
+                {
+                    Eq = new Equation
+                    {
+                        V = variable,
+                        E = new Integer(i)
+                    },
+                    E = tuple.First()
+                },
+                E2 = BuildChoiceFromTupleRecursively(tuple.Skip(1), variable, i + 1)
+            },
+            2 => new Choice
+            {
+                E1 = new Eqe
+                {
+                    Eq = new Equation
+                    {
+                        V = variable,
+                        E = new Integer(i++)
+                    },
+                    E = tuple.First()
+                },
+                E2 = new Eqe
+                {
+                    Eq = new Equation
+                    {
+                        V = variable,
+                        E = new Integer(i)
+                    },
+                    E = tuple.Last()
+                }
+            },
+            _ => throw new Exception("Unable to build choice from tuple. Pattern must be (Value, Choice) or(Value, Value).")
+        };
     }
 
     [RewriteRule]
@@ -571,7 +660,7 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression AllChoice(Expression expression)
     {
-        if (expression is All { E:Choice choice } && IsChoiceWithOnlyValues(choice))
+        if (expression is All { E: Choice choice } && IsChoiceWithOnlyValues(choice))
         {
             RuleApplied = true;
             Renderer.DisplayRuleApplied("ALL-CHOICE");
