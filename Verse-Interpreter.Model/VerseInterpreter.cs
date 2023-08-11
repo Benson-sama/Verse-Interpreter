@@ -17,6 +17,7 @@ public class VerseInterpreter
 
     public Expression Interpret(string verseCode, Func<Expression, Wrapper> wrapperFactory)
     {
+        _renderer.DisplayMessage($"Input was:\n{verseCode}\n");
         _renderer.DisplayMessage("Getting character stream...");
         ICharStream stream = CharStreams.fromString(verseCode);
         _renderer.DisplayMessage("Creating lexer...");
