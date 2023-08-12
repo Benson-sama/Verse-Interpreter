@@ -5,7 +5,6 @@ using Verse_Interpreter.Model;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
 
-ConsoleRenderer renderer = new();
 string header = """
      _   _                      _____      _                           _            
     | | | |                    |_   _|    | |                         | |           
@@ -16,13 +15,13 @@ string header = """
                                                        | |                                       
     ---------------------------------------------------|_|--------------------------                                       
     """;
-renderer.DisplayHeader(header);
+ConsoleRenderer.DisplayHeader(header);
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddSingleton<IVariableFactory, VariableFactory>();
-        services.AddSingleton<IRenderer>(renderer);
+        services.AddSingleton<IRenderer, ConsoleRenderer>();
         services.AddSingleton<IVerseSyntaxTreeBuilder, VerseSyntaxTreeBuilder>();
         services.AddSingleton<Desugar>();
         services.AddSingleton<IRewriter, Rewriter>();
