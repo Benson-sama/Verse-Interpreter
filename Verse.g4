@@ -13,7 +13,6 @@ e			: '(' e ')'								#parenthesisExp
 			| VARIABLE ASSIGN e (';' e)?			#assignmentExp
 			| v '(' v ')'							#valueApplicationExp
 			| v										#valueExp
-			| '(' e (',' e)+ ')'					#expTupleExp
 			| FAIL									#failExp
 			| INTEGER '..' INTEGER					#rangeChoiceExp
 			| <assoc=right> e CHOICE e				#choiceExp
@@ -22,6 +21,7 @@ e			: '(' e ')'								#parenthesisExp
 			| 'if' '(' e ')' ':' e 'else:' e		#ifElseExp
 			| 'for' '(' e ')' 'do' e				#forExp
 			| v EQUALS e (';' e)?					#eqeExp
+			| '(' e (',' e)+ ')'					#expTupleExp
 			;
 v 			: VARIABLE								#variableValue
 			| hnf									#hnfValue
