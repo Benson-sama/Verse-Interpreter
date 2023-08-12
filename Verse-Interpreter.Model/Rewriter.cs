@@ -33,7 +33,7 @@ public class Rewriter : IRewriter
             ULit,
             UTup,
             UFail,
-            //UOccurs,
+            UOccurs,
             //Subst,
             HnfSwap,
             //VarSwap,
@@ -442,7 +442,34 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression UOccurs(Expression expression)
     {
-        throw new NotImplementedException();
+        if (expression is Eqe { Eq: Equation { V: Variable v, E: VerseTuple tuple }, E: Expression })
+        {
+            if (VariableOccursInVerseTuple(v, tuple))
+            {
+                RuleApplied = true;
+                Renderer.DisplayRuleApplied("U-OCCURS");
+                return new Fail();
+            }
+        }
+
+        return expression;
+    }
+
+    private bool VariableOccursInVerseTuple(Variable x, VerseTuple tuple)
+    {
+        bool isOccured = false;
+
+        foreach (Value value in tuple)
+        {
+            isOccured = value switch
+            {
+                Variable v => v.Equals(x),
+                VerseTuple nestedTuple => VariableOccursInVerseTuple(x, nestedTuple),
+                _ => isOccured
+            };
+        }
+
+        return isOccured;
     }
 
     [RewriteRule]
