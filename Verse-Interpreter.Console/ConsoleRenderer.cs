@@ -34,6 +34,6 @@ public class ConsoleRenderer : IRenderer
         System.Console.ForegroundColor = previousForegroundColor;
     }
 
-    public void DisplayHeader(string header)
+    public static void DisplayHeader(string header)
         => WriteMessageInColor(header, ConsoleColor.Blue);
 }
