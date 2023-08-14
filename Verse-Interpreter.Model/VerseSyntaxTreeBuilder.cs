@@ -40,7 +40,6 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         VerseParser.FailExpContext => new Fail(),
         VerseParser.RangeChoiceExpContext c => GetConcreteExpression(c),
         VerseParser.ChoiceExpContext c => GetConcreteExpression(c),
-        VerseParser.ValueApplicationExpContext c => GetConcreteExpression(c),
         VerseParser.ExpApplicationExpContext c => GetConcreteExpression(c),
         VerseParser.ExpEquationExpContext c => GetConcreteExpression(c),
         VerseParser.IfElseExpContext c => GetConcreteExpression(c),
@@ -155,18 +154,6 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
-    private Expression GetConcreteExpression(VerseParser.ValueApplicationExpContext context)
-    {
-        Value v1 = GetValue(context.v(0));
-        Value v2 = GetValue(context.v(1));
-
-        return new Application()
-        {
-            V1 = v1,
-            V2 = v2
-        };
-    }
-
     // TODO: Implement.
     private Value GetExpressionTuple(VerseParser.ExpTupleExpContext c) => throw new NotImplementedException();
 
@@ -174,6 +161,16 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
     {
         Expression e1 = GetExpression(context.e(0));
         Expression e2 = GetExpression(context.e(1));
+
+        if (e1 is Value v1 && e2 is Value v2)
+        {
+            return new Application
+            {
+                V1 = v1,
+                V2 = v2
+            };
+        }
+
         Variable f = _variableFactory.Next();
         Variable x = _variableFactory.Next();
 
@@ -294,12 +291,12 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
     {
         VerseTuple tuple = GetTuple(context.tuple());
 
-        if (tuple is not IEnumerable<Variable> variables)
-            throw new Exception("Lambda parameters must be variables.");
+        IEnumerable<Variable> variableTuple = tuple.Select(
+            v => v as Variable ?? throw new Exception("Lambda parameters must be variables.")).ToArray();
 
         Expression e = GetExpression(context.e());
 
-        return _desugar.Lambda(variables, e);
+        return _desugar.Lambda(variableTuple, e);
     }
 
     private static int GetInteger(ITerminalNode terminalNode)

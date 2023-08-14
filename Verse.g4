@@ -11,7 +11,6 @@ e			: '(' e ')'								#parenthesisExp
 			| e GREATERTHAN e						#greaterThanExp
 			| e LESSTHAN e							#lessThanExp
 			| VARIABLE ASSIGN e (';' e)?			#assignmentExp
-			| v '(' v ')'							#valueApplicationExp
 			| v										#valueExp
 			| '(' e (',' e)+ ')'					#expTupleExp
 			| FAIL									#failExp
