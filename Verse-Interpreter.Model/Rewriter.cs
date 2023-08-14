@@ -26,7 +26,7 @@ public class Rewriter : IRewriter
             AppAdd,
             AppGt,
             AppGtFail,
-            //AppBeta,
+            AppBeta,
             AppTup,
             AppTup0,
             // Unification.
@@ -36,18 +36,18 @@ public class Rewriter : IRewriter
             UOccurs,
             //Subst,
             HnfSwap,
-            //VarSwap,
-            //SeqSwap,
+                //VarSwap,
+                //SeqSwap,
             // Elimination.
             ValElim,
             ExiElim,
-            //EqnElim,
+                //EqnElim,
             FailElim,
             // Normalisation.
-            //ExiFloat,
+                //ExiFloat,
             SeqAssoc,
             EqnFloat,
-            ExiSwap,
+            //ExiSwap,
             // Choice.
             OneFail,
             OneValue,
@@ -58,7 +58,7 @@ public class Rewriter : IRewriter
             ChooseR,
             ChooseL,
             ChooseAssoc,
-            //Choose
+                //Choose
         };
     }
 
@@ -74,6 +74,8 @@ public class Rewriter : IRewriter
 
             if (!RuleApplied)
                 RewriteInnerExpressions(verseProgram.Wrapper.E);
+
+            Renderer.DisplayMessage(verseProgram.Wrapper.E.ToString()!);
         }
         while (RuleApplied);
 
@@ -97,7 +99,7 @@ public class Rewriter : IRewriter
     }
 
     public IEnumerable<Variable> FreeVariablesOf(Expression expression)
-        => expression.FreeVariables(new VariableBuffer());
+        => expression.FreeVariables();
 
     private void RewriteInnerExpressions(Expression expression)
     {
@@ -266,7 +268,44 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression AppBeta(Expression expression)
     {
-        throw new NotImplementedException();
+        if (expression is Application { V1: Lambda { E: Expression e } lambda, V2: Value v })
+        {
+            RuleApplied = true;
+            Renderer.DisplayRuleApplied("APP-BETA");
+
+            if (FreeVariablesOf(v).Contains(lambda.Parameter))
+                ApplyAlphaConversionWithoutCapturingVariablesOfValue(lambda, v);
+
+            return new Exists
+            {
+                V = lambda.Parameter,
+                E = new Eqe
+                {
+                    Eq = new Equation
+                    {
+                        V = lambda.Parameter,
+                        E = v
+                    },
+                    E = e
+                }
+            };
+        }
+
+        return expression;
+    }
+
+    private void ApplyAlphaConversionWithoutCapturingVariablesOfValue(Lambda lambda, Value v)
+    {
+        Variable previousVariable = lambda.Parameter;
+        Variable newVariable;
+
+        do
+        {
+            newVariable = _variableFactory.Next();
+        } while (FreeVariablesOf(v).Contains(newVariable));
+
+        lambda.Parameter = newVariable;
+        lambda.E.ApplyAlphaConversion(previousVariable, newVariable);
     }
 
     [RewriteRule]
@@ -481,7 +520,7 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression HnfSwap(Expression expression)
     {
-        if (expression is Eqe { Eq: Equation { V: HeadNormalForm hnf, E: Variable v } eq, E: Expression } eqe)
+        if (expression is Eqe { Eq: Equation { V: HeadNormalForm hnf, E: Variable v } eq, E: Expression })
         {
             eq.V = v;
             eq.E = hnf;
@@ -633,11 +672,19 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression ExiSwap(Expression expression)
     {
-        if (expression is Exists { V: Variable, E: Exists { V: Variable, E: Expression e } existsY } existsX)
+        if (expression is Exists { V: Variable x, E: Exists { V: Variable y, E: Expression e } })
         {
             RuleApplied = true;
             Renderer.DisplayRuleApplied("EXI-SWAP");
-            return existsY.E = existsX.E = e;
+            return new Exists
+            {
+                V = y,
+                E = new Exists
+                {
+                    V = x,
+                    E = e
+                }
+            };
         }
 
         return expression;
@@ -774,7 +821,7 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression ChooseAssoc(Expression expression)
     {
-        if (expression is Choice { E1: Choice { E1: Expression e1, E2: Expression e2 } innerChoice, E2: Expression e3 } outerChoice)
+        if (expression is Choice { E1: Choice { E1: Expression e1, E2: Expression e2 }, E2: Expression e3 })
         {
             Expression rewrittenExpression = new Choice
             {
