@@ -73,6 +73,15 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         Expression e2 = GetExpression(context.e(1));
         Operator add = new Add();
 
+        if (e1 is Integer i1 && e2 is Integer i2)
+        {
+            return new Application
+            {
+                V1 = add,
+                V2 = new VerseTuple(i1, i2)
+            };
+        }
+
         return BuildArithmeticExpression(e1, add, e2);
     }
 
@@ -81,6 +90,15 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         Expression e1 = GetExpression(context.e(0));
         Expression e2 = GetExpression(context.e(1));
         Operator sub = new Sub();
+
+        if (e1 is Integer i1 && e2 is Integer i2)
+        {
+            return new Application
+            {
+                V1 = new Add(),
+                V2 = new VerseTuple(i1, new Integer(-i2.Value))
+            };
+        }
 
         return BuildArithmeticExpression(e1, sub, e2);
     }
