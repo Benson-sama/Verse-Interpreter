@@ -42,7 +42,7 @@ public class Rewriter : IRewriter
             ValElim,
             ExiElim,
             //EqnElim,
-            //FailElim,
+            FailElim,
             // Normalisation.
             //ExiFloat,
             SeqAssoc,
@@ -516,7 +516,35 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression FailElim(Expression expression)
     {
-        throw new NotImplementedException();
+        if (IsExecutionContextFailingExcludingHole(expression))
+        {
+            RuleApplied = true;
+            Renderer.DisplayRuleApplied("FAIL-ELIM");
+            return new Fail();
+        }
+
+        return expression;
+    }
+
+    private bool IsExecutionContextFailingExcludingHole(Expression expression)
+    {
+        bool isFailing = false;
+
+        if (expression is Eqe { Eq: Equation { V: Value, E: Expression x }, E: Expression })
+            isFailing = IsExecutionContextFailingIncludingHole(x);
+
+        if (expression is Eqe { Eq: Expression eq, E: Expression e })
+            isFailing = IsExecutionContextFailingIncludingHole(eq) || IsExecutionContextFailingIncludingHole(e);
+
+        return isFailing;
+    }
+
+    private bool IsExecutionContextFailingIncludingHole(Expression expression)
+    {
+        if (expression is Fail)
+            return true;
+
+        return IsExecutionContextFailingExcludingHole(expression);
     }
 
     #endregion
