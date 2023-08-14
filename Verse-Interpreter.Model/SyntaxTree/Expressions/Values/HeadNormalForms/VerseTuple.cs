@@ -15,7 +15,7 @@ public class VerseTuple : HeadNormalForm, IEnumerable<Value>
 
     public static VerseTuple Empty { get => _empty; }
 
-    private IEnumerable<Value> Values { get; set; }
+    public IEnumerable<Value> Values { get; set; }
 
     public IEnumerator<Value> GetEnumerator() => Values.GetEnumerator();
 
