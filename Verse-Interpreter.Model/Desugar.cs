@@ -120,17 +120,9 @@ public class Desugar
                 E1 = new Eqe
                 {
                     Eq = e1,
-                    E = new Lambda
-                    {
-                        Parameter = null,
-                        E = e2
-                    }
+                    E = Lambda(Enumerable.Empty<Variable>(), e2)
                 },
-                E2 = new Lambda
-                {
-                    Parameter = null,
-                    E = e3
-                }
+                E2 = Lambda(Enumerable.Empty<Variable>(), e3)
             }
         };
 

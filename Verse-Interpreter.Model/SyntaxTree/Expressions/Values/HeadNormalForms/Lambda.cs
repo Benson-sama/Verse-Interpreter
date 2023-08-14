@@ -2,7 +2,7 @@
 
 public class Lambda : HeadNormalForm
 {
-    public required Variable? Parameter { get; set; }
+    public required Variable Parameter { get; set; }
 
     public required Expression E { get; set; }
 
