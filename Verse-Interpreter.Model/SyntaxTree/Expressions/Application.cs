@@ -8,5 +8,5 @@ public class Application : Expression
 
     public required Value V2 { get; set; }
 
-    public override string ToString() => $"{V1}({V2})";
+    public override string ToString() => $"{V1} {V2}";
 }

@@ -6,5 +6,5 @@ public class Lambda : HeadNormalForm
 
     public required Expression E { get; set; }
 
-    public override string ToString() => $"({Parameter}) => {E}";
+    public override string ToString() => $"({Parameter} => {E})";
 }
