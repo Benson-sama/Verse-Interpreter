@@ -34,7 +34,7 @@ public class Rewriter : IRewriter
             UTup,
             UFail,
             UOccurs,
-            //Subst,
+            Subst,
             HnfSwap,
                 //VarSwap,
                 //SeqSwap,
@@ -514,7 +514,48 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression Subst(Expression expression)
     {
-        throw new NotImplementedException();
+        (bool isFound, Eqe? eqe) = IsExecutionContextWithEquationIncludingHole(expression);
+
+        if (isFound)
+        {
+            if (eqe is not Eqe { Eq: Equation { V: Variable x, E: Value v }, E: Expression e } finalEqe)
+                throw new Exception("Final Eqe in substitute must match the rule.");
+
+            if (FreeVariablesOf(expression).Contains(x) && FreeVariablesOf(e).Contains(x) && !FreeVariablesOf(v).Contains(x))
+            {
+                expression.SubstituteUntilEqe(finalEqe, x, v);
+                RuleApplied = true;
+                Renderer.DisplayRuleApplied("SUBST");
+            }
+        }
+
+        return expression;
+    }
+
+    private (bool isFound, Eqe? eqe) IsExecutionContextWithEquationIncludingHole(Expression expression)
+    {
+        if (expression is Eqe { Eq: Equation { V: Variable, E: Value }, E: Expression } eqe)
+            return (true, eqe);
+
+        (bool isFound, Eqe? eqe) result = (false, null);
+
+        if (expression is Eqe { Eq: Equation { V: Value, E: Expression x }, E: Expression })
+            result = IsExecutionContextWithEquationIncludingHole(x);
+
+        if (result.isFound)
+            return result;
+
+        if (expression is Eqe { Eq: Expression eq, E: Expression e })
+        {
+            result = IsExecutionContextWithEquationIncludingHole(eq);
+
+            if (result.isFound)
+                return result;
+
+            result = IsExecutionContextWithEquationIncludingHole(e);
+        }
+
+        return result;
     }
 
     [RewriteRule]
