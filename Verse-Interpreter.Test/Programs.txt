@@ -1,3 +1,7 @@
 ((x, y) => z:=69; s:=5; false?)(1, 2)
 
 x:=2; y:=3; z:=(2,y); z=(x,3); z
+
+w:int; swap:=(x,y) => (y,x); z:=swap w; z=(3,4); w
+
+x:=3; if (x>4): 6 else: 9
