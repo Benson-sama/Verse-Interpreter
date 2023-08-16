@@ -3,7 +3,9 @@ grammar Verse;
 // -- Parser Rules --
 
 program		: e ;
-e			: '(' e ')'								#parenthesisExp
+e			: v										#valueExp
+			| '(' e ')'								#parenthesisExp
+			| VARIABLE ':' TYPE ';' e				#bringIntoScopeExp
 			| e ASTERISK e							#multExp
 			| e SLASH e								#DivExp
 			| e PLUS e								#plusExp
@@ -11,7 +13,6 @@ e			: '(' e ')'								#parenthesisExp
 			| e GREATERTHAN e						#greaterThanExp
 			| e LESSTHAN e							#lessThanExp
 			| VARIABLE ASSIGN e (';' e)?			#assignmentExp
-			| v										#valueExp
 			| FAIL									#failExp
 			| INTEGER '..' INTEGER					#rangeChoiceExp
 			| <assoc=right> e CHOICE e				#choiceExp
@@ -38,6 +39,7 @@ lambda		: tuple LAMBDA e ;
 fragment LOWERCASE	:	[a-z] ;
 fragment UPPERCASE	:	[A-Z] ;
 
+TYPE		: 'int' ;
 ASSIGN		: ':=' ;
 EQUALS		: '=' ;
 CHOICE		: '|' ;
