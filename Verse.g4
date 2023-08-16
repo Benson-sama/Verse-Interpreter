@@ -39,7 +39,7 @@ lambda		: tuple LAMBDA e ;
 fragment LOWERCASE	:	[a-z] ;
 fragment UPPERCASE	:	[A-Z] ;
 
-TYPE		: 'int' ;
+TYPE		: 'any' ;
 ASSIGN		: ':=' ;
 EQUALS		: '=' ;
 CHOICE		: '|' ;
