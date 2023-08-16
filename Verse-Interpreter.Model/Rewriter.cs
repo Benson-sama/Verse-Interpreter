@@ -36,18 +36,18 @@ public class Rewriter : IRewriter
             UOccurs,
             Subst,
             HnfSwap,
-                //VarSwap,
-                //SeqSwap,
+            VarSwap,
+            SeqSwap,
             // Elimination.
             ValElim,
             ExiElim,
-                //EqnElim,
+            EqnElim,
             FailElim,
             // Normalisation.
                 //ExiFloat,
             SeqAssoc,
             EqnFloat,
-            //ExiSwap,
+              //ExiSwap,
             // Choice.
             OneFail,
             OneValue,
@@ -66,8 +66,12 @@ public class Rewriter : IRewriter
 
     private bool RuleApplied { get; set; }
 
+    private VerseProgram? CurrentVerseProgram { get; set; }
+
     public Expression Rewrite(VerseProgram verseProgram)
     {
+        CurrentVerseProgram = verseProgram;
+
         do
         {
             verseProgram.Wrapper.E = ApplyRules(verseProgram.Wrapper.E);
@@ -75,7 +79,8 @@ public class Rewriter : IRewriter
             if (!RuleApplied)
                 RewriteInnerExpressions(verseProgram.Wrapper.E);
 
-            Renderer.DisplayMessage(verseProgram.Wrapper.E.ToString()!);
+            if (RuleApplied)
+                Renderer.DisplayMessage(verseProgram.Wrapper.E.ToString()!);
         }
         while (RuleApplied);
 
@@ -100,6 +105,33 @@ public class Rewriter : IRewriter
 
     public IEnumerable<Variable> FreeVariablesOf(Expression expression)
         => expression.FreeVariables();
+
+    public static IEnumerable<Variable> FreeVariablesOf(Expression expression, Expression? finalExpression = null)
+        => expression.FreeVariables(finalExpression);
+
+    public bool VariableBoundInsideVariable(Variable x, Variable y)
+    {
+        bool foundY = false;
+
+        VariableBuffer variableBuffer = new();
+        CurrentVerseProgram?.Wrapper.E.FreeVariables(variableBuffer);
+
+        foreach (Variable variable in variableBuffer.BoundVariables)
+        {
+            if (variable.Equals(y))
+            {
+                foundY = true;
+                continue;
+            }
+
+            if (variable.Equals(x) && !foundY)
+                return false;
+            else if (variable.Equals(x) && foundY)
+                return true;
+        }
+
+        throw new Exception($"Did not find bound variable {x}");
+    }
 
     private void RewriteInnerExpressions(Expression expression)
     {
@@ -523,9 +555,12 @@ public class Rewriter : IRewriter
 
             if (FreeVariablesOf(expression).Contains(x) && FreeVariablesOf(e).Contains(x) && !FreeVariablesOf(v).Contains(x))
             {
-                expression.SubstituteUntilEqe(finalEqe, x, v);
-                RuleApplied = true;
-                Renderer.DisplayRuleApplied("SUBST");
+                if (v is not Variable || (v is Variable y && VariableBoundInsideVariable(x, y)))
+                {
+                    expression.SubstituteUntilEqe(finalEqe, x, v);
+                    RuleApplied = true;
+                    Renderer.DisplayRuleApplied("SUBST");
+                }
             }
         }
 
@@ -575,13 +610,54 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression VarSwap(Expression expression)
     {
-        throw new NotImplementedException();
+        if (expression is Eqe { Eq: Equation { V: Variable y, E: Variable x }, E: Expression e }
+            && VariableBoundInsideVariable(x, y))
+        {
+            RuleApplied = true;
+            Renderer.DisplayRuleApplied("VAR-SWAP");
+
+            return new Eqe
+            {
+                Eq = new Equation
+                {
+                    V = x,
+                    E = y
+                },
+                E = e
+            };
+        }
+
+        return expression;
     }
 
     [RewriteRule]
     private Expression SeqSwap(Expression expression)
     {
-        throw new NotImplementedException();
+        if (expression is Eqe { Eq: Expression eq, E: Eqe { Eq: Equation { V: Variable x, E: Value v }, E: Expression e } })
+        {
+            if (eq is not Equation { V: Variable, E: Value }
+            || (eq is Equation { V: Variable y, E: Value } && (x == y || VariableBoundInsideVariable(y, x))))
+            {
+                RuleApplied = true;
+                Renderer.DisplayRuleApplied("SEQ-SWAP");
+
+                return new Eqe
+                {
+                    Eq = new Equation
+                    {
+                        V = x,
+                        E = v,
+                    },
+                    E = new Eqe
+                    {
+                        Eq = eq,
+                        E = e
+                    }
+                };
+            }
+        }
+
+        return expression;
     }
 
     #endregion
@@ -617,7 +693,28 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression EqnElim(Expression expression)
     {
-        throw new NotImplementedException();
+        if (expression is Exists { V: Variable existsX, E: Expression existsE })
+        {
+            (bool isFound, Eqe? eqe) = IsExecutionContextWithEquationIncludingHole(existsE);
+
+            if (isFound)
+            {
+                if (eqe is not Eqe { Eq: Equation { V: Variable equationX, E: Value v }, E: Expression equationE } finalEqe)
+                    throw new Exception("Final Eqe in EQN-ELIM must match the rule.");
+
+                if (existsX.Equals(equationX)
+                    && !FreeVariablesOf(existsE, finalEqe).Contains(existsX)
+                    && !FreeVariablesOf(v).Contains(existsX)
+                    && !FreeVariablesOf(equationE).Contains(existsX))
+                {
+                    expression.EliminateEquation(finalEqe);
+                    RuleApplied = true;
+                    Renderer.DisplayRuleApplied("EQN-ELIM");
+                }
+            }
+        }
+
+        return expression;
     }
 
     [RewriteRule]
