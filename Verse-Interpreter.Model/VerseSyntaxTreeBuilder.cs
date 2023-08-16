@@ -28,6 +28,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
     private Expression GetExpression(VerseParser.EContext context) => context switch
     {
         VerseParser.ParenthesisExpContext c => GetExpression(c.e()),
+        VerseParser.BringIntoScopeExpContext c => GetConcreteExpression(c),
         VerseParser.MultExpContext c => GetConcreteExpression(c),
         VerseParser.DivExpContext c => GetConcreteExpression(c),
         VerseParser.PlusExpContext c => GetConcreteExpression(c),
@@ -121,11 +122,25 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         return BuildArithmeticExpression(e1, lessThan, e2);
     }
 
+    private Expression GetConcreteExpression(VerseParser.BringIntoScopeExpContext context)
+    {
+        Variable variable = GetVariable(context.VARIABLE());
+        _variableFactory.RegisterUsedName(variable.Name);
+        Expression e = GetExpression(context.e());
+
+        return new Exists
+        {
+            V = variable,
+            E = e
+        };
+    }
+
     private Expression GetConcreteExpression(VerseParser.AssignmentExpContext context)
     {
         Expression e1 = GetExpression(context.e(0));
-        Variable x = new(context.VARIABLE().GetText());
+        Variable x = GetVariable(context.VARIABLE());
         _variableFactory.RegisterUsedName(x.Name);
+
         Equation eq = new()
         {
             V = x,
@@ -262,7 +277,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
     {
         return context switch
         {
-            VerseParser.VariableValueContext c => GetVariable(c),
+            VerseParser.VariableValueContext c => GetVariable(c.VARIABLE()),
             VerseParser.HnfValueContext c => GetHeadNormalForm(c.hnf()),
             { } => throw new Exception("Unable to match value context."),
             _ => throw new ArgumentNullException(nameof(context), "Cannot be null.")
@@ -329,9 +344,10 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         }
     }
 
-    private static Variable GetVariable(VerseParser.VariableValueContext c)
+    private Variable GetVariable(ITerminalNode terminalNode)
     {
-        string name = c.VARIABLE().GetText();
+        string name = terminalNode.GetText();
+
         return new Variable(name);
     }
 
