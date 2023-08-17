@@ -593,6 +593,33 @@ public class Rewriter : IRewriter
         return result;
     }
 
+    private IEnumerable<Eqe> AlternativeIsExecutionContextWithEquationIncludingHole(Expression expression)
+    {
+        if (expression is Eqe { Eq: Equation { V: Variable, E: Value }, E: Expression } eqe)
+            yield return eqe;
+
+        if (expression is Eqe { Eq: Equation { V: Value, E: Expression x }, E: Expression })
+        {
+            foreach (Eqe foundEqe in AlternativeIsExecutionContextWithEquationIncludingHole(x))
+            {
+                yield return foundEqe;
+            }
+        }
+
+        if (expression is Eqe { Eq: Expression eq, E: Expression e })
+        {
+            foreach (Eqe foundEqe in AlternativeIsExecutionContextWithEquationIncludingHole(eq))
+            {
+                yield return foundEqe;
+            }
+
+            foreach (Eqe foundEqe in AlternativeIsExecutionContextWithEquationIncludingHole(e))
+            {
+                yield return foundEqe;
+            }
+        }
+    }
+
     [RewriteRule]
     private Expression HnfSwap(Expression expression)
     {
@@ -636,7 +663,7 @@ public class Rewriter : IRewriter
         if (expression is Eqe { Eq: Expression eq, E: Eqe { Eq: Equation { V: Variable x, E: Value v }, E: Expression e } })
         {
             if (eq is not Equation { V: Variable, E: Value }
-            || (eq is Equation { V: Variable y, E: Value } && (x == y || VariableBoundInsideVariable(y, x))))
+            || (eq is Equation { V: Variable y, E: Value } && !(x.Equals(y) || VariableBoundInsideVariable(y, x))))
             {
                 RuleApplied = true;
                 Renderer.DisplayRuleApplied("SEQ-SWAP");
@@ -710,6 +737,33 @@ public class Rewriter : IRewriter
                     expression.EliminateEquation(finalEqe);
                     RuleApplied = true;
                     Renderer.DisplayRuleApplied("EQN-ELIM");
+                }
+            }
+        }
+
+        return expression;
+    }
+
+    [RewriteRule]
+    private Expression AlternativeEqnElim(Expression expression)
+    {
+        if (expression is Exists { V: Variable existsX, E: Expression existsE })
+        {
+            foreach (Eqe eqe in AlternativeIsExecutionContextWithEquationIncludingHole(existsE))
+            {
+                if (eqe is not Eqe { Eq: Equation { V: Variable equationX, E: Value v }, E: Expression equationE } finalEqe)
+                    throw new Exception("Final Eqe in EQN-ELIM must match the rule.");
+
+                if (existsX.Equals(equationX)
+                    && !FreeVariablesOf(existsE, finalEqe).Contains(existsX)
+                    && !FreeVariablesOf(v).Contains(existsX)
+                    && !FreeVariablesOf(equationE).Contains(existsX))
+                {
+                    expression.EliminateEquation(finalEqe);
+                    RuleApplied = true;
+                    Renderer.DisplayRuleApplied("EQN-ELIM");
+
+                    return expression;
                 }
             }
         }
