@@ -135,6 +135,23 @@ public class Verse1
         Assert.IsTrue(result is Integer { Value: 4 });
     }
 
+    [DataTestMethod]
+    [DataRow(4, 5)]
+    [DataRow(5, 5)]
+    [DataRow(6, 5)]
+    public void TestIfFirstNumberGreaterSecondNumber(int k1, int k2)
+    {
+        // Arrange.
+        string verseCode = $"if({k1}>{k2}): 6 else: 9";
+
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
+        int expectedResult = k1 > k2 ? 6 : 9;
+
+        // Assert.
+        Assert.IsTrue(result is Integer integer && integer.Value == expectedResult);
+    }
+
     //[TestMethod]
     //public void TestFactorialFunction()
     //{
