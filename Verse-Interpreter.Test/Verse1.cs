@@ -1,113 +1,149 @@
-﻿namespace Verse_Interpreter.Test;
+﻿using Moq;
+using Verse_Interpreter.Model;
+using Verse_Interpreter.Model.SyntaxTree.Expressions;
+using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
+using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
+
+namespace Verse_Interpreter.Test;
 
 [TestClass]
-internal class Verse1
+public class Verse1
 {
+    private VerseInterpreter? _verseInterpreter;
+
+    [TestInitialize]
+    public void Initialise()
+    {
+        IRenderer renderer = Mock.Of<IRenderer>();
+        IVariableFactory variableFactory = new VariableFactory();
+        Desugar desugar = new(variableFactory);
+        IVerseSyntaxTreeBuilder verseSyntaxTreeBuilder = new VerseSyntaxTreeBuilder(variableFactory, desugar);
+        IRewriter rewriter = new Rewriter(renderer, variableFactory);
+        _verseInterpreter = new(renderer, verseSyntaxTreeBuilder, rewriter);
+    }
+
+    [TestMethod]
+    public void TestVersePaperIntroductionSample()
+    {
+        // Arrange.
+        string verseCode = "x:any; y:any; z:any; x=(y,3); x=(2,z); y";
+
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
+
+        // Assert.
+        Assert.IsTrue(result is Integer { Value: 2 });
+    }
+
     [TestMethod]
     public void TestAssignment()
     {
         // Arrange.
-        string code = "x:=3; x";
+        string verseCode = "x:=3; x";
 
         // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
 
         // Assert.
-        // Result: 3
+        Assert.IsTrue(result is Integer { Value: 3 });
     }
 
     [TestMethod]
-    public void TestAddition()
+    public void Test3Plus4Equals7()
     {
         // Arrange.
-        string code = "x:=3; x+4";
+        string verseCode = "x:=3+4; x=7; x";
 
         // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
 
         // Assert.
-        // Result: 7
+        Assert.IsTrue(result is Integer { Value: 7 });
     }
 
-    [TestMethod]
-    public void TestSubtraction()
-    {
-        // Arrange.
-        string code = "x:=3; x-2";
+    //[TestMethod]
+    //public void TestSubtraction()
+    //{
+    //    // Arrange.
+    //    string code = "x:=3; x-2";
 
-        // Act.
+    //    // Act.
 
-        // Assert.
-        // Result: 1
-    }
+    //    // Assert.
+    //    // Result: 1
+    //}
 
-    [TestMethod]
-    public void TestMultiplication()
-    {
-        // Arrange.
-        string code = "x:=3; x*5";
+    //[TestMethod]
+    //public void TestMultiplication()
+    //{
+    //    // Arrange.
+    //    string code = "x:=3; x*5";
 
-        // Act.
+    //    // Act.
 
-        // Assert.
-        // Result: 15
-    }
+    //    // Assert.
+    //    // Result: 15
+    //}
 
-    [TestMethod]
-    public void TestDivision()
-    {
-        // Arrange.
-        string code = "x:=6; x/2";
+    //[TestMethod]
+    //public void TestDivision()
+    //{
+    //    // Arrange.
+    //    string code = "x:=6; x/2";
 
-        // Act.
+    //    // Act.
 
-        // Assert.
-        // Result: 3
-    }
+    //    // Assert.
+    //    // Result: 3
+    //}
 
     [TestMethod]
     public void TestFunkyOrder()
     {
         // Arrange.
-        string code = "y:=x+1; x:=3; x*y";
+        string verseCode = "x:any; y:=x+9; x=3; x+y";
 
         // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
 
         // Assert.
-        // Result: 15
+        Assert.IsTrue(result is Integer { Value: 15 });
     }
 
-    [TestMethod]
-    public void TestFunction()
-    {
-        // Arrange.
-        string code = "f(x):=x+1; f(3)";
+    //[TestMethod]
+    //public void TestFunction()
+    //{
+    //    // Arrange.
+    //    string code = "f(x):=x+1; f(3)";
 
-        // Act.
+    //    // Act.
 
-        // Assert.
-        // Result: 4
-    }
+    //    // Assert.
+    //    // Result: 4
+    //}
 
     [TestMethod]
     public void TestLambda()
     {
         // Arrange.
-        string code = "f:=(x=>x+1); f(3)";
+        string verseCode = "f:=(x)=>x+1; f(3)";
 
         // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
 
         // Assert.
-        // Result: 4
+        Assert.IsTrue(result is Integer { Value: 4 });
     }
 
-    [TestMethod]
-    public void TestFactorialFunction()
-    {
-        // Arrange.
-        string code = "fac(x):= if(x=0): 1 else: x * fac(x-1)";
+    //[TestMethod]
+    //public void TestFactorialFunction()
+    //{
+    //    // Arrange.
+    //    string code = "fac(x):= if(x=0): 1 else: x * fac(x-1)";
 
-        // Act.
+    //    // Act.
 
-        // Assert.
-        // Result: 4
-    }
+    //    // Assert.
+    //    // Result: 4
+    //}
 }
