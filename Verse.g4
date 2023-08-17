@@ -3,9 +3,9 @@ grammar Verse;
 // -- Parser Rules --
 
 program		: e ;
-e			: v										#valueExp
-			| '(' e ')'								#parenthesisExp
+e			: '(' e ')'								#parenthesisExp
 			| VARIABLE ':' TYPE ';' e				#bringIntoScopeExp
+			| v										#valueExp
 			| e ASTERISK e							#multExp
 			| e SLASH e								#DivExp
 			| e PLUS e								#plusExp
@@ -21,7 +21,7 @@ e			: v										#valueExp
 			| 'if' '(' e ')' ':' e 'else:' e		#ifElseExp
 			| 'for' '(' e ')' 'do' e				#forExp
 			| v EQUALS e (';' e)?					#eqeExp
-			| '(' e (',' e)+ ')'					#expTupleExp
+			| '[' e (',' e)+ ']'					#expTupleExp
 			;
 v 			: VARIABLE								#variableValue
 			| hnf									#hnfValue
@@ -30,7 +30,7 @@ hnf			: INTEGER								#integerHnf
 			| tuple									#tupleHnf
 			| lambda								#lambdaHnf
 			;
-tuple		: '(' elements? ')' ;
+tuple		: '[' elements? ']' ;
 elements	: v (',' elements)* ;
 lambda		: tuple LAMBDA e ;
 

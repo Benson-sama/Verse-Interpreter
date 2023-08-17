@@ -26,7 +26,7 @@ public class Verse1
     public void TestVersePaperIntroductionSample()
     {
         // Arrange.
-        string verseCode = "x:any; y:any; z:any; x=(y,3); x=(2,z); y";
+        string verseCode = "x:any; y:any; z:any; x=[y,3]; x=[2,z]; y";
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
@@ -126,13 +126,26 @@ public class Verse1
     public void TestLambda()
     {
         // Arrange.
-        string verseCode = "f:=(x)=>x+1; f(3)";
+        string verseCode = "f:=[x]=>x+1; f[3]";
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
 
         // Assert.
         Assert.IsTrue(result is Integer { Value: 4 });
+    }
+
+    [TestMethod]
+    public void TestLambdaWithReturningFalseQuestionMarkAppliedResultsInFailure()
+    {
+        // Arrange.
+        string verseCode = "([x, y] => z:=69; s:=5; false?)[1, 2]";
+
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
+
+        // Assert.
+        Assert.IsTrue(result is Fail);
     }
 
     [DataTestMethod]

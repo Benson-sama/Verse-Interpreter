@@ -24,7 +24,7 @@ public class VerseTuple : HeadNormalForm, IEnumerable<Value>
         if (!Values.Any())
             return "()";
 
-        StringBuilder sb = new("(");
+        StringBuilder sb = new("[");
         sb.Append($"{Values.First()}");
 
         foreach (Value value in Values.Skip(1))
@@ -32,7 +32,7 @@ public class VerseTuple : HeadNormalForm, IEnumerable<Value>
             sb.Append($", {value}");
         }
 
-        sb.Append(')');
+        sb.Append(']');
         return sb.ToString();
     }
 

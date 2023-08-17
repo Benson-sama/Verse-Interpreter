@@ -137,9 +137,9 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
     private Expression GetConcreteExpression(VerseParser.AssignmentExpContext context)
     {
-        Expression e1 = GetExpression(context.e(0));
         Variable x = GetVariable(context.VARIABLE());
         _variableFactory.RegisterUsedName(x.Name);
+        Expression e1 = GetExpression(context.e(0));
 
         Equation eq = new()
         {
@@ -344,7 +344,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         }
     }
 
-    private Variable GetVariable(ITerminalNode terminalNode)
+    private static Variable GetVariable(ITerminalNode terminalNode)
     {
         string name = terminalNode.GetText();
 
