@@ -233,7 +233,11 @@ public static class Extensions
     {
         if (expression == finalEqe)
         {
-            finalEqe.E.AvoidCapturingSubstitute(variable, replacingValue);
+            if (finalEqe.E is Variable x && x.Equals(variable))
+                finalEqe.E = replacingValue;
+            else
+                finalEqe.E.AvoidCapturingSubstitute(variable, replacingValue);
+
             return;
         }
 
