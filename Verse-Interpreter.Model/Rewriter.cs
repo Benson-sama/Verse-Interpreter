@@ -44,10 +44,10 @@ public class Rewriter : IRewriter
             EqnElim,
             FailElim,
             // Normalisation.
-                //ExiFloat,
+            ExiFloat,
             SeqAssoc,
             EqnFloat,
-              //ExiSwap,
+            ExiSwap,
             // Choice.
             OneFail,
             OneValue,
@@ -74,10 +74,11 @@ public class Rewriter : IRewriter
 
         do
         {
-            verseProgram.Wrapper.E = ApplyRules(verseProgram.Wrapper.E);
+            RuleApplied = false;
+            RewriteInnerExpressions(verseProgram.Wrapper.E);
 
             if (!RuleApplied)
-                RewriteInnerExpressions(verseProgram.Wrapper.E);
+                verseProgram.Wrapper.E = ApplyRules(verseProgram.Wrapper.E);
 
             if (RuleApplied)
                 Renderer.DisplayMessage(verseProgram.Wrapper.E.ToString()!);
@@ -89,7 +90,6 @@ public class Rewriter : IRewriter
 
     public Expression ApplyRules(Expression expression)
     {
-        RuleApplied = false;
         Expression rewrittenExpression = expression;
 
         foreach (Func<Expression, Expression> applyRule in _rewriteRules)
@@ -160,12 +160,7 @@ public class Rewriter : IRewriter
 
     private void Rewrite(Eqe eqe)
     {
-        eqe.Eq = ApplyRules(eqe.Eq);
-
-        if (RuleApplied)
-            return;
-
-        RewriteInnerExpressions(eqe.Eq);
+        RewriteInnerExpressions(eqe.E);
 
         if (RuleApplied)
             return;
@@ -175,37 +170,37 @@ public class Rewriter : IRewriter
         if (RuleApplied)
             return;
 
-        RewriteInnerExpressions(eqe.E);
+        RewriteInnerExpressions(eqe.Eq);
+
+        if (RuleApplied)
+            return;
+
+        eqe.Eq = ApplyRules(eqe.Eq);
     }
 
     private void Rewrite(Equation eq)
     {
-        eq.E = ApplyRules(eq.E);
+        RewriteInnerExpressions(eq.E);
 
         if (RuleApplied)
             return;
 
-        RewriteInnerExpressions(eq.E);
+        eq.E = ApplyRules(eq.E);
     }
 
     private void Rewrite(Lambda lambda)
     {
-        lambda.E = ApplyRules(lambda.E);
+        RewriteInnerExpressions(lambda.E);
 
         if (RuleApplied)
             return;
 
-        RewriteInnerExpressions(lambda.E);
+        lambda.E = ApplyRules(lambda.E);
     }
 
     private void Rewrite(Choice choice)
     {
-        choice.E1 = ApplyRules(choice.E1);
-
-        if (RuleApplied)
-            return;
-
-        RewriteInnerExpressions(choice.E1);
+        RewriteInnerExpressions(choice.E2);
 
         if (RuleApplied)
             return;
@@ -215,27 +210,32 @@ public class Rewriter : IRewriter
         if (RuleApplied)
             return;
 
-        RewriteInnerExpressions(choice.E2);
+        RewriteInnerExpressions(choice.E1);
+
+        if (RuleApplied)
+            return;
+
+        choice.E1 = ApplyRules(choice.E1);
     }
 
     private void Rewrite(Exists exists)
     {
-        exists.E = ApplyRules(exists.E);
+        RewriteInnerExpressions(exists.E);
 
         if (RuleApplied)
             return;
 
-        RewriteInnerExpressions(exists.E);
+        exists.E = ApplyRules(exists.E);
     }
 
     private void Rewrite(Wrapper wrapper)
     {
-        wrapper.E = ApplyRules(wrapper.E);
+        RewriteInnerExpressions(wrapper.E);
 
         if (RuleApplied)
             return;
 
-        RewriteInnerExpressions(wrapper.E);
+        wrapper.E = ApplyRules(wrapper.E);
     }
 
     #region Application
@@ -638,7 +638,7 @@ public class Rewriter : IRewriter
     private Expression VarSwap(Expression expression)
     {
         if (expression is Eqe { Eq: Equation { V: Variable y, E: Variable x }, E: Expression e }
-            && VariableBoundInsideVariable(x, y))
+            && !x.Equals(y) && VariableBoundInsideVariable(x, y))
         {
             RuleApplied = true;
             Renderer.DisplayRuleApplied("VAR-SWAP");
@@ -812,7 +812,57 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression ExiFloat(Expression expression)
     {
-        throw new NotImplementedException();
+        (bool isFound, Exists? exists) = IsExecutionContextWithExistsExcludingHole(expression);
+
+        if (isFound)
+        {
+            if (exists is null)
+                throw new Exception("Exists cannot be null if execution context matched in EXI-FLOAT.");
+
+            while (FreeVariablesOf(expression, finalExpression: exists).Contains(exists.V))
+                exists.ApplyAlphaConversion(exists.V, _variableFactory.Next());
+
+            expression.ReplaceExistsWithItsExpression(exists);
+            exists.E = expression;
+
+            RuleApplied = true;
+            Renderer.DisplayRuleApplied("EXI-FLOAT");
+
+            return exists;
+        }
+
+        return expression;
+    }
+
+    private (bool isFound, Exists? eqe) IsExecutionContextWithExistsIncludingHole(Expression expression)
+    {
+        if (expression is Exists exists)
+            return (true, exists);
+
+        return IsExecutionContextWithExistsExcludingHole(expression);
+    }
+
+    private (bool isFound, Exists? eqe) IsExecutionContextWithExistsExcludingHole(Expression expression)
+    {
+        (bool isFound, Exists? eqe) result = (false, null);
+
+        if (expression is Eqe { Eq: Equation { V: Value, E: Expression x }, E: Expression })
+            result = IsExecutionContextWithExistsIncludingHole(x);
+
+        if (result.isFound)
+            return result;
+
+        if (expression is Eqe { Eq: Expression eq, E: Expression e })
+        {
+            result = IsExecutionContextWithExistsIncludingHole(eq);
+
+            if (result.isFound)
+                return result;
+
+            result = IsExecutionContextWithExistsIncludingHole(e);
+        }
+
+        return result;
     }
 
     [RewriteRule]

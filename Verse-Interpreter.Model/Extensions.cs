@@ -592,4 +592,37 @@ public static class Extensions
             wrapper.E.EliminateEquation(targetEqe);
     }
 
+    public static void ReplaceExistsWithItsExpression(this Expression expression, Exists exists)
+    {
+        switch (expression)
+        {
+            case Eqe eqe:
+                eqe.ReplaceExistsWithItsExpression(exists);
+                break;
+            case Equation equation:
+                equation.ReplaceExistsWithItsExpression(exists);
+                break;
+        }
+    }
+
+    private static void ReplaceExistsWithItsExpression(this Eqe eqe, Exists exists)
+    {
+        if (eqe.Eq == exists)
+            eqe.Eq = exists.E;
+        else
+            eqe.Eq.ReplaceExistsWithItsExpression(exists);
+
+        if (eqe.E == exists)
+            eqe.E = exists.E;
+        else
+            eqe.E.ReplaceExistsWithItsExpression(exists);
+    }
+
+    private static void ReplaceExistsWithItsExpression(this Equation equation, Exists exists)
+    {
+        if (equation.E == exists)
+            equation.E = exists.E;
+        else
+            equation.E.ReplaceExistsWithItsExpression(exists);
+    }
 }
