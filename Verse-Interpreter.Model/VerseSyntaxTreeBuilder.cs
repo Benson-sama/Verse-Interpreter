@@ -74,12 +74,12 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         Expression e2 = GetExpression(context.e(1));
         Operator add = new Add();
 
-        if (e1 is Integer i1 && e2 is Integer i2)
+        if (e1 is Value v1 && e2 is Value v2)
         {
             return new Application
             {
                 V1 = add,
-                V2 = new VerseTuple(i1, i2)
+                V2 = new VerseTuple(v1, v2)
             };
         }
 
