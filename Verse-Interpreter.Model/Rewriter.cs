@@ -557,7 +557,7 @@ public class Rewriter : IRewriter
             {
                 if (v is not Variable || (v is Variable y && VariableBoundInsideVariable(x, y)))
                 {
-                    expression.SubstituteUntilEqe(finalEqe, x, v);
+                    expression.SubstituteUntilEqe(finalEqe, x, v.DeepCopy());
                     RuleApplied = true;
                     Renderer.DisplayRuleApplied("SUBST");
                 }
