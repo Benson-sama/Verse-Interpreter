@@ -2,4 +2,7 @@
 
 public class Sub : Operator
 {
+    public override Sub DeepCopy() => new();
+
+    public override string ToString() => "Sub";
 }

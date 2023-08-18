@@ -2,4 +2,5 @@
 
 public abstract class Operator : HeadNormalForm
 {
+    public abstract override Operator DeepCopy();
 }

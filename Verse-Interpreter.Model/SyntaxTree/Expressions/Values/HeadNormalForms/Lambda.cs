@@ -6,5 +6,14 @@ public class Lambda : HeadNormalForm
 
     public required Expression E { get; set; }
 
+    public override Lambda DeepCopy()
+    {
+        return new Lambda
+        {
+            Parameter = Parameter.DeepCopy(),
+            E = E.DeepCopy()
+        };
+    }
+
     public override string ToString() => $"({Parameter} => {E})";
 }

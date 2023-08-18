@@ -2,4 +2,7 @@
 
 public class Mult : Operator
 {
+    public override Mult DeepCopy() => new();
+
+    public override string ToString() => "Mult";
 }

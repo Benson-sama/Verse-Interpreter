@@ -7,5 +7,8 @@ public class Integer : HeadNormalForm
 
     public int Value { get; set; }
 
+    public override Integer DeepCopy()
+        => new(Value);
+
     public override string ToString() => $"{Value}";
 }

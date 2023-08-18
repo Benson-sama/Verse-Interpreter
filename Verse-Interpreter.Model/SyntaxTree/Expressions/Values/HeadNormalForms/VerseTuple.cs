@@ -37,4 +37,14 @@ public class VerseTuple : HeadNormalForm, IEnumerable<Value>
     }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    
+    public override VerseTuple DeepCopy()
+    {
+        Value[] values = Values.ToArray();
+
+        for (int i = 0; i < values.Length; i++)
+            values[i] = values[i].DeepCopy();
+
+        return new VerseTuple(values);
+    }
 }

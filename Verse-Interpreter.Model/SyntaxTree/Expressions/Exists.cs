@@ -8,5 +8,14 @@ public class Exists : Expression
 
     public required Expression E { get; set; }
 
+    public override Exists DeepCopy()
+    {
+        return new Exists
+        {
+            V = V.DeepCopy(),
+            E = E.DeepCopy()
+        };
+    }
+
     public override string ToString() => $"E{V}. {E}";
 }

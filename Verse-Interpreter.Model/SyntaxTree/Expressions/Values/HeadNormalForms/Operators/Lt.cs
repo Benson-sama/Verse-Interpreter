@@ -2,4 +2,7 @@
 
 public class Lt : Operator
 {
+    public override Lt DeepCopy() => new();
+
+    public override string ToString() => "Lt";
 }

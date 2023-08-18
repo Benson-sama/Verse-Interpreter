@@ -8,5 +8,14 @@ public class Equation : Expression
 
     public required Value V { get; set; }
 
+    public override Equation DeepCopy()
+    {
+        return new Equation
+        {
+            V = V.DeepCopy(),
+            E = E.DeepCopy()
+        };
+    }
+
     public override string ToString() => $"{V}={E}";
 }

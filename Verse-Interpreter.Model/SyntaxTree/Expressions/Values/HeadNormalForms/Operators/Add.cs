@@ -2,5 +2,7 @@
 
 public class Add : Operator
 {
+    public override Add DeepCopy() => new();
+
     public override string ToString() => "Add";
 }

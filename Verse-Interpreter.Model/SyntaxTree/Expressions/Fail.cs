@@ -3,4 +3,6 @@
 public class Fail : Expression
 {
     public override string ToString() => "fail";
+
+    public override Fail DeepCopy() => new();
 }

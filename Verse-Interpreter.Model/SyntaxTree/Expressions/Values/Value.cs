@@ -2,4 +2,5 @@
 
 public abstract class Value : Expression
 {
+    public abstract override Value DeepCopy();
 }

@@ -35,4 +35,7 @@ public class Variable : Value, IEquatable<Variable>
 
     public override int GetHashCode()
         => Name.GetHashCode();
+
+    public override Variable DeepCopy()
+        => new(Name);
 }
