@@ -165,6 +165,19 @@ public class Verse1
         Assert.IsTrue(result is Integer integer && integer.Value == expectedResult);
     }
 
+    [TestMethod]
+    public void TestExpressionAddition()
+    {
+        // Arrange.
+        string verseCode = "(y:any; x:=y; y=3; y+y)+(f:any; z:=f; f=2; z+z)";
+
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
+
+        // Assert.
+        Assert.IsTrue(result is Integer { Value: 10 });
+    }
+
     //[TestMethod]
     //public void TestFactorialFunction()
     //{
