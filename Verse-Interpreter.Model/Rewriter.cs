@@ -819,8 +819,12 @@ public class Rewriter : IRewriter
             if (exists is null)
                 throw new Exception("Exists cannot be null if execution context matched in EXI-FLOAT.");
 
-            while (FreeVariablesOf(expression, finalExpression: exists).Contains(exists.V))
-                exists.ApplyAlphaConversion(exists.V, _variableFactory.Next());
+            if (FreeVariablesOf(expression, finalExpression: exists).Contains(exists.V))
+            {
+                Variable newVariable = _variableFactory.Next();
+                exists.E.ApplyAlphaConversion(exists.V, newVariable);
+                exists.V = newVariable;
+            }
 
             expression.ReplaceExistsWithItsExpression(exists);
             exists.E = expression;
