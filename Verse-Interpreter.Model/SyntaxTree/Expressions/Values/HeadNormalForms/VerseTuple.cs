@@ -19,6 +19,18 @@ public class VerseTuple : HeadNormalForm, IEnumerable<Value>
 
     public IEnumerator<Value> GetEnumerator() => Values.GetEnumerator();
 
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    
+    public override VerseTuple DeepCopy()
+    {
+        Value[] values = Values.ToArray();
+
+        for (int i = 0; i < values.Length; i++)
+            values[i] = values[i].DeepCopy();
+
+        return new VerseTuple(values);
+    }
+
     public override string ToString()
     {
         if (!Values.Any())
@@ -34,17 +46,5 @@ public class VerseTuple : HeadNormalForm, IEnumerable<Value>
 
         sb.Append(']');
         return sb.ToString();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-    
-    public override VerseTuple DeepCopy()
-    {
-        Value[] values = Values.ToArray();
-
-        for (int i = 0; i < values.Length; i++)
-            values[i] = values[i].DeepCopy();
-
-        return new VerseTuple(values);
     }
 }

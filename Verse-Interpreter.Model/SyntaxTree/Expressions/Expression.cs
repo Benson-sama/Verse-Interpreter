@@ -1,6 +1,10 @@
-﻿namespace Verse_Interpreter.Model.SyntaxTree.Expressions;
+﻿using Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
 
-public abstract class Expression : Node
+namespace Verse_Interpreter.Model.SyntaxTree.Expressions;
+
+public abstract class Expression : SyntaxTreeNode, IExpressionOrEquation
 {
-    public abstract Expression DeepCopy();
+    public abstract override Expression DeepCopy();
+
+    IExpressionOrEquation IExpressionOrEquation.DeepCopy() => DeepCopy();
 }

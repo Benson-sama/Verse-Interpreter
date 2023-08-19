@@ -24,6 +24,9 @@ public class Rewriter : IRewriter
         {
             // Application.
             AppAdd,
+            AppSub,
+            AppMult,
+            AppDiv,
             AppGt,
             AppGtFail,
             AppBeta,
@@ -47,7 +50,7 @@ public class Rewriter : IRewriter
             ExiFloat,
             SeqAssoc,
             EqnFloat,
-            ExiSwap,
+            //ExiSwap,
             // Choice.
             OneFail,
             OneValue,
@@ -88,6 +91,14 @@ public class Rewriter : IRewriter
         return ApplyRules(verseProgram.Wrapper);
     }
 
+    public IExpressionOrEquation ApplyRules(IExpressionOrEquation eq)
+    {
+        if (eq is Expression e)
+            return ApplyRules(e);
+
+        return eq;
+    }
+
     public Expression ApplyRules(Expression expression)
     {
         Expression rewrittenExpression = expression;
@@ -103,20 +114,16 @@ public class Rewriter : IRewriter
         return rewrittenExpression;
     }
 
-    public IEnumerable<Variable> FreeVariablesOf(Expression expression)
-        => expression.FreeVariables();
-
-    public static IEnumerable<Variable> FreeVariablesOf(Expression expression, Expression? finalExpression = null)
-        => expression.FreeVariables(finalExpression);
-
     public bool VariableBoundInsideVariable(Variable x, Variable y)
     {
+        if (CurrentVerseProgram is null)
+            throw new Exception("Cannot check bound variable order if verse program is null.");
+
         bool foundY = false;
 
-        VariableBuffer variableBuffer = new();
-        CurrentVerseProgram?.Wrapper.E.FreeVariables(variableBuffer);
+        FreeVariables.Of(CurrentVerseProgram.Wrapper.E);
 
-        foreach (Variable variable in variableBuffer.BoundVariables)
+        foreach (Variable variable in FreeVariables.VariableBuffer.BoundVariables)
         {
             if (variable.Equals(y))
             {
@@ -133,24 +140,34 @@ public class Rewriter : IRewriter
         throw new Exception($"Did not find bound variable {x}");
     }
 
+    private void RewriteInnerExpressions(IExpressionOrEquation eq)
+    {
+        switch (eq)
+        {
+            case Expression e:
+                RewriteInnerExpressions(e);
+                break;
+            case Equation equation:
+                Rewrite(equation);
+                break;
+        }
+    }
+
     private void RewriteInnerExpressions(Expression expression)
     {
         switch (expression)
         {
-            case Eqe eqe:
-                Rewrite(eqe);
-                break;
-            case Equation eq:
-                Rewrite(eq);
-                break;
             case Lambda lambda:
                 Rewrite(lambda);
                 break;
-            case Choice choice:
-                Rewrite(choice);
+            case Eqe eqe:
+                Rewrite(eqe);
                 break;
             case Exists exists:
                 Rewrite(exists);
+                break;
+            case Choice choice:
+                Rewrite(choice);
                 break;
             case Wrapper wrapper:
                 Rewrite(wrapper);
@@ -200,12 +217,7 @@ public class Rewriter : IRewriter
 
     private void Rewrite(Choice choice)
     {
-        RewriteInnerExpressions(choice.E2);
-
-        if (RuleApplied)
-            return;
-
-        choice.E2 = ApplyRules(choice.E2);
+        choice.E1 = ApplyRules(choice.E1);
 
         if (RuleApplied)
             return;
@@ -215,7 +227,12 @@ public class Rewriter : IRewriter
         if (RuleApplied)
             return;
 
-        choice.E1 = ApplyRules(choice.E1);
+        choice.E2 = ApplyRules(choice.E2);
+
+        if (RuleApplied)
+            return;
+
+        RewriteInnerExpressions(choice.E2);
     }
 
     private void Rewrite(Exists exists)
@@ -249,6 +266,57 @@ public class Rewriter : IRewriter
             {
                 Expression rewrittenExpression = new Integer(i1.Value + i2.Value);
                 Renderer.DisplayRuleApplied("APP-ADD");
+                RuleApplied = true;
+                return rewrittenExpression;
+            }
+        }
+
+        return expression;
+    }
+
+    [RewriteRule]
+    private Expression AppSub(Expression expression)
+    {
+        if (expression is Application { V1: Sub, V2: VerseTuple tuple })
+        {
+            if (tuple.Count() is 2 && tuple.ElementAt(0) is Integer i1 && tuple.ElementAt(1) is Integer i2)
+            {
+                Expression rewrittenExpression = new Integer(i1.Value - i2.Value);
+                Renderer.DisplayRuleApplied("APP-SUB");
+                RuleApplied = true;
+                return rewrittenExpression;
+            }
+        }
+
+        return expression;
+    }
+
+    [RewriteRule]
+    private Expression AppMult(Expression expression)
+    {
+        if (expression is Application { V1: Mult, V2: VerseTuple tuple })
+        {
+            if (tuple.Count() is 2 && tuple.ElementAt(0) is Integer i1 && tuple.ElementAt(1) is Integer i2)
+            {
+                Expression rewrittenExpression = new Integer(i1.Value * i2.Value);
+                Renderer.DisplayRuleApplied("APP-MULT");
+                RuleApplied = true;
+                return rewrittenExpression;
+            }
+        }
+
+        return expression;
+    }
+
+    [RewriteRule]
+    private Expression AppDiv(Expression expression)
+    {
+        if (expression is Application { V1: Div, V2: VerseTuple tuple })
+        {
+            if (tuple.Count() is 2 && tuple.ElementAt(0) is Integer i1 && tuple.ElementAt(1) is Integer i2)
+            {
+                Expression rewrittenExpression = new Integer(i1.Value / i2.Value);
+                Renderer.DisplayRuleApplied("APP-DIV");
                 RuleApplied = true;
                 return rewrittenExpression;
             }
@@ -305,7 +373,7 @@ public class Rewriter : IRewriter
             RuleApplied = true;
             Renderer.DisplayRuleApplied("APP-BETA");
 
-            if (FreeVariablesOf(v).Contains(lambda.Parameter))
+            if (FreeVariables.Of(v).Contains(lambda.Parameter))
                 ApplyAlphaConversionWithoutCapturingVariablesOfValue(lambda, v);
 
             return new Exists
@@ -334,7 +402,7 @@ public class Rewriter : IRewriter
         do
         {
             newVariable = _variableFactory.Next();
-        } while (FreeVariablesOf(v).Contains(newVariable));
+        } while (FreeVariables.Of(v).Contains(newVariable));
 
         lambda.Parameter = newVariable;
         lambda.E.ApplyAlphaConversion(previousVariable, newVariable);
@@ -354,7 +422,7 @@ public class Rewriter : IRewriter
 
                 Variable variable = _variableFactory.Next();
 
-                if (FreeVariablesOf(tuple).Contains(variable))
+                if (FreeVariables.Of(tuple).Contains(variable))
                     throw new Exception($"Variable {variable} must not be an element of fvs({tuple})");
 
                 if (count is 1)
@@ -553,7 +621,7 @@ public class Rewriter : IRewriter
             if (eqe is not Eqe { Eq: Equation { V: Variable x, E: Value v }, E: Expression e } finalEqe)
                 throw new Exception("Final Eqe in substitute must match the rule.");
 
-            if (FreeVariablesOf(expression).Contains(x) && FreeVariablesOf(e).Contains(x) && !FreeVariablesOf(v).Contains(x))
+            if (FreeVariables.Of(expression).Contains(x) && FreeVariables.Of(e).Contains(x) && !FreeVariables.Of(v).Contains(x))
             {
                 if (v is not Variable || (v is Variable y && VariableBoundInsideVariable(x, y)))
                 {
@@ -660,7 +728,7 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression SeqSwap(Expression expression)
     {
-        if (expression is Eqe { Eq: Expression eq, E: Eqe { Eq: Equation { V: Variable x, E: Value v }, E: Expression e } })
+        if (expression is Eqe { Eq: IExpressionOrEquation eq, E: Eqe { Eq: Equation { V: Variable x, E: Value v }, E: Expression e } })
         {
             if (eq is not Equation { V: Variable, E: Value }
             || (eq is Equation { V: Variable y, E: Value } && !(x.Equals(y) || VariableBoundInsideVariable(y, x))))
@@ -707,7 +775,7 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression ExiElim(Expression expression)
     {
-        if (expression is Exists { V: Variable v, E: Expression e } && !FreeVariablesOf(e).Contains(v))
+        if (expression is Exists { V: Variable v, E: Expression e } && !FreeVariables.Of(e).Contains(v))
         {
             RuleApplied = true;
             Renderer.DisplayRuleApplied("EXI-ELIM");
@@ -730,9 +798,9 @@ public class Rewriter : IRewriter
                     throw new Exception("Final Eqe in EQN-ELIM must match the rule.");
 
                 if (existsX.Equals(equationX)
-                    && !FreeVariablesOf(existsE, finalEqe).Contains(existsX)
-                    && !FreeVariablesOf(v).Contains(existsX)
-                    && !FreeVariablesOf(equationE).Contains(existsX))
+                    && !FreeVariables.Of(existsE, finalEqe).Contains(existsX)
+                    && !FreeVariables.Of(v).Contains(existsX)
+                    && !FreeVariables.Of(equationE).Contains(existsX))
                 {
                     expression.EliminateEquation(finalEqe);
                     RuleApplied = true;
@@ -755,9 +823,9 @@ public class Rewriter : IRewriter
                     throw new Exception("Final Eqe in EQN-ELIM must match the rule.");
 
                 if (existsX.Equals(equationX)
-                    && !FreeVariablesOf(existsE, finalEqe).Contains(existsX)
-                    && !FreeVariablesOf(v).Contains(existsX)
-                    && !FreeVariablesOf(equationE).Contains(existsX))
+                    && !FreeVariables.Of(existsE, finalEqe).Contains(existsX)
+                    && !FreeVariables.Of(v).Contains(existsX)
+                    && !FreeVariables.Of(equationE).Contains(existsX))
                 {
                     expression.EliminateEquation(finalEqe);
                     RuleApplied = true;
@@ -819,7 +887,7 @@ public class Rewriter : IRewriter
             if (exists is null)
                 throw new Exception("Exists cannot be null if execution context matched in EXI-FLOAT.");
 
-            if (FreeVariablesOf(expression, finalExpression: exists).Contains(exists.V))
+            if (FreeVariables.Of(expression, finalExpression: exists).Contains(exists.V))
             {
                 Variable newVariable = _variableFactory.Next();
                 exists.E.ApplyAlphaConversion(exists.V, newVariable);
@@ -890,14 +958,17 @@ public class Rewriter : IRewriter
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "EQN-FLOAT".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression EqnFloat(Expression expression)
     {
         if (expression is Eqe { Eq: Equation { V: Value v, E: Eqe { Eq: Expression eq, E: Expression e1 }, E: Expression e2 } })
         {
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("EQN-FLOAT");
-            return new Eqe
+            expression = new Eqe
             {
                 Eq = eq,
                 E = new Eqe
@@ -910,19 +981,25 @@ public class Rewriter : IRewriter
                     E = e2
                 }
             };
+
+            RuleApplied = true;
+            Renderer.DisplayRuleApplied("EQN-FLOAT");
         }
 
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "EXI-SWAP".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression ExiSwap(Expression expression)
     {
         if (expression is Exists { V: Variable x, E: Exists { V: Variable y, E: Expression e } })
         {
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("EXI-SWAP");
-            return new Exists
+            expression = new Exists
             {
                 V = y,
                 E = new Exists
@@ -931,6 +1008,9 @@ public class Rewriter : IRewriter
                     E = e
                 }
             };
+
+            RuleApplied = true;
+            Renderer.DisplayRuleApplied("EXI-SWAP");
         }
 
         return expression;
@@ -940,79 +1020,115 @@ public class Rewriter : IRewriter
 
     #region Choice
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "ONE-FAIL".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression OneFail(Expression expression)
     {
         if (expression is One { E: Fail fail })
         {
+            expression = fail;
+
             RuleApplied = true;
             Renderer.DisplayRuleApplied("ONE-FAIL");
-            return fail;
         }
 
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "ONE-VALUE".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression OneValue(Expression expression)
     {
         if (expression is One { E: Value value })
         {
+            expression = value;
+
             RuleApplied = true;
             Renderer.DisplayRuleApplied("ONE-VALUE");
-            return value;
         }
 
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "ONE-CHOICE".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression OneChoice(Expression expression)
     {
         if (expression is One { E: Choice { E1: Value v, E2: Expression } })
         {
+            expression = v;
+
             RuleApplied = true;
             Renderer.DisplayRuleApplied("ONE-CHOICE");
-            return v;
         }
 
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "ALL-FAIL".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression AllFail(Expression expression)
     {
         if (expression is All { E: Fail })
         {
+            expression = VerseTuple.Empty;
+
             RuleApplied = true;
             Renderer.DisplayRuleApplied("ALL-FAIL");
-            return VerseTuple.Empty;
         }
 
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "ALL-VALUE".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression AllValue(Expression expression)
     {
         if (expression is All { E: Value v })
         {
+            expression = new VerseTuple(v);
+
             RuleApplied = true;
             Renderer.DisplayRuleApplied("ALL-VALUE");
-            return new VerseTuple(new Value[] { v });
         }
 
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "ALL-CHOICE".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression AllChoice(Expression expression)
     {
         if (expression is All { E: Choice choice } && IsChoiceWithOnlyValues(choice))
         {
+            expression = new VerseTuple(BuildTupleFromChoiceRecursively(choice).ToArray());
+
             RuleApplied = true;
             Renderer.DisplayRuleApplied("ALL-CHOICE");
-            return BuildTupleFromChoiceRecursively(choice);
         }
 
         return expression;
@@ -1038,38 +1154,55 @@ public class Rewriter : IRewriter
         };
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "CHOOSE-R".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression ChooseR(Expression expression)
     {
         if (expression is Choice { E1: Fail, E2: Expression e })
         {
+            expression = e;
+
             RuleApplied = true;
             Renderer.DisplayRuleApplied("CHOOSE-R");
-            return e;
         }
 
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "CHOOSE-L".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression ChooseL(Expression expression)
     {
         if (expression is Choice { E1: Expression e, E2: Fail, })
         {
+            expression = e;
+
             RuleApplied = true;
             Renderer.DisplayRuleApplied("CHOOSE-L");
-            return e;
         }
 
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "CHOOSE-ASSOC".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression ChooseAssoc(Expression expression)
     {
         if (expression is Choice { E1: Choice { E1: Expression e1, E2: Expression e2 }, E2: Expression e3 })
         {
-            Expression rewrittenExpression = new Choice
+            expression = new Choice
             {
                 E1 = e1,
                 E2 = new Choice
@@ -1078,9 +1211,9 @@ public class Rewriter : IRewriter
                     E2 = e3
                 }
             };
+
             RuleApplied = true;
             Renderer.DisplayRuleApplied("CHOOSE-ASSOC");
-            return rewrittenExpression;
         }
 
         return expression;

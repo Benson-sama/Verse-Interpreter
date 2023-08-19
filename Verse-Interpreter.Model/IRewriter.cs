@@ -7,6 +7,4 @@ namespace Verse_Interpreter.Model;
 public interface IRewriter
 {
     Expression Rewrite(VerseProgram verseProgram);
-
-    IEnumerable<Variable> FreeVariablesOf(Expression expression);
 }

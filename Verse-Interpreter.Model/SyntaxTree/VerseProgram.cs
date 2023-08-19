@@ -2,9 +2,12 @@
 
 namespace Verse_Interpreter.Model.SyntaxTree;
 
-public class VerseProgram : Node
+public class VerseProgram : SyntaxTreeNode
 {
     public required Wrapper Wrapper { get; set; }
+
+    public override VerseProgram DeepCopy()
+        => new() { Wrapper = Wrapper.DeepCopy() };
 
     public override string ToString() => $"Program{Wrapper}";
 }

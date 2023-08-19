@@ -61,41 +61,44 @@ public class Verse1
         Assert.IsTrue(result is Integer { Value: 7 });
     }
 
-    //[TestMethod]
-    //public void TestSubtraction()
-    //{
-    //    // Arrange.
-    //    string code = "x:=3; x-2";
+    [TestMethod]
+    public void TestSubtraction()
+    {
+        // Arrange.
+        string verseCode = "x:=3; x-2";
 
-    //    // Act.
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
 
-    //    // Assert.
-    //    // Result: 1
-    //}
+        // Assert.
+        Assert.IsTrue(result is Integer { Value: 1 });
+    }
 
-    //[TestMethod]
-    //public void TestMultiplication()
-    //{
-    //    // Arrange.
-    //    string code = "x:=3; x*5";
+    [TestMethod]
+    public void TestMultiplication()
+    {
+        // Arrange.
+        string verseCode = "x:=3; x*2";
 
-    //    // Act.
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
 
-    //    // Assert.
-    //    // Result: 15
-    //}
+        // Assert.
+        Assert.IsTrue(result is Integer { Value: 6 });
+    }
 
-    //[TestMethod]
-    //public void TestDivision()
-    //{
-    //    // Arrange.
-    //    string code = "x:=6; x/2";
+    [TestMethod]
+    public void TestDivision()
+    {
+        // Arrange.
+        string verseCode = "x:=4; x/2";
 
-    //    // Act.
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
 
-    //    // Assert.
-    //    // Result: 3
-    //}
+        // Assert.
+        Assert.IsTrue(result is Integer { Value: 2 });
+    }
 
     [TestMethod]
     public void TestFunkyOrder()
@@ -114,7 +117,7 @@ public class Verse1
     //public void TestFunction()
     //{
     //    // Arrange.
-    //    string code = "f(x):=x+1; f(3)";
+    //    string code = "f[x]:=x+1; f[3]";
 
     //    // Act.
 
@@ -178,15 +181,29 @@ public class Verse1
         Assert.IsTrue(result is Integer { Value: 10 });
     }
 
-    //[TestMethod]
-    //public void TestFactorialFunction()
-    //{
-    //    // Arrange.
-    //    string code = "fac(x):= if(x=0): 1 else: x * fac(x-1)";
+    [TestMethod]
+    public void TestFirstAndSecond()
+    {
+        // Arrange.
+        string verseCode = "fst:=([x,y] => x); snd:=([x,y] => y); z:=[3,4]; a:=fst z; b:=snd [5,6]; a+b";
 
-    //    // Act.
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
 
-    //    // Assert.
-    //    // Result: 4
-    //}
+        // Assert.
+        Assert.IsTrue(result is Integer { Value: 9 });
+    }
+
+    [TestMethod]
+    public void TestFactorialFunction()
+    {
+        // Arrange.
+        string verseCode = "fac:=([x] => if(x=0): 1 else: x * fac[x-1])[4]";
+
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
+
+        // Assert.
+        Assert.IsTrue(result is Integer { Value: 24 });
+    }
 }

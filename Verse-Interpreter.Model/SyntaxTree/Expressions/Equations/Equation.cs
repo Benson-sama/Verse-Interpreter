@@ -2,13 +2,13 @@
 
 namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
 
-public class Equation : Expression
+public class Equation : IExpressionOrEquation
 {
     public required Expression E { get; set; }
 
     public required Value V { get; set; }
 
-    public override Equation DeepCopy()
+    IExpressionOrEquation IExpressionOrEquation.DeepCopy()
     {
         return new Equation
         {
@@ -18,4 +18,5 @@ public class Equation : Expression
     }
 
     public override string ToString() => $"{V}={E}";
+
 }

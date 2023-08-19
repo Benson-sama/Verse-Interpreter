@@ -8,6 +8,12 @@ public class VariableBuffer
 
     public IEnumerable<Variable> FreeVariables { get; set; } = Enumerable.Empty<Variable>();
 
+    public void Clear()
+    {
+        BoundVariables = Enumerable.Empty<Variable>();
+        FreeVariables = Enumerable.Empty<Variable>();
+    }
+
     public bool IsBound(Variable variable)
         => BoundVariables.Contains(variable);
 

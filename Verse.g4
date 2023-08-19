@@ -12,15 +12,14 @@ e			: '(' e ')'								#parenthesisExp
 			| e MINUS e								#minusExp
 			| e GREATERTHAN e						#greaterThanExp
 			| e LESSTHAN e							#lessThanExp
-			| VARIABLE ASSIGN e (';' e)?			#assignmentExp
+			| VARIABLE ASSIGN e ';' e				#assignmentExp
 			| FAIL									#failExp
 			| INTEGER '..' INTEGER					#rangeChoiceExp
 			| <assoc=right> e CHOICE e				#choiceExp
 			| e e									#expApplicationExp
-			| e EQUALS e							#expEquationExp
+			| e EQUALS e ';' e						#eqeExp
 			| 'if' '(' e ')' ':' e 'else:' e		#ifElseExp
 			| 'for' '(' e ')' 'do' e				#forExp
-			| v EQUALS e (';' e)?					#eqeExp
 			| '[' e (',' e)+ ']'					#expTupleExp
 			;
 v 			: VARIABLE								#variableValue

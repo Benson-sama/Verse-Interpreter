@@ -7,13 +7,6 @@ public class Variable : Value, IEquatable<Variable>
 
     public string Name { get; set; }
 
-    public override string ToString()
-    {
-        return Name.Length <= 5 ?
-            Name
-            : string.Concat(Name.Take(5).Concat("²"));
-    }
-
     public bool Equals(Variable? other)
     {
         if (other is null)
@@ -38,4 +31,11 @@ public class Variable : Value, IEquatable<Variable>
 
     public override Variable DeepCopy()
         => new(Name);
+
+    public override string ToString()
+    {
+        return Name.Length <= 5 ?
+            Name
+            : string.Concat(Name.Take(5).Concat("²"));
+    }
 }

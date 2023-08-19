@@ -42,7 +42,6 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         VerseParser.RangeChoiceExpContext c => GetConcreteExpression(c),
         VerseParser.ChoiceExpContext c => GetConcreteExpression(c),
         VerseParser.ExpApplicationExpContext c => GetConcreteExpression(c),
-        VerseParser.ExpEquationExpContext c => GetConcreteExpression(c),
         VerseParser.IfElseExpContext c => GetConcreteExpression(c),
         VerseParser.ForExpContext c => GetConcreteExpression(c),
         VerseParser.EqeExpContext c => GetConcreteExpression(c),
@@ -73,15 +72,6 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         Expression e1 = GetExpression(context.e(0));
         Expression e2 = GetExpression(context.e(1));
         Operator add = new Add();
-
-        if (e1 is Value v1 && e2 is Value v2)
-        {
-            return new Application
-            {
-                V1 = add,
-                V2 = new VerseTuple(v1, v2)
-            };
-        }
 
         return BuildArithmeticExpression(e1, add, e2);
     }
@@ -140,28 +130,9 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         Variable x = GetVariable(context.VARIABLE());
         _variableFactory.RegisterUsedName(x.Name);
         Expression e1 = GetExpression(context.e(0));
+        Expression e2 = GetExpression(context.e(1));
 
-        Equation eq = new()
-        {
-            V = x,
-            E = e1
-        };
-        Exists exists = new()
-        {
-            V = x,
-            E = eq
-        };
-
-        if (context.ChildCount is 3)
-            return exists;
-
-        exists.E = new Eqe
-        {
-            Eq = eq,
-            E = GetExpression(context.e(1))
-        };
-
-        return exists;
+        return Desugar.Assignment(x, e1, e2);
     }
 
     private static Expression GetConcreteExpression(VerseParser.RangeChoiceExpContext context)
@@ -188,7 +159,10 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
     }
 
     // TODO: Implement.
-    private Value GetExpressionTuple(VerseParser.ExpTupleExpContext c) => throw new NotImplementedException();
+    private Value GetExpressionTuple(VerseParser.ExpTupleExpContext c)
+    {
+        throw new NotImplementedException();
+    }
 
     private Expression GetConcreteExpression(VerseParser.ExpApplicationExpContext context)
     {
@@ -216,27 +190,6 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         return Desugar.Assignment(f, e1, Desugar.Assignment(x, e2, application));
     }
 
-    private Expression GetConcreteExpression(VerseParser.ExpEquationExpContext context)
-    {
-        Expression e1 = GetExpression(context.e(0));
-        Expression e2 = GetExpression(context.e(1));
-        Variable x = _variableFactory.Next();
-
-        return new Eqe
-        {
-            Eq = new Exists
-            {
-                V = x,
-                E = new Equation { V = x, E = e1 }
-            },
-            E = new Eqe
-            {
-                Eq = new Equation { V = x, E = e2 },
-                E = x
-            }
-        };
-    }
-
     private Expression GetConcreteExpression(VerseParser.IfElseExpContext context)
     {
         Expression e1 = GetExpression(context.e(0));
@@ -254,21 +207,22 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
     private Expression GetConcreteExpression(VerseParser.EqeExpContext context)
     {
-        Value v = GetValue(context.v());
         Expression e1 = GetExpression(context.e(0));
-        Equation eq = new()
-        {
-            V = v,
-            E = e1
-        };
-
-        if (context.ChildCount is 3)
-            return eq;
-
         Expression e2 = GetExpression(context.e(1));
+        Expression e3 = GetExpression(context.e(2));
+
+        if (e1 is Value v)
+        {
+            return new Eqe
+            {
+                Eq = new Equation { V = v, E = e2 },
+                E = e3
+            };
+        }
+
         return new Eqe()
         {
-            Eq = eq,
+            Eq = _desugar.ExpressionEquation(e1, e2),
             E = e2
         };
     }
@@ -289,7 +243,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         if (context.ChildCount is 0)
             return VerseTuple.Empty;
         else
-            return new VerseTuple(GetTupleElements(context.elements()));
+            return new VerseTuple(GetTupleElements(context.elements()).ToArray());
     }
 
     private IEnumerable<Value> GetTupleElements(VerseParser.ElementsContext context)
@@ -363,39 +317,23 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
-    private Exists BuildArithmeticExpression(Expression e1, Operator op, Expression e2)
+    private Expression BuildArithmeticExpression(Expression e1, Operator op, Expression e2)
     {
-        Variable v1 = _variableFactory.Next();
-        Variable v2 = _variableFactory.Next();
-
-        return new Exists()
+        if (e1 is Value v1 && e2 is Value v2)
         {
-            V = v1,
-            E = new Eqe()
+            if ((v1 is Integer or Variable) && (v2 is Integer or Variable))
             {
-                Eq = new Equation()
+                return new Application
                 {
-                    V = v1,
-                    E = e1
-                },
-                E = new Exists()
-                {
-                    V = v2,
-                    E = new Eqe()
-                    {
-                        Eq = new Equation()
-                        {
-                            V = v2,
-                            E = e2
-                        },
-                        E = new Application()
-                        {
-                            V1 = op,
-                            V2 = new VerseTuple(v1, v2)
-                        }
-                    }
-                }
+                    V1 = op,
+                    V2 = new VerseTuple(v1, v2)
+                };
             }
-        };
+        }
+
+        Variable x1 = _variableFactory.Next();
+        Variable x2 = _variableFactory.Next();
+
+        return Desugar.Assignment(x1, e1, Desugar.Assignment(x2, e2, new VerseTuple(x1, x2)));
     }
 }
