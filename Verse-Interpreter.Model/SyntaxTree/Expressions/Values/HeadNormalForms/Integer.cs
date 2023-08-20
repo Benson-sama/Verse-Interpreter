@@ -1,4 +1,6 @@
-﻿namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
+﻿using System.Xml.Linq;
+
+namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 
 public class Integer : HeadNormalForm
 {
@@ -6,6 +8,28 @@ public class Integer : HeadNormalForm
         Value = value;
 
     public int Value { get; set; }
+
+    public bool Equals(Integer? other)
+    {
+        if (other is null)
+            return false;
+
+        if (Value == other.Value)
+            return true;
+
+        return false;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is Integer integer)
+            return Equals(integer);
+
+        return false;
+    }
+
+    public override int GetHashCode()
+        => Value.GetHashCode();
 
     public override Integer DeepCopy()
         => new(Value);
