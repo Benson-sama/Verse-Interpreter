@@ -1,6 +1,8 @@
-﻿using Moq;
+﻿using System.Collections;
+using Moq;
 using Verse_Interpreter.Model;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
+using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
 
@@ -199,6 +201,20 @@ public class Verse1
 
         // Assert.
         Assert.IsTrue(result is Integer { Value: 9 });
+    }
+
+    [TestMethod]
+    public void TestRunFunctionBackwards()
+    {
+        // Arrange.
+        string verseCode = "a:any; f:=([x,y] => [y,x]); [1,2]=(f a); a";
+
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
+        ICollection tuple = (result as VerseTuple).ToArray();
+
+        // Assert.
+        CollectionAssert.AreEqual(tuple, new Value[] { new Integer(2), new Integer(1) });
     }
 
     [TestMethod]
