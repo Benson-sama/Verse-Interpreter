@@ -5,22 +5,20 @@ grammar Verse;
 program		: e ;
 e			: '(' e ')'								#parenthesisExp
 			| VARIABLE ':' TYPE ';' e				#bringIntoScopeExp
-			| v										#valueExp
-			| e ASTERISK e							#multExp
-			| e SLASH e								#DivExp
-			| e PLUS e								#plusExp
-			| e MINUS e								#minusExp
-			| e GREATERTHAN e						#greaterThanExp
-			| e LESSTHAN e							#lessThanExp
 			| VARIABLE ASSIGN e ';' e				#assignmentExp
+			| v EQUALS e ';' e						#equalityExp
+			| v (ASTERISK | SLASH) v				#multOrDivExp
+			| v (PLUS | MINUS) v					#plusOrMinusExp
+			| v (GREATERTHAN | LESSTHAN) v			#comparisonExp
+			| v v									#valueApplicationExp
+			| v										#valueExp
 			| FAIL									#failExp
 			| INTEGER '..' INTEGER					#rangeChoiceExp
 			| <assoc=right> e CHOICE e				#choiceExp
-			| e e									#expApplicationExp
-			| e EQUALS e ';' e						#eqeExp
-			| 'if' '(' e ')' ':' e 'else:' e		#ifElseExp
+			| 'if' '(' e '):' e 'else:' e			#ifElseExp
 			| 'for' '(' e ')' 'do' e				#forExp
-			| '[' e (',' e)+ ']'					#expTupleExp
+			// | e e								#expApplicationExp
+			// | '[' e (',' e)+ ']'					#expTupleExp
 			;
 v 			: VARIABLE								#variableValue
 			| hnf									#hnfValue

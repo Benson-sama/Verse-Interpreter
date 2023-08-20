@@ -29,87 +29,69 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
     {
         VerseParser.ParenthesisExpContext c => GetExpression(c.e()),
         VerseParser.BringIntoScopeExpContext c => GetConcreteExpression(c),
-        VerseParser.MultExpContext c => GetConcreteExpression(c),
-        VerseParser.DivExpContext c => GetConcreteExpression(c),
-        VerseParser.PlusExpContext c => GetConcreteExpression(c),
-        VerseParser.MinusExpContext c => GetConcreteExpression(c),
-        VerseParser.GreaterThanExpContext c => GetConcreteExpression(c),
-        VerseParser.LessThanExpContext c => GetConcreteExpression(c),
         VerseParser.AssignmentExpContext c => GetConcreteExpression(c),
+        VerseParser.EqualityExpContext c => GetConcreteExpression(c),
+        VerseParser.MultOrDivExpContext c => GetConcreteExpression(c),
+        VerseParser.PlusOrMinusExpContext c => GetConcreteExpression(c),
+        VerseParser.ComparisonExpContext c => GetConcreteExpression(c),
         VerseParser.ValueExpContext c => GetValue(c.v()),
-        VerseParser.ExpTupleExpContext c => GetExpressionTuple(c),
+        //VerseParser.ExpTupleExpContext c => GetExpressionTuple(c),
         VerseParser.FailExpContext => new Fail(),
         VerseParser.RangeChoiceExpContext c => GetConcreteExpression(c),
         VerseParser.ChoiceExpContext c => GetConcreteExpression(c),
-        VerseParser.ExpApplicationExpContext c => GetConcreteExpression(c),
+        VerseParser.ValueApplicationExpContext c => GetConcreteExpression(c),
         VerseParser.IfElseExpContext c => GetConcreteExpression(c),
         VerseParser.ForExpContext c => GetConcreteExpression(c),
-        VerseParser.EqeExpContext c => GetConcreteExpression(c),
         { } => throw new Exception($"Unable to match context type: {context.GetType()}"),
         _ => throw new ArgumentNullException(nameof(context), "Cannot be null or empty.")
     };
 
-    private Expression GetConcreteExpression(VerseParser.MultExpContext context)
+    private Expression GetConcreteExpression(VerseParser.MultOrDivExpContext context)
     {
-        Expression e1 = GetExpression(context.e(0));
-        Expression e2 = GetExpression(context.e(1));
-        Operator mult = new Mult();
+        Value v1 = GetValue(context.v(0));
+        Value v2 = GetValue(context.v(1));
+        Operator op;
 
-        return BuildArithmeticExpression(e1, mult, e2);
+        if (context.ASTERISK() is not null)
+            op = new Mult();
+        else if (context.SLASH() is not null)
+            op = new Div();
+        else
+            throw new Exception("Invalid multiplication or division expression.");
+
+        return BuildArithmeticExpression(v1, op, v2);
     }
 
-    private Expression GetConcreteExpression(VerseParser.DivExpContext context)
+    private Expression GetConcreteExpression(VerseParser.PlusOrMinusExpContext context)
     {
-        Expression e1 = GetExpression(context.e(0));
-        Expression e2 = GetExpression(context.e(1));
-        Operator div = new Div();
+        Value v1 = GetValue(context.v(0));
+        Value v2 = GetValue(context.v(1));
+        Operator op;
 
-        return BuildArithmeticExpression(e1, div, e2);
+        if (context.PLUS() is not null)
+            op = new Add();
+        else if (context.MINUS() is not null)
+            op = new Sub();
+        else
+            throw new Exception("Invalid addition or subtraction expression.");
+
+        return BuildArithmeticExpression(v1, op, v2);
     }
 
-    private Expression GetConcreteExpression(VerseParser.PlusExpContext context)
+    private Expression GetConcreteExpression(VerseParser.ComparisonExpContext context)
     {
-        Expression e1 = GetExpression(context.e(0));
-        Expression e2 = GetExpression(context.e(1));
-        Operator add = new Add();
+        Value v1 = GetValue(context.v(0));
+        Value v2 = GetValue(context.v(1));
+        Operator op;
 
-        return BuildArithmeticExpression(e1, add, e2);
-    }
+        if (context.GREATERTHAN() is not null)
+            op = new Gt();
+        else if (context.LESSTHAN() is not null)
+            op = new Lt();
+        else
+            throw new Exception("Invalid multiplication or division expression.");
 
-    private Expression GetConcreteExpression(VerseParser.MinusExpContext context)
-    {
-        Expression e1 = GetExpression(context.e(0));
-        Expression e2 = GetExpression(context.e(1));
-        Operator sub = new Sub();
-
-        if (e1 is Integer i1 && e2 is Integer i2)
-        {
-            return new Application
-            {
-                V1 = new Add(),
-                V2 = new VerseTuple(i1, new Integer(-i2.Value))
-            };
-        }
-
-        return BuildArithmeticExpression(e1, sub, e2);
-    }
-
-    private Expression GetConcreteExpression(VerseParser.GreaterThanExpContext context)
-    {
-        Expression e1 = GetExpression(context.e(0));
-        Expression e2 = GetExpression(context.e(1));
-        Operator greaterThan = new Gt();
-
-        return BuildArithmeticExpression(e1, greaterThan, e2);
-    }
-
-    private Expression GetConcreteExpression(VerseParser.LessThanExpContext context)
-    {
-        Expression e1 = GetExpression(context.e(0));
-        Expression e2 = GetExpression(context.e(1));
-        Operator lessThan = new Lt();
-
-        return BuildArithmeticExpression(e1, lessThan, e2);
+        return BuildArithmeticExpression(v1, op, v2);
     }
 
     private Expression GetConcreteExpression(VerseParser.BringIntoScopeExpContext context)
@@ -159,35 +141,32 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
     }
 
     // TODO: Implement.
-    private Value GetExpressionTuple(VerseParser.ExpTupleExpContext c)
+    //private Value GetExpressionTuple(VerseParser.ExpTupleExpContext c)
+    //{
+    //    throw new NotImplementedException();
+    //}
+
+    private Expression GetConcreteExpression(VerseParser.ValueApplicationExpContext context)
     {
-        throw new NotImplementedException();
-    }
+        Value v1 = GetValue(context.v(0));
+        Value v2 = GetValue(context.v(1));
 
-    private Expression GetConcreteExpression(VerseParser.ExpApplicationExpContext context)
-    {
-        Expression e1 = GetExpression(context.e(0));
-        Expression e2 = GetExpression(context.e(1));
-
-        if (e1 is Value v1 && e2 is Value v2)
+        return new Application
         {
-            return new Application
-            {
-                V1 = v1,
-                V2 = v2
-            };
-        }
-
-        Variable f = _variableFactory.Next();
-        Variable x = _variableFactory.Next();
-
-        Application application = new()
-        {
-            V1 = f,
-            V2 = x
+            V1 = v1,
+            V2 = v2
         };
 
-        return Desugar.Assignment(f, e1, Desugar.Assignment(x, e2, application));
+        //Variable f = _variableFactory.Next();
+        //Variable x = _variableFactory.Next();
+
+        //Application application = new()
+        //{
+        //    V1 = f,
+        //    V2 = x
+        //};
+
+        //return Desugar.Assignment(f, e1, Desugar.Assignment(x, e2, application));
     }
 
     private Expression GetConcreteExpression(VerseParser.IfElseExpContext context)
@@ -205,24 +184,15 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         throw new NotImplementedException();
     }
 
-    private Expression GetConcreteExpression(VerseParser.EqeExpContext context)
+    private Expression GetConcreteExpression(VerseParser.EqualityExpContext context)
     {
+        Value v = GetValue(context.v());
         Expression e1 = GetExpression(context.e(0));
         Expression e2 = GetExpression(context.e(1));
-        Expression e3 = GetExpression(context.e(2));
 
-        if (e1 is Value v)
+        return new Eqe
         {
-            return new Eqe
-            {
-                Eq = new Equation { V = v, E = e2 },
-                E = e3
-            };
-        }
-
-        return new Eqe()
-        {
-            Eq = _desugar.ExpressionEquation(e1, e2),
+            Eq = new Equation { V = v, E = e1 },
             E = e2
         };
     }
