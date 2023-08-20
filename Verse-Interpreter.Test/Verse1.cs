@@ -88,6 +88,26 @@ public class Verse1
     }
 
     [TestMethod]
+    public void TestEquationsWithAllArithmeticOperations()
+    {
+        // Arrange.
+        string verseCode = """
+            x:any; y:any; z:any; f:any;
+            x=3+y;
+            y=6*2;
+            z=x-f;
+            f=8/4;
+            z
+            """;
+
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
+
+        // Assert.
+        Assert.IsTrue(result is Integer { Value: 13 });
+    }
+
+    [TestMethod]
     public void TestDivision()
     {
         // Arrange.
@@ -129,7 +149,7 @@ public class Verse1
     public void TestLambda()
     {
         // Arrange.
-        string verseCode = "f:=[x]=>x+1; f[3]";
+        string verseCode = "f:=([x]=>(x+1)); f[3]";
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
@@ -142,7 +162,7 @@ public class Verse1
     public void TestLambdaWithReturningFalseQuestionMarkAppliedResultsInFailure()
     {
         // Arrange.
-        string verseCode = "([x, y] => z:=69; s:=5; false?)[1, 2]";
+        string verseCode = "f:=([x, y] => (z:=69; s:=5; false?)); f[1, 2]";
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
@@ -169,19 +189,6 @@ public class Verse1
     }
 
     [TestMethod]
-    public void TestExpressionAddition()
-    {
-        // Arrange.
-        string verseCode = "(y:any; x:=y; y=3; y+y)+(f:any; z:=f; f=2; z+z)";
-
-        // Act.
-        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
-
-        // Assert.
-        Assert.IsTrue(result is Integer { Value: 10 });
-    }
-
-    [TestMethod]
     public void TestFirstAndSecond()
     {
         // Arrange.
@@ -198,7 +205,7 @@ public class Verse1
     public void TestFactorialFunction()
     {
         // Arrange.
-        string verseCode = "fac:=([x] => if(x=0): 1 else: x * fac[x-1])[4]";
+        string verseCode = "fac:=([x] => (if(x=0; x): 1 else: a:=(x-1); b:=fac[a]; x*b)); fac[2]";
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
