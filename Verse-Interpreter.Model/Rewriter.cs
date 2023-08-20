@@ -940,7 +940,7 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression SeqAssoc(Expression expression)
     {
-        if (expression is Eqe { Eq: Eqe { Eq: Expression eq, E: Expression e1 }, E: Expression e2 })
+        if (expression is Eqe { Eq: Eqe { Eq: IExpressionOrEquation eq, E: Expression e1 }, E: Expression e2 })
         {
             RuleApplied = true;
             Renderer.DisplayRuleApplied("SEQ-ASSOC");
@@ -966,7 +966,19 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression EqnFloat(Expression expression)
     {
-        if (expression is Eqe { Eq: Equation { V: Value v, E: Eqe { Eq: Expression eq, E: Expression e1 }, E: Expression e2 } })
+        if (expression is Eqe
+            {
+                Eq: Equation
+                {
+                    V: Value v,
+                    E: Eqe
+                    {
+                        Eq: IExpressionOrEquation eq,
+                        E: Expression e1
+                    }
+                },
+                E: Expression e2
+            })
         {
             expression = new Eqe
             {
