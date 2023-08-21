@@ -10,15 +10,14 @@ e			: '(' e ')'								#parenthesisExp
 			| v (ASTERISK | SLASH) v				#multOrDivExp
 			| v (PLUS | MINUS) v					#plusOrMinusExp
 			| v (GREATERTHAN | LESSTHAN) v			#comparisonExp
-			| v v									#valueApplicationExp
+			| (v v | v '(' v ')')					#valueApplicationExp
 			| v										#valueExp
 			| FAIL									#failExp
 			| INTEGER '..' INTEGER					#rangeChoiceExp
 			| <assoc=right> e CHOICE e				#choiceExp
 			| 'if' '(' e '):' e 'else:' e			#ifElseExp
-			| 'for' '(' e ')' 'do' e				#forExp
-			// | e e								#expApplicationExp
-			// | '[' e (',' e)+ ']'					#expTupleExp
+			| 'for' '{' e '}'						#forExp
+			| 'for' '(' e ')' 'do' e				#forDoExp
 			;
 v 			: VARIABLE								#variableValue
 			| hnf									#hnfValue
