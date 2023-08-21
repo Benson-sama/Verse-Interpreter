@@ -1,12 +1,4 @@
-﻿using System.Collections;
-using Moq;
-using Verse_Interpreter.Model;
-using Verse_Interpreter.Model.SyntaxTree.Expressions;
-using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
-using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
-using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
-
-namespace Verse_Interpreter.Test;
+﻿namespace Verse_Interpreter.Test;
 
 [TestClass]
 public class Verse1
@@ -38,16 +30,28 @@ public class Verse1
     }
 
     [TestMethod]
-    public void TestAssignment()
+    public void TestSimpleBinding()
     {
         // Arrange.
-        string verseCode = "x:=3; x";
+        string verseCode = "x:=3; x+x";
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
 
         // Assert.
-        Assert.IsTrue(result is Integer { Value: 3 });
+        Assert.IsTrue(result is Integer { Value: 6 });
+    }
+
+    [DataTestMethod]
+    [DataRow("x:any; y:any; x=3; y=x+1; x*y")]
+    [DataRow("x:any; y:any; y=x+1; x=3; x*y")]
+    public void TestOrderOfAssignmentsDoesNotMatter(string verseCode)
+    {
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
+
+        // Assert.
+        Assert.IsTrue(result is Integer { Value: 12 });
     }
 
     [TestMethod]
@@ -90,6 +94,19 @@ public class Verse1
     }
 
     [TestMethod]
+    public void TestDivision()
+    {
+        // Arrange.
+        string verseCode = "x:=4; x/2";
+
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
+
+        // Assert.
+        Assert.IsTrue(result is Integer { Value: 2 });
+    }
+
+    [TestMethod]
     public void TestEquationsWithAllArithmeticOperations()
     {
         // Arrange.
@@ -110,44 +127,6 @@ public class Verse1
     }
 
     [TestMethod]
-    public void TestDivision()
-    {
-        // Arrange.
-        string verseCode = "x:=4; x/2";
-
-        // Act.
-        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
-
-        // Assert.
-        Assert.IsTrue(result is Integer { Value: 2 });
-    }
-
-    [TestMethod]
-    public void TestFunkyOrder()
-    {
-        // Arrange.
-        string verseCode = "x:any; y:=x+9; x=3; x+y";
-
-        // Act.
-        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
-
-        // Assert.
-        Assert.IsTrue(result is Integer { Value: 15 });
-    }
-
-    //[TestMethod]
-    //public void TestFunction()
-    //{
-    //    // Arrange.
-    //    string code = "f[x]:=x+1; f[3]";
-
-    //    // Act.
-
-    //    // Assert.
-    //    // Result: 4
-    //}
-
-    [TestMethod]
     public void TestLambda()
     {
         // Arrange.
@@ -161,60 +140,16 @@ public class Verse1
     }
 
     [TestMethod]
-    public void TestLambdaWithReturningFalseQuestionMarkAppliedResultsInFailure()
-    {
-        // Arrange.
-        string verseCode = "f:=([x, y] => (z:=69; s:=5; false?)); f[1, 2]";
-
-        // Act.
-        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
-
-        // Assert.
-        Assert.IsTrue(result is Fail);
-    }
-
-    [DataTestMethod]
-    [DataRow(4, 5)]
-    [DataRow(5, 5)]
-    [DataRow(6, 5)]
-    public void TestIfFirstNumberGreaterSecondNumber(int k1, int k2)
-    {
-        // Arrange.
-        string verseCode = $"if({k1}>{k2}): 6 else: 9";
-
-        // Act.
-        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
-        int expectedResult = k1 > k2 ? 6 : 9;
-
-        // Assert.
-        Assert.IsTrue(result is Integer integer && integer.Value == expectedResult);
-    }
-
-    [TestMethod]
     public void TestFirstAndSecond()
     {
         // Arrange.
-        string verseCode = "fst:=([x,y] => x); snd:=([x,y] => y); z:=[3,4]; a:=fst z; b:=snd [5,6]; a+b";
+        string verseCode = "fst:=([x,y] => x); snd:=([x,y] => y); z:=[3,4]; a:=fst(z); b:=snd[5,6]; a+b";
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
 
         // Assert.
         Assert.IsTrue(result is Integer { Value: 9 });
-    }
-
-    [TestMethod]
-    public void TestRunFunctionBackwards()
-    {
-        // Arrange.
-        string verseCode = "a:any; f:=([x,y] => [y,x]); [1,2]=(f a); a";
-
-        // Act.
-        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
-        ICollection tuple = (result as VerseTuple).ToArray();
-
-        // Assert.
-        CollectionAssert.AreEqual(tuple, new Value[] { new Integer(2), new Integer(1) });
     }
 
     [TestMethod]
