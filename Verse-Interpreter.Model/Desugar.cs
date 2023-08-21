@@ -89,9 +89,6 @@ public class Desugar
 
     public Lambda Lambda(IEnumerable<Variable> parameters, Expression e)
     {
-        if (parameters.Count() is < 0)
-            throw new Exception("Cannot desugar lambda with less than zero parameters.");
-
         Variable p = _variableFactory.Next();
 
         Eqe eqe = new()
@@ -127,6 +124,63 @@ public class Desugar
         };
 
         return ExpressionApplication(one, VerseTuple.Empty);
+    }
+
+    public static Application Head(Variable xs)
+    {
+        return new Application
+        {
+            V1 = xs,
+            V2 = new Integer(0)
+        };
+    }
+
+    public Expression Tail(Variable xs)
+    {
+        Variable i = _variableFactory.Next();
+
+        return new All
+        {
+            E = new Exists
+            {
+                V = i,
+                E = new Eqe
+                {
+                    Eq = new Application
+                    {
+                        V1 = new Gt(),
+                        V2 = new VerseTuple(i, new Integer(0))
+                    },
+                    E = new Application
+                    {
+                        V1 = xs,
+                        V2 = i
+                    }
+                }
+            }
+        };
+    }
+
+    public Expression Cons(Variable x, Variable xs)
+    {
+        Variable i = _variableFactory.Next();
+
+        return new All
+        {
+            E = new Choice
+            {
+                E1 = x,
+                E2 = new Exists
+                {
+                    V = i,
+                    E = new Application
+                    {
+                        V1 = xs,
+                        V2 = i
+                    }
+                }
+            }
+        };
     }
 
     private Exists BuildExpressionTupleRecursively(IEnumerable<Expression> expressions, IEnumerable<Variable> variables)
