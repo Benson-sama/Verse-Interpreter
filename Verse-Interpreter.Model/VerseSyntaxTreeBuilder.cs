@@ -35,13 +35,13 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         VerseParser.PlusOrMinusExpContext c => GetConcreteExpression(c),
         VerseParser.ComparisonExpContext c => GetConcreteExpression(c),
         VerseParser.ValueExpContext c => GetValue(c.v()),
-        //VerseParser.ExpTupleExpContext c => GetExpressionTuple(c),
         VerseParser.FailExpContext => new Fail(),
         VerseParser.RangeChoiceExpContext c => GetConcreteExpression(c),
         VerseParser.ChoiceExpContext c => GetConcreteExpression(c),
         VerseParser.ValueApplicationExpContext c => GetConcreteExpression(c),
         VerseParser.IfElseExpContext c => GetConcreteExpression(c),
         VerseParser.ForExpContext c => GetConcreteExpression(c),
+        VerseParser.ForDoExpContext c => GetConcreteExpression(c),
         { } => throw new Exception($"Unable to match context type: {context.GetType()}"),
         _ => throw new ArgumentNullException(nameof(context), "Cannot be null or empty.")
     };
@@ -140,12 +140,6 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         };
     }
 
-    // TODO: Implement.
-    //private Value GetExpressionTuple(VerseParser.ExpTupleExpContext c)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
     private Expression GetConcreteExpression(VerseParser.ValueApplicationExpContext context)
     {
         Value v1 = GetValue(context.v(0));
@@ -156,17 +150,6 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
             V1 = v1,
             V2 = v2
         };
-
-        //Variable f = _variableFactory.Next();
-        //Variable x = _variableFactory.Next();
-
-        //Application application = new()
-        //{
-        //    V1 = f,
-        //    V2 = x
-        //};
-
-        //return Desugar.Assignment(f, e1, Desugar.Assignment(x, e2, application));
     }
 
     private Expression GetConcreteExpression(VerseParser.IfElseExpContext context)
@@ -178,8 +161,17 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         return _desugar.IfThenElse(e1, e2, e3);
     }
 
-    // TODO: Implement.
     private Expression GetConcreteExpression(VerseParser.ForExpContext context)
+    {
+        Expression e = GetExpression(context.e());
+
+        return new All
+        {
+            E = e
+        };
+    }
+
+    private Expression GetConcreteExpression(VerseParser.ForDoExpContext context)
     {
         throw new NotImplementedException();
     }
