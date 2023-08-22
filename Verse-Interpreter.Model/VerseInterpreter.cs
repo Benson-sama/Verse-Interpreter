@@ -30,10 +30,10 @@ public class VerseInterpreter
         _renderer.DisplayMessage("Converting and desugaring parse tree...");
         VerseProgram verseProgram = _syntaxTreeBuilder.BuildCustomSyntaxTree(programContext, wrapperFactory);
 
-        if (FreeVariables.Of(verseProgram.Wrapper.E).Count() is not 0)
+        if (FreeVariables.Of(verseProgram.E).Count() is not 0)
         {
             _renderer.DisplayMessage("Invalid verse program, free variables must be zero.");
-            return verseProgram.Wrapper;
+            return verseProgram.E;
         }
 
         _renderer.DisplayParsedProgram(verseProgram);

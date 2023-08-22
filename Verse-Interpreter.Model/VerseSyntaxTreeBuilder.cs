@@ -21,7 +21,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
     {
         return new VerseProgram()
         {
-            Wrapper = wrapperFactory(GetExpression(context.e()))
+            E = wrapperFactory(GetExpression(context.e()))
         };
     }
 

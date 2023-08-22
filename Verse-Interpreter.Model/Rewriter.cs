@@ -1,4 +1,5 @@
-﻿using Verse_Interpreter.Model.SyntaxTree;
+﻿using System.ComponentModel.Design;
+using Verse_Interpreter.Model.SyntaxTree;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
@@ -61,7 +62,7 @@ public class Rewriter : IRewriter
             ChooseR,
             ChooseL,
             ChooseAssoc,
-                //Choose
+            Choose
         };
     }
 
@@ -74,21 +75,20 @@ public class Rewriter : IRewriter
     public Expression Rewrite(VerseProgram verseProgram)
     {
         CurrentVerseProgram = verseProgram;
-
         do
         {
             RuleApplied = false;
-            RewriteInnerExpressions(verseProgram.Wrapper.E);
+            verseProgram.E = ApplyRules(verseProgram.E);
 
             if (!RuleApplied)
-                verseProgram.Wrapper.E = ApplyRules(verseProgram.Wrapper.E);
+                RewriteInnerExpressions(verseProgram.E);
 
             if (RuleApplied)
-                Renderer.DisplayMessage(verseProgram.Wrapper.E.ToString()!);
+                Renderer.DisplayIntermediateResult(verseProgram.E);
         }
         while (RuleApplied);
 
-        return ApplyRules(verseProgram.Wrapper);
+        return verseProgram.E;
     }
 
     public IExpressionOrEquation ApplyRules(IExpressionOrEquation eq)
@@ -121,7 +121,7 @@ public class Rewriter : IRewriter
 
         bool foundY = false;
 
-        FreeVariables.Of(CurrentVerseProgram.Wrapper.E);
+        FreeVariables.Of(CurrentVerseProgram.E);
 
         foreach (Variable variable in FreeVariables.VariableBuffer.BoundVariables)
         {
@@ -177,12 +177,7 @@ public class Rewriter : IRewriter
 
     private void Rewrite(Eqe eqe)
     {
-        RewriteInnerExpressions(eqe.E);
-
-        if (RuleApplied)
-            return;
-
-        eqe.E = ApplyRules(eqe.E);
+        eqe.Eq = ApplyRules(eqe.Eq);
 
         if (RuleApplied)
             return;
@@ -192,27 +187,32 @@ public class Rewriter : IRewriter
         if (RuleApplied)
             return;
 
-        eqe.Eq = ApplyRules(eqe.Eq);
+        eqe.E = ApplyRules(eqe.E);
+
+        if (RuleApplied)
+            return;
+
+        RewriteInnerExpressions(eqe.E);
     }
 
     private void Rewrite(Equation eq)
     {
-        RewriteInnerExpressions(eq.E);
+        eq.E = ApplyRules(eq.E);
 
         if (RuleApplied)
             return;
 
-        eq.E = ApplyRules(eq.E);
+        RewriteInnerExpressions(eq.E);
     }
 
     private void Rewrite(Lambda lambda)
     {
-        RewriteInnerExpressions(lambda.E);
+        lambda.E = ApplyRules(lambda.E);
 
         if (RuleApplied)
             return;
 
-        lambda.E = ApplyRules(lambda.E);
+        RewriteInnerExpressions(lambda.E);
     }
 
     private void Rewrite(Choice choice)
@@ -237,22 +237,22 @@ public class Rewriter : IRewriter
 
     private void Rewrite(Exists exists)
     {
-        RewriteInnerExpressions(exists.E);
+        exists.E = ApplyRules(exists.E);
 
         if (RuleApplied)
             return;
 
-        exists.E = ApplyRules(exists.E);
+        RewriteInnerExpressions(exists.E);
     }
 
     private void Rewrite(Wrapper wrapper)
     {
-        RewriteInnerExpressions(wrapper.E);
+        wrapper.E = ApplyRules(wrapper.E);
 
         if (RuleApplied)
             return;
 
-        wrapper.E = ApplyRules(wrapper.E);
+        RewriteInnerExpressions(wrapper.E);
     }
 
     #region Application
@@ -813,33 +813,6 @@ public class Rewriter : IRewriter
     }
 
     [RewriteRule]
-    private Expression AlternativeEqnElim(Expression expression)
-    {
-        if (expression is Exists { V: Variable existsX, E: Expression existsE })
-        {
-            foreach (Eqe eqe in AlternativeIsExecutionContextWithEquationIncludingHole(existsE))
-            {
-                if (eqe is not Eqe { Eq: Equation { V: Variable equationX, E: Value v }, E: Expression equationE } finalEqe)
-                    throw new Exception("Final Eqe in EQN-ELIM must match the rule.");
-
-                if (existsX.Equals(equationX)
-                    && !FreeVariables.Of(existsE, finalEqe).Contains(existsX)
-                    && !FreeVariables.Of(v).Contains(existsX)
-                    && !FreeVariables.Of(equationE).Contains(existsX))
-                {
-                    expression.EliminateEquation(finalEqe);
-                    RuleApplied = true;
-                    Renderer.DisplayRuleApplied("EQN-ELIM");
-
-                    return expression;
-                }
-            }
-        }
-
-        return expression;
-    }
-
-    [RewriteRule]
     private Expression FailElim(Expression expression)
     {
         if (IsExecutionContextFailingExcludingHole(expression))
@@ -1231,10 +1204,123 @@ public class Rewriter : IRewriter
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "CHOOSE".
+    /// CHOOSE  SX[𝐶𝑋[e1|e2]] −→ SX[𝐶𝑋[e1] | 𝐶𝑋[e2]] if 𝐶𝑋 ≠ □
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
+    /// <exception cref="Exception"></exception>
     [RewriteRule]
     private Expression Choose(Expression expression)
     {
-        throw new NotImplementedException();
+        (bool isFound, Expression? cx, Choice? foundChoice) = IsOuterScopeContextIncludingHole(expression);
+
+        if (isFound)
+        {
+            if (cx is null || foundChoice is null || expression is not Wrapper outerScopeContext)
+                throw new Exception("Choice context or found choice cannot be null when the method states they have been found.");
+
+            outerScopeContext.DuplicateChoiceContextUsingChoice(cx, foundChoice);
+
+            RuleApplied = true;
+            Renderer.DisplayRuleApplied("CHOOSE");
+        }
+
+        return expression;
+    }
+
+    private (bool isFound, Expression? cx, Choice? foundChoice) IsOuterScopeContextIncludingHole(Expression expression)
+    {
+        return expression switch
+        {
+            One { E: Expression sc } => IsInnerScopeContextIncludingHole(sc),
+            All { E: Expression sc } => IsInnerScopeContextIncludingHole(sc),
+            _ => default
+        };
+    }
+
+    private (bool isFound, Expression? cx, Choice? foundChoice) IsInnerScopeContextIncludingHole(Expression expression)
+    {
+        (bool isFound, Choice? foundChoice) = IsChoiceContextExcludingHole(expression);
+
+        if (isFound)
+            return (isFound, expression, foundChoice);
+
+        (bool isFound, Expression? cx, Choice? foundChoice) result = default;
+
+        if (expression is Choice { E1: Expression e1, E2: Expression e2 })
+        {
+            result = IsInnerScopeContextIncludingHole(e1);
+
+            if (result.isFound)
+                return result;
+
+            result = IsInnerScopeContextIncludingHole(e2);
+        }
+
+        return result;
+    }
+
+    private (bool isFound, Choice? foundChoice) IsChoiceContextIncludingHole(IExpressionOrEquation eq)
+    {
+        if (eq is Choice { E1: Expression, E2: Expression } choice)
+            return (true, choice);
+
+        return IsChoiceContextExcludingHole(eq);
+    }
+
+    private (bool isFound, Choice? foundChoice) IsChoiceContextExcludingHole(IExpressionOrEquation eq)
+    {
+        (bool isFound, Choice? foundChoice) result = default;
+
+        if (eq is Equation { V: Value, E: Expression cx1 })
+            result = IsChoiceContextIncludingHole(cx1);
+
+        if (result.isFound)
+            return result;
+
+        if (eq is Eqe { Eq: IExpressionOrEquation cx2, E: Expression })
+            result = IsChoiceContextIncludingHole(cx2);
+
+        if (result.isFound)
+            return result;
+
+        if (eq is Eqe { Eq: IExpressionOrEquation ce, E: Expression cx3 } && IsChoiceFreeExpression(ce))
+            result = IsChoiceContextIncludingHole(cx3);
+
+        if (result.isFound)
+            return result;
+
+        if (eq is Exists { V: Variable, E: Expression cx4 })
+            result = IsChoiceContextIncludingHole(cx4);
+
+        return result;
+    }
+
+    private bool IsChoiceFreeExpression(IExpressionOrEquation eq)
+    {
+        return eq switch
+        {
+            Value => true,
+            Eqe { Eq: IExpressionOrEquation ceq, E: Expression ce }
+                when IsChoiceFreeExpressionOrEquation(ceq) && IsChoiceFreeExpression(ce) => true,
+            One => true,
+            All => true,
+            Exists { V: Variable, E: Expression ce } when IsChoiceFreeExpression(ce) => true,
+            Application { V1: Operator, V2: Value } => true,
+            _ => false
+        };
+    }
+
+    private bool IsChoiceFreeExpressionOrEquation(IExpressionOrEquation eq)
+    {
+        return eq switch
+        {
+            Expression ce when IsChoiceFreeExpression(ce) => true,
+            Equation { V: Value, E: Expression ce } when IsChoiceFreeExpression(ce) => true,
+            _ => false
+        };
     }
 
     #endregion
