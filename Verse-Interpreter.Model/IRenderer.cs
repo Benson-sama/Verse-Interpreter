@@ -11,5 +11,7 @@ public interface IRenderer
 
     void DisplayParsedProgram(VerseProgram verseProgram);
 
+    void DisplayIntermediateResult(Expression expression);
+
     void DisplayResult(Expression expression);
 }
