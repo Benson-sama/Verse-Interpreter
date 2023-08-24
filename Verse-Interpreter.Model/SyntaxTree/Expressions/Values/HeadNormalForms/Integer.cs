@@ -1,4 +1,5 @@
 ﻿using System.Xml.Linq;
+using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators;
 
 namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 
@@ -32,6 +33,9 @@ public class Integer : HeadNormalForm
         => Value.GetHashCode();
 
     public override Integer DeepCopy()
+        => new(Value);
+
+    public override Integer DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
         => new(Value);
 
     public override string ToString() => $"{Value}";

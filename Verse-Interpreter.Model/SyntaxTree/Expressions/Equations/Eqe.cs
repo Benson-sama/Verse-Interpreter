@@ -15,5 +15,14 @@ public class Eqe : Expression
         };
     }
 
+    public override Eqe DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
+    {
+        return new Eqe
+        {
+            Eq = Eq.DeepCopyButReplaceChoice(choice, newExpression),
+            E = E.DeepCopyButReplaceChoice(choice, newExpression)
+        };
+    }
+
     public override string ToString() => $"{Eq}; {E}";
 }

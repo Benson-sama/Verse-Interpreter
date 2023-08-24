@@ -3,4 +3,6 @@
 public interface IExpressionOrEquation
 {
     public IExpressionOrEquation DeepCopy();
+
+    public IExpressionOrEquation DeepCopyButReplaceChoice(Choice choice, Expression newExpression);
 }

@@ -17,5 +17,14 @@ public class Exists : Expression
         };
     }
 
+    public override Exists DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
+    {
+        return new Exists
+        {
+            V = V.DeepCopyButReplaceChoice(choice, newExpression),
+            E = E.DeepCopyButReplaceChoice(choice, newExpression)
+        };
+    }
+
     public override string ToString() => $"E{V}. {E}";
 }

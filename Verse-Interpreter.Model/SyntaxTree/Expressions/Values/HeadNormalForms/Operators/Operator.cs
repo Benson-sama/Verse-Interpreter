@@ -3,4 +3,6 @@
 public abstract class Operator : HeadNormalForm
 {
     public abstract override Operator DeepCopy();
+
+    public abstract override Operator DeepCopyButReplaceChoice(Choice choice, Expression newExpression);
 }

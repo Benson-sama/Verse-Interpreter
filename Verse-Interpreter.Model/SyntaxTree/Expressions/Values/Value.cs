@@ -3,4 +3,6 @@
 public abstract class Value : Expression
 {
     public abstract override Value DeepCopy();
+
+    public abstract override Value DeepCopyButReplaceChoice(Choice choice, Expression newExpression);
 }

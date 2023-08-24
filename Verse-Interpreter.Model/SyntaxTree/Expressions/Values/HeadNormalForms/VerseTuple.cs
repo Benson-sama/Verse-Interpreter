@@ -31,10 +31,20 @@ public class VerseTuple : HeadNormalForm, IEnumerable<Value>
         return new VerseTuple(values);
     }
 
+    public override VerseTuple DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
+    {
+        Value[] values = Values.ToArray();
+
+        for (int i = 0; i < values.Length; i++)
+            values[i] = values[i].DeepCopyButReplaceChoice(choice, newExpression);
+
+        return new VerseTuple(values);
+    }
+
     public override string ToString()
     {
         if (!Values.Any())
-            return "()";
+            return "[]";
 
         StringBuilder sb = new("[");
         sb.Append($"{Values.First()}");

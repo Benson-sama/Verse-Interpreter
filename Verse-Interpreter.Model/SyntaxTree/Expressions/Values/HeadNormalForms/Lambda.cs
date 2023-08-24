@@ -1,4 +1,6 @@
-﻿namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
+﻿using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators;
+
+namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 
 public class Lambda : HeadNormalForm
 {
@@ -12,6 +14,15 @@ public class Lambda : HeadNormalForm
         {
             Parameter = Parameter.DeepCopy(),
             E = E.DeepCopy()
+        };
+    }
+
+    public override Lambda DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
+    {
+        return new Lambda
+        {
+            Parameter = Parameter.DeepCopyButReplaceChoice(choice, newExpression),
+            E = E.DeepCopyButReplaceChoice(choice, newExpression)
         };
     }
 

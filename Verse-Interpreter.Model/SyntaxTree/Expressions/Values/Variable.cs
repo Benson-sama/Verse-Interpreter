@@ -1,4 +1,6 @@
-﻿namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
+﻿using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators;
+
+namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
 
 public class Variable : Value, IEquatable<Variable>
 {
@@ -30,6 +32,9 @@ public class Variable : Value, IEquatable<Variable>
         => Name.GetHashCode();
 
     public override Variable DeepCopy()
+        => new(Name);
+
+    public override Variable DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
         => new(Name);
 
     public override string ToString()

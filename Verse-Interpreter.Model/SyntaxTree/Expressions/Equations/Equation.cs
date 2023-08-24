@@ -17,6 +17,14 @@ public class Equation : IExpressionOrEquation
         };
     }
 
-    public override string ToString() => $"{V}={E}";
+    public IExpressionOrEquation DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
+    {
+        return new Equation
+        {
+            V = V.DeepCopyButReplaceChoice(choice, newExpression),
+            E = E.DeepCopyButReplaceChoice(choice, newExpression)
+        };
+    }
 
+    public override string ToString() => $"{V}={E}";
 }
