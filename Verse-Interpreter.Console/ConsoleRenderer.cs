@@ -8,20 +8,33 @@ public class ConsoleRenderer : IRenderer
 {
     private string? _intermediateResultCache;
 
+    public bool IsSilent { get; set; }
+
     public void DisplayMessage(string message)
         => System.Console.WriteLine(message);
 
     public void DisplayRuleApplied(string message)
-        => System.Console.Write($"[~{message}]\t");
+    {
+        if (IsSilent)
+            return;
+
+        System.Console.Write($"[~{message}]\t");
+    }
 
     public void DisplayResult(Expression expression)
     {
-        System.Console.Write("\n\nResult: ");
+        if (!IsSilent)
+            System.Console.Write("\n\n");
+
+        System.Console.Write("Result: ");
         WriteMessageInColor(expression.ToString(), ConsoleColor.Green);
     }
 
     public void DisplayIntermediateResult(Expression expression)
     {
+        if (IsSilent)
+            return;
+
         if (expression.ToString() is not string resultText)
             return;
 

@@ -15,13 +15,14 @@ string header = """
                                                        | |                                       
     ---------------------------------------------------|_|--------------------------                                       
     """;
+ConsoleRenderer consoleRenderer = new();
 ConsoleRenderer.DisplayHeader(header);
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddSingleton<IVariableFactory, VariableFactory>();
-        services.AddSingleton<IRenderer, ConsoleRenderer>();
+        services.AddSingleton<IRenderer>(consoleRenderer);
         services.AddSingleton<IVerseSyntaxTreeBuilder, VerseSyntaxTreeBuilder>();
         services.AddSingleton<Desugar>();
         services.AddSingleton<IRewriter, Rewriter>();
@@ -34,11 +35,15 @@ GetRequestedCommand(args)();
 
 Action GetRequestedCommand(string[] args)
 {
-    if (args.Length < 2)
+    if (args.Length < 3)
         return ExecuteInvalidArgumentsCommand;
 
-    string mode = args[0];
-    string command = args[1];
+    string logMode = args[0];
+    string mode = args[1];
+    string command = args[2];
+
+    if (logMode == "-silent")
+        consoleRenderer.IsSilent = true;
 
     Func<Expression, Wrapper>? wrapperFactory = mode switch
     {
@@ -52,9 +57,9 @@ Action GetRequestedCommand(string[] args)
 
     return command switch
     {
-        "-code" => () => ExecuteCodeCommand(args.ElementAtOrDefault(2), wrapperFactory),
+        "-code" => () => ExecuteCodeCommand(args.ElementAtOrDefault(3), wrapperFactory),
         "-interactive" => () => ExecuteInteractiveCommand(wrapperFactory),
-        "-file" => () => ExecuteFileCommand(args.ElementAtOrDefault(2), wrapperFactory),
+        "-file" => () => ExecuteFileCommand(args.ElementAtOrDefault(3), wrapperFactory),
         { } => ExecuteUnknownCommand,
         _ => ExecuteInvalidArgumentsCommand
     };
@@ -100,9 +105,10 @@ void ExecuteInvalidArgumentsCommand()
     Console.WriteLine("""
         Command line arguments are not valid. The following format is required:
 
-          {mode} {command}
+          {logMode} {resultMode} {command}
 
-          {mode}: -one | -all
+          {logMode}: -default | -silent
+          {resultMode}: -one | -all
           {command}: -code {code} | -interactive | -file {filePath}
         """);
     Environment.Exit(1);
