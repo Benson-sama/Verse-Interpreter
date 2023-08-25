@@ -37,7 +37,7 @@ public class Verse3
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
-        ICollection tuple = (result as VerseTuple).ToArray();
+        ICollection tuple = (result as VerseTuple)!.ToArray();
 
         // Assert.
         CollectionAssert.AreEqual(tuple, new Value[] { new Integer(2), new Integer(1) });
