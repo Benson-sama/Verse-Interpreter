@@ -211,7 +211,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
     private VerseTuple GetTuple(VerseParser.TupleContext context)
     {
-        if (context.ChildCount is 0)
+        if (context.elements() is null)
             return VerseTuple.Empty;
         else
             return new VerseTuple(GetTupleElements(context.elements()).ToArray());
