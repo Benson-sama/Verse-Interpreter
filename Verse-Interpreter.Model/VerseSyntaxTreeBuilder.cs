@@ -91,7 +91,16 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         else
             throw new Exception("Invalid multiplication or division expression.");
 
-        return BuildArithmeticExpression(v1, op, v2);
+        Expression arithmeticExpression = BuildArithmeticExpression(v1, op, v2);
+
+        if (context.ChildCount is 3)
+            return arithmeticExpression;
+
+        return new Eqe
+        {
+            Eq = arithmeticExpression,
+            E = GetExpression(context.e())
+        };
     }
 
     private Expression GetConcreteExpression(VerseParser.BringIntoScopeExpContext context)

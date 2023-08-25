@@ -9,7 +9,7 @@ e			: '(' e ')'								#parenthesisExp
 			| v EQUALS e ';' e						#equalityExp
 			| v (ASTERISK | SLASH) v				#multOrDivExp
 			| v (PLUS | MINUS) v					#plusOrMinusExp
-			| v (GREATERTHAN | LESSTHAN) v			#comparisonExp
+			| v (GREATERTHAN | LESSTHAN) v (';' e)?	#comparisonExp
 			| (v v | v '(' v ')')					#valueApplicationExp
 			| v										#valueExp
 			| FAIL									#failExp
