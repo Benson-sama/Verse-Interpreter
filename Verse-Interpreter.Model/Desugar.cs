@@ -52,7 +52,9 @@ public class Desugar
     public Expression ExpressionApplication(Expression e1, Expression e2)
     {
         Variable f = _variableFactory.Next();
+        _variableFactory.RegisterUsedName(f.Name);
         Variable x = _variableFactory.Next();
+        _variableFactory.RegisterUsedName(x.Name);
 
         Application application = new()
         {
@@ -74,6 +76,7 @@ public class Desugar
     public Expression ExpressionEquation(Expression e1, Expression e2)
     {
         Variable x = _variableFactory.Next();
+        _variableFactory.RegisterUsedName(x.Name);
         Eqe eqe = new()
         {
             Eq = new Equation
@@ -90,6 +93,7 @@ public class Desugar
     public Lambda Lambda(IEnumerable<Variable> parameters, Expression e)
     {
         Variable p = _variableFactory.Next();
+        _variableFactory.RegisterUsedName(p.Name);
 
         Eqe eqe = new()
         {
@@ -138,6 +142,7 @@ public class Desugar
     public Expression Tail(Variable xs)
     {
         Variable i = _variableFactory.Next();
+        _variableFactory.RegisterUsedName(i.Name);
 
         return new All
         {
@@ -186,6 +191,7 @@ public class Desugar
     private Exists BuildExpressionTupleRecursively(IEnumerable<Expression> expressions, IEnumerable<Variable> variables)
     {
         Variable x = _variableFactory.Next();
+        _variableFactory.RegisterUsedName(x.Name);
 
         if (expressions.Count() is 1)
             return Assignment(x, expressions.First(), new VerseTuple(variables.Append(x)));
