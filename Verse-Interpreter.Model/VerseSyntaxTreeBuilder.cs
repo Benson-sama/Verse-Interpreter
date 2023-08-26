@@ -93,7 +93,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
         Expression arithmeticExpression = BuildArithmeticExpression(v1, op, v2);
 
-        if (context.ChildCount is 3)
+        if (context.e() is null)
             return arithmeticExpression;
 
         return new Eqe
@@ -238,6 +238,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         return context switch
         {
             VerseParser.IntegerHnfContext c => new Integer(GetInteger(c.INTEGER())),
+            VerseParser.StringHnfContext c => new VerseString(c.@string().content().GetText()),
             VerseParser.TupleHnfContext c => GetTuple(c.tuple()),
             VerseParser.LambdaHnfContext c => GetLambda(c.lambda()),
             { } => throw new Exception("Unable to match value context."),

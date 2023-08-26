@@ -23,9 +23,12 @@ v 			: VARIABLE								#variableValue
 			| hnf									#hnfValue
 			;
 hnf			: INTEGER								#integerHnf
+			| string								#stringHnf
 			| tuple									#tupleHnf
 			| lambda								#lambdaHnf
 			;
+string		: DOUBLEQUOTES content DOUBLEQUOTES ;
+content		: ~DOUBLEQUOTES* ;
 tuple		: '[' elements? ']' ;
 elements	: v (',' elements)* ;
 lambda		: tuple LAMBDA e ;
@@ -35,6 +38,7 @@ lambda		: tuple LAMBDA e ;
 fragment LOWERCASE	:	[a-z] ;
 fragment UPPERCASE	:	[A-Z] ;
 
+DOUBLEQUOTES: '"' ;
 TYPE		: 'any' ;
 ASSIGN		: ':=' ;
 EQUALS		: '=' ;

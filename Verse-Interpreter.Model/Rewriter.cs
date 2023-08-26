@@ -264,11 +264,16 @@ public class Rewriter : IRewriter
         {
             if (tuple.Count() is 2 && tuple.ElementAt(0) is Integer i1 && tuple.ElementAt(1) is Integer i2)
             {
-                Expression rewrittenExpression = new Integer(i1.Value + i2.Value);
-                Renderer.DisplayRuleApplied("APP-ADD");
-                RuleApplied = true;
-                return rewrittenExpression;
+                expression = new Integer(i1.Value + i2.Value);
+
+                OnRuleApplied("APP-ADD-INT");
             }
+            else if (tuple.Count() is 2 && tuple.ElementAt(0) is VerseString s1 && tuple.ElementAt(1) is VerseString s2)
+            {
+                expression = new VerseString(s1.Text + s2.Text);
+
+                OnRuleApplied("APP-ADD-STRING");
+        }
         }
 
         return expression;
@@ -281,10 +286,9 @@ public class Rewriter : IRewriter
         {
             if (tuple.Count() is 2 && tuple.ElementAt(0) is Integer i1 && tuple.ElementAt(1) is Integer i2)
             {
-                Expression rewrittenExpression = new Integer(i1.Value - i2.Value);
-                Renderer.DisplayRuleApplied("APP-SUB");
-                RuleApplied = true;
-                return rewrittenExpression;
+                expression = new Integer(i1.Value - i2.Value);
+
+                OnRuleApplied("APP-SUB");
             }
         }
 
@@ -298,10 +302,9 @@ public class Rewriter : IRewriter
         {
             if (tuple.Count() is 2 && tuple.ElementAt(0) is Integer i1 && tuple.ElementAt(1) is Integer i2)
             {
-                Expression rewrittenExpression = new Integer(i1.Value * i2.Value);
-                Renderer.DisplayRuleApplied("APP-MULT");
-                RuleApplied = true;
-                return rewrittenExpression;
+                expression = new Integer(i1.Value * i2.Value);
+
+                OnRuleApplied("APP-MULT");
             }
         }
 
@@ -315,10 +318,9 @@ public class Rewriter : IRewriter
         {
             if (tuple.Count() is 2 && tuple.ElementAt(0) is Integer i1 && tuple.ElementAt(1) is Integer i2)
             {
-                Expression rewrittenExpression = new Integer(i1.Value / i2.Value);
-                Renderer.DisplayRuleApplied("APP-DIV");
-                RuleApplied = true;
-                return rewrittenExpression;
+                expression = new Integer(i1.Value / i2.Value);
+
+                OnRuleApplied("APP-DIV");
             }
         }
 
@@ -334,10 +336,18 @@ public class Rewriter : IRewriter
             {
                 if (i1.Value > i2.Value)
                 {
-                    Expression rewrittenExpression = i1;
-                    RuleApplied = true;
-                    Renderer.DisplayRuleApplied("APP-GT");
-                    return rewrittenExpression;
+                    expression = i1;
+
+                    OnRuleApplied("APP-GT");
+                }
+            }
+            else if (tuple.Count() is 2 && tuple.ElementAt(0) is VerseString s1 && tuple.ElementAt(1) is VerseString s2)
+            {
+                if (s1.Text.Length > s2.Text.Length)
+                {
+                    expression = s1;
+
+                    OnRuleApplied("APP-GT-STRING");
                 }
             }
         }
@@ -354,10 +364,18 @@ public class Rewriter : IRewriter
             {
                 if (i1.Value <= i2.Value)
                 {
-                    Expression rewrittenExpression = new Fail();
-                    RuleApplied = true;
-                    Renderer.DisplayRuleApplied("APP-GT-FAIL");
-                    return rewrittenExpression;
+                    expression = new Fail();
+
+                    OnRuleApplied("APP-GT-FAIL");
+                }
+            }
+            else if (tuple.Count() is 2 && tuple.ElementAt(0) is VerseString s1 && tuple.ElementAt(1) is VerseString s2)
+            {
+                if (s1.Text.Length <= s2.Text.Length)
+                {
+                    expression = new Fail();
+
+                    OnRuleApplied("APP-GT-FAIL-STRING");
                 }
             }
         }
@@ -1324,4 +1342,10 @@ public class Rewriter : IRewriter
     }
 
     #endregion
+
+    private void OnRuleApplied(string ruleName)
+    {
+        RuleApplied = true;
+        Renderer.DisplayRuleApplied(ruleName);
+    }
 }
