@@ -130,6 +130,26 @@ public class Desugar
         return ExpressionApplication(one, VerseTuple.Empty);
     }
 
+    public Expression ForDo(Expression e1, Expression e2)
+    {
+        Variable v = _variableFactory.Next();
+        _variableFactory.RegisterUsedName(v.Name);
+        Variable z = _variableFactory.Next();
+        _variableFactory.RegisterUsedName(z.Name);
+        All all = new()
+        {
+            E = new Eqe
+            {
+                Eq = e1,
+                E = Lambda(Enumerable.Empty<Variable>(), e2)
+            }
+        };
+        Lambda f = Lambda(Enumerable.Repeat(z, 1), new Application { V1 = z, V2 = VerseTuple.Empty });
+        All flatMap = FlatMap(f, v);
+
+        return Assignment(v, all, flatMap);
+    }
+
     public static Application Head(Variable xs)
     {
         return new Application
@@ -197,5 +217,20 @@ public class Desugar
             return Assignment(x, expressions.First(), new VerseTuple(variables.Append(x)));
 
         return Assignment(x, expressions.First(), BuildExpressionTupleRecursively(expressions.Skip(1), variables.Append(x)));
+    }
+
+    public All FlatMap(Lambda f, Variable xs)
+    {
+        Variable i = _variableFactory.Next();
+        Variable j = _variableFactory.Next();
+
+        return new All
+        {
+            E = new Exists
+            {
+                V = i,
+                E = Assignment(j, new Application { V1 = xs, V2 = i }, new Application { V1 = f, V2 = new VerseTuple(j) })
+            }
+        };
     }
 }
