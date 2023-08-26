@@ -182,7 +182,10 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
     private Expression GetConcreteExpression(VerseParser.ForDoExpContext context)
     {
-        throw new NotImplementedException();
+        Expression e1 = GetExpression(context.e(0));
+        Expression e2 = GetExpression(context.e(1));
+
+        return _desugar.ForDo(e1, e2);
     }
 
     private Expression GetConcreteExpression(VerseParser.EqualityExpContext context)
