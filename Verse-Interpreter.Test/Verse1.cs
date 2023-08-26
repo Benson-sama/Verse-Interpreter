@@ -55,6 +55,23 @@ public class Verse1
     }
 
     [TestMethod]
+    public void TestStringAddition()
+    {
+        // Arrange.
+        string verseCode = "firstName:=\"tim\";" +
+            "lastName:=\"sweeney\";" +
+            "hyphen:=\"-\";" +
+            "temp:=firstName + hyphen;" +
+            "temp + lastName";
+
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
+
+        // Assert.
+        Assert.IsTrue(result is VerseString { Text: "tim-sweeney" });
+    }
+
+    [TestMethod]
     public void Test3Plus4Equals7()
     {
         // Arrange.
