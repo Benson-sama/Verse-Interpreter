@@ -45,4 +45,18 @@ public class Verse2
         // Assert.
         Assert.IsTrue(result is Integer integer && integer.Value == expectedResult);
     }
+    
+    [TestMethod]
+    public void TestForOneToThreeDoTimesTwo()
+    {
+        // Arrange.
+        string verseCode = "for(i:=1..3; i) do i+i";
+
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
+        ICollection tuple = (result as VerseTuple)!.ToArray();
+
+        // Assert.
+        CollectionAssert.AreEqual(tuple, new Value[] { new Integer(2), new Integer(4), new Integer(6) });
+    }
 }
