@@ -1,4 +1,3 @@
-﻿using System.ComponentModel.Design;
 using Verse_Interpreter.Model.SyntaxTree;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
@@ -29,7 +28,9 @@ public class Rewriter : IRewriter
             AppMult,
             AppDiv,
             AppGt,
+            AppLt,
             AppGtFail,
+            AppLtFail,
             AppBeta,
             AppTup,
             AppTup0,
@@ -356,6 +357,25 @@ public class Rewriter : IRewriter
     }
 
     [RewriteRule]
+    private Expression AppLt(Expression expression)
+    {
+        if (expression is Application { V1: Lt, V2: VerseTuple tuple })
+        {
+            if (tuple.Count() is 2 && tuple.ElementAt(0) is Integer i1 && tuple.ElementAt(1) is Integer i2)
+            {
+                if (i1.Value < i2.Value)
+                {
+                    expression = i1;
+
+                    OnRuleApplied("APP-LT");
+                }
+            }
+        }
+
+        return expression;
+    }
+
+    [RewriteRule]
     private Expression AppGtFail(Expression expression)
     {
         if (expression is Application { V1: Gt, V2: VerseTuple tuple })
@@ -377,6 +397,31 @@ public class Rewriter : IRewriter
 
                     OnRuleApplied("APP-GT-FAIL-STRING");
                 }
+            }
+        }
+
+        return expression;
+    }
+
+    [RewriteRule]
+    private Expression AppLtFail(Expression expression)
+    {
+        if (expression is Application { V1: Lt, V2: VerseTuple tuple })
+        {
+            if (tuple.Count() is 2 && tuple.ElementAt(0) is Integer i1 && tuple.ElementAt(1) is Integer i2)
+            {
+                if (i1.Value >= i2.Value)
+                {
+                    expression = new Fail();
+
+                    OnRuleApplied("APP-LT-FAIL");
+                }
+            }
+            else if (tuple.Count() is 2 && tuple.ElementAt(0) is VerseString && tuple.ElementAt(1) is VerseString)
+            {
+                expression = new Fail();
+
+                OnRuleApplied("APP-LT-FAIL-STRING");
             }
         }
 
