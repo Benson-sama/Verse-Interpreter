@@ -54,4 +54,18 @@ public class Verse3
         // Assert.
         CollectionAssert.AreEqual(tuple, new Value[] { new Integer(2), new Integer(1) });
     }
+
+    [TestMethod]
+    public void TestFunctionApplicationWithChoiceEvaluatesAllChoices()
+    {
+        // Arrange.
+        string verseCode = "x:=(1..5); f:=([a] => (a*a)); f[x]";
+
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new All { E = e });
+        ICollection tuple = (result as VerseTuple)!.ToArray();
+
+        // Assert.
+        CollectionAssert.AreEqual(tuple, new Value[] { new Integer(1), new Integer(4), new Integer(9), new Integer(16), new Integer(25) });
+    }
 }
