@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime;
+﻿using System.Diagnostics;
+using Antlr4.Runtime;
 using Verse_Interpreter.Model.SyntaxTree;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
@@ -45,8 +46,11 @@ public class VerseInterpreter
         }
 
         _renderer.DisplayParsedProgram(verseProgram);
-        _renderer.DisplayMessage("\nRewriting parse tree...\n");
+        _renderer.DisplayMessage("\nRewriting parse tree...");
+        Stopwatch stopwatch = Stopwatch.StartNew();
         Expression result = _rewriter.Rewrite(verseProgram);
+        stopwatch.Stop();
+        _renderer.DisplayMessage($"Finished rewriting in {stopwatch.Elapsed.TotalSeconds} seconds.\n");
         _renderer.DisplayResult(result);
 
         return result;
