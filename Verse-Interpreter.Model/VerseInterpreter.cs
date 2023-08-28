@@ -25,21 +25,30 @@ public class VerseInterpreter
         ITokenStream tokens = new CommonTokenStream(lexer);
         _renderer.DisplayMessage("Constructing parse tree...");
         VerseParser parser = new(tokens) { BuildParseTree = true };
-
         VerseParser.ProgramContext programContext = parser.program();
+        
+        if (parser.NumberOfSyntaxErrors > 0)
+        {
+            _renderer.DisplayMessage("Unable to parse verse program.");
+
+            return new Fail();
+        }
+
         _renderer.DisplayMessage("Converting and desugaring parse tree...");
         VerseProgram verseProgram = _syntaxTreeBuilder.BuildCustomSyntaxTree(programContext, wrapperFactory);
 
         if (FreeVariables.Of(verseProgram.E).Count() is not 0)
         {
             _renderer.DisplayMessage("Invalid verse program, free variables must be zero.");
-            return verseProgram.E;
+
+            return new Fail();
         }
 
         _renderer.DisplayParsedProgram(verseProgram);
         _renderer.DisplayMessage("\nRewriting parse tree...\n");
         Expression result = _rewriter.Rewrite(verseProgram);
         _renderer.DisplayResult(result);
+
         return result;
     }
 }
