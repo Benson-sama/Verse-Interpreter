@@ -1,4 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿//-------------------------------------------------------------------
+// <copyright file="Program.cs" company="FH Wiener Neustadt">
+//     Copyright (c) FH Wiener Neustadt. All rights reserved.
+// </copyright>
+// <author>Benjamin Bogner</author>
+// <summary>Contains the Program class.</summary>
+//-------------------------------------------------------------------
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Verse_Interpreter.Console;
 using Verse_Interpreter.Model;
@@ -38,14 +46,19 @@ Action GetRequestedCommand(string[] args)
     if (args.Length < 3)
         return ExecuteInvalidArgumentsCommand;
 
-    string logMode = args[0];
+    string rendererMode = args[0];
     string mode = args[1];
     string command = args[2];
 
-    if (logMode == "-silent")
-        consoleRenderer.IsSilent = true;
+    consoleRenderer.Mode = rendererMode.ToLower() switch
+    {
+        "-default" => RenderMode.Default,
+        "-silent" => RenderMode.Silent,
+        "-debug" => RenderMode.Debug,
+        _ => RenderMode.Default
+    };
 
-    Func<Expression, Wrapper>? wrapperFactory = mode switch
+    Func<Expression, Wrapper>? wrapperFactory = mode.ToLower() switch
     {
         "-one" => (e) => new One() { E = e },
         "-all" => (e) => new All() { E = e },
@@ -55,7 +68,7 @@ Action GetRequestedCommand(string[] args)
     if (wrapperFactory is null)
         return ExecuteInvalidArgumentsCommand;
 
-    return command switch
+    return command.ToLower() switch
     {
         "-code" => () => ExecuteCodeCommand(args.ElementAtOrDefault(3), wrapperFactory),
         "-interactive" => () => ExecuteInteractiveCommand(wrapperFactory),
@@ -107,7 +120,7 @@ void ExecuteInvalidArgumentsCommand()
 
           {logMode} {resultMode} {command}
 
-          {logMode}: -default | -silent
+          {logMode}: -default | -silent | -debug
           {resultMode}: -one | -all
           {command}: -code {code} | -interactive | -file {filePath}
         """);
