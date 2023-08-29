@@ -20,7 +20,14 @@ public class Verse1
     public void TestVersePaperIntroductionSample()
     {
         // Arrange.
-        string verseCode = "x:any; y:any; z:any; x=[y,3]; x=[2,z]; y";
+        string verseCode = """
+            x:any;
+            y:any;
+            z:any;
+            x=[y,3];
+            x=[2,z];
+            y
+            """;
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
@@ -58,11 +65,13 @@ public class Verse1
     public void TestStringAddition()
     {
         // Arrange.
-        string verseCode = "firstName:=\"tim\";" +
-            "lastName:=\"sweeney\";" +
-            "hyphen:=\"-\";" +
-            "temp:=firstName + hyphen;" +
-            "temp + lastName";
+        string verseCode = """
+            firstName:="tim";
+            lastName:="sweeney";
+            hyphen:="-";
+            temp:=firstName + hyphen;
+            temp + lastName
+            """;
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
@@ -160,7 +169,14 @@ public class Verse1
     public void TestFirstAndSecond()
     {
         // Arrange.
-        string verseCode = "fst:=([x,y] => x); snd:=([x,y] => y); z:=[3,4]; a:=fst(z); b:=snd[5,6]; a+b";
+        string verseCode = """
+            fst:=([x,y] => x);
+            snd:=([x,y] => y);
+            z:=[3,4];
+            a:=fst(z);
+            b:=snd[5,6];
+            a+b
+            """;
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
@@ -173,7 +189,15 @@ public class Verse1
     public void TestFactorialFunction()
     {
         // Arrange.
-        string verseCode = "fac:=([x] => (if(x=0; x): 1 else: a:=(x-1); b:=fac[a]; x*b)); fac[2]";
+        string verseCode = """
+            fac:=([x] => (
+                if(x=0; x):
+                    1
+                else:
+                    (a:=(x-1); b:=fac[a]; (x*b)))
+                );
+            fac[2]
+            """;
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
