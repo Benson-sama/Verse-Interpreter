@@ -118,9 +118,9 @@ void ExecuteInvalidArgumentsCommand()
     Console.WriteLine("""
         Command line arguments are not valid. The following format is required:
 
-          {logMode} {resultMode} {command}
+          {renderMode} {resultMode} {command}
 
-          {logMode}: -default | -silent | -debug
+          {renderMode}: -default | -silent | -debug
           {resultMode}: -one | -all
           {command}: -code {code} | -interactive | -file {filePath}
         """);
