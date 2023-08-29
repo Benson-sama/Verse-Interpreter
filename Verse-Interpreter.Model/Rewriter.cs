@@ -1,4 +1,4 @@
-using Verse_Interpreter.Model.SyntaxTree;
+﻿using Verse_Interpreter.Model.SyntaxTree;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
@@ -110,7 +110,7 @@ public class Rewriter : IRewriter
 
             if (RuleApplied)
                 return rewrittenExpression;
-        }
+            }
 
         return rewrittenExpression;
     }
@@ -274,7 +274,7 @@ public class Rewriter : IRewriter
                 expression = new VerseString(s1.Text + s2.Text);
 
                 OnRuleApplied("APP-ADD-STRING");
-        }
+            }
         }
 
         return expression;
