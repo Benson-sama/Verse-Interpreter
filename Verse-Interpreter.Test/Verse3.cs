@@ -81,4 +81,27 @@ public class Verse3
         // Assert.
         Assert.IsTrue(result is Integer { Value: 10 });
     }
+
+    [DataTestMethod]
+    [DataRow(68)]
+    [DataRow(69)]
+    [DataRow(70)]
+    public void TestIfWithOptionalExpressionAfterwards(int number)
+    {
+        // Arrange.
+        string verseCode = $"""
+            x:any;
+            f:=([a] => (a={number}; a));
+            is69:=(if (x=69; x): \"yes\" else: \"no\");
+            f[x];
+            is69
+            """;
+        string expectedText = number == 69 ? "yes" : "no";
+
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
+
+        // Assert.
+        Assert.AreEqual(result, new VerseString(expectedText));
+    }
 }
