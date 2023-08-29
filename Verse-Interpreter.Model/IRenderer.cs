@@ -7,9 +7,9 @@ public interface IRenderer
 {
     void DisplayMessage(string message);
 
-    void DisplayRuleApplied(string message);
-
     void DisplayParsedProgram(VerseProgram verseProgram);
+
+    void DisplayRuleApplied(string message);
 
     void DisplayIntermediateResult(Expression expression);
 
