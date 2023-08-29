@@ -13,56 +13,78 @@ using Verse_Interpreter.Model.SyntaxTree.Expressions;
 namespace Verse_Interpreter.Console;
 
 /// <summary>
-/// 
+/// Class <see cref="ConsoleRenderer"/> serves as an <see cref="IRenderer"/> for the console.
 /// </summary>
 public class ConsoleRenderer : IRenderer
 {
     /// <summary>
-    /// 
+    /// Field <c>_intermediateResultCache</c> serves as a cache for intermediate results.
     /// </summary>
     private string? _intermediateResultCache;
 
     /// <summary>
-    /// 
+    /// Property <c>Mode</c> represents the <see cref="ConsoleRenderer"/>'s render mode.
+    /// Default value is <see cref="RenderMode.Default"/>.
     /// </summary>
     public RenderMode Mode { get; set; } = RenderMode.Default;
 
     /// <summary>
-    /// 
+    /// This method prints the <paramref name="header"/> to the console in blue foreground
+    /// and current background colour without changing the <see cref="System.Console.ForegroundColor"/>
+    /// and <see cref="System.Console.BackgroundColor"/>.
     /// </summary>
-    /// <param name="message"></param>
+    /// <param name="header">The <c>header</c> to be displayed.</param>
+    public static void DisplayHeader(string header)
+    {
+        WriteMessageInColour(
+            header,
+            foregroundColour: ConsoleColor.Blue,
+            backgroundColour: System.Console.BackgroundColor);
+    }
+
+    /// <summary>
+    /// This method simply uses <see cref="System.Console.WriteLine(string)"/> to display the <paramref name="message"/>.
+    /// </summary>
+    /// <param name="message"><c>message</c> represents the message to display.</param>
     public void DisplayMessage(string message)
         => System.Console.WriteLine(message);
 
     /// <summary>
-    /// 
+    /// This method prints the string representation of the <c>verseProgram</c> to the console 
+    /// in blue foreground colour and current background colour without changing the
+    /// <see cref="System.Console.ForegroundColor"/> and <see cref="System.Console.BackgroundColor"/>.
     /// </summary>
-    /// <param name="message"></param>
-    public void DisplayRuleApplied(string message)
+    /// <param name="verseProgram"><c>verseProgram</c> represents the Verse program to display.</param>
+    public void DisplayParsedProgram(VerseProgram verseProgram)
+    {
+        System.Console.Write("\nVerse program: ");
+        WriteMessageInColour(
+            verseProgram.ToString(),
+            foregroundColour: ConsoleColor.Blue,
+            backgroundColour: System.Console.BackgroundColor);
+    }
+
+    /// <summary>
+    /// This method prints the <paramref name="appliedRule"/> in the format "[~<c>appliedRule</c>]" to the console
+    /// if the <c>Mode</c> is not <see cref="RenderMode.Silent"/>.
+    /// It also adds a tabulator spacing afterwards if the <c>Mode</c> is <see cref="RenderMode.Debug"/>.
+    /// </summary>
+    /// <param name="appliedRule"><c>appliedRule</c> represents the applied rule to display.</param>
+    public void DisplayRuleApplied(string appliedRule)
     {
         if (Mode == RenderMode.Silent)
             return;
 
-        System.Console.Write($"[~{message}]{(Mode == RenderMode.Debug ? "\t" : "")}");
+        System.Console.Write($"[~{appliedRule}]{(Mode == RenderMode.Debug ? "\t" : "")}");
     }
 
     /// <summary>
-    /// 
+    /// This method prints the <paramref name="expression"/> to the console if the <c>Mode</c> is
+    /// <see cref="RenderMode.Debug"/> and saves it in the <c>_intermediateResultCache</c> afterwards.
+    /// It is using a yellow foreground colour for each character as long as the new <paramref name="expression"/>
+    /// is equal to the one from the <c>_intermediateResultCache</c> to aid the reader in finding the changes.
     /// </summary>
-    /// <param name="expression"></param>
-    public void DisplayResult(Expression expression)
-    {
-        if (Mode != RenderMode.Silent)
-            System.Console.Write("\n\n");
-
-        System.Console.Write("Result: ");
-        WriteMessageInColor(expression.ToString(), ConsoleColor.Green);
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="expression"></param>
+    /// <param name="expression"><c>expression</c> represents the intermediate result to display.</param>
     public void DisplayIntermediateResult(Expression expression)
     {
         if (Mode != RenderMode.Debug)
@@ -94,34 +116,43 @@ public class ConsoleRenderer : IRenderer
     }
 
     /// <summary>
-    /// 
+    /// This method prints the <paramref name="expression"/> to the console in green foreground
+    /// and current background colour without changing the <see cref="System.Console.ForegroundColor"/>
+    /// and <see cref="System.Console.BackgroundColor"/>. It additionally adds two newlines if the
+    /// <c>Mode</c> is not <see cref="RenderMode.Silent"/>.
     /// </summary>
-    /// <param name="verseProgram"></param>
-    public void DisplayParsedProgram(VerseProgram verseProgram)
+    /// <param name="expression"><c>expression</c> represents the result to display.</param>
+    public void DisplayResult(Expression expression)
     {
-        System.Console.Write("\nVerse program: ");
-        WriteMessageInColor(verseProgram.ToString(), ConsoleColor.Blue);
+        if (Mode != RenderMode.Silent)
+            System.Console.WriteLine("\n");
+
+        System.Console.Write("Result: ");
+        WriteMessageInColour(
+            expression.ToString() ?? "null",
+            foregroundColour: ConsoleColor.Green,
+            backgroundColour: System.Console.BackgroundColor);
     }
 
     /// <summary>
-    /// 
+    /// This method uses <see cref="System.Console.WriteLine(string)"/> to display the <paramref name="message"/>
+    /// in the specified <paramref name="foregroundColour"/> and <paramref name="backgroundColour"/>.
+    /// It resets the <see cref="System.Console.ForegroundColor"/> and <see cref="System.Console.BackgroundColor"/>
+    /// to its previous values afterwards.
     /// </summary>
-    /// <param name="message"></param>
-    /// <param name="consoleColor"></param>
-    private static void WriteMessageInColor(string? message, ConsoleColor consoleColor)
+    /// <param name="message">The <c>message</c> to print.</param>
+    /// <param name="foregroundColour">The <c>foregroundColour</c> for the <c>message</c>.</param>
+    /// /// <param name="backgroundColour">The <c>backgroundColour</c> for the <c>message</c>.</param>
+    private static void WriteMessageInColour(string message, ConsoleColor foregroundColour, ConsoleColor backgroundColour)
     {
-        ConsoleColor previousForegroundColor = System.Console.ForegroundColor;
+        ConsoleColor previousForegroundColour = System.Console.ForegroundColor;
+        ConsoleColor previousBackgroundColour = System.Console.BackgroundColor;
 
-        System.Console.ForegroundColor = consoleColor;
+        System.Console.ForegroundColor = foregroundColour;
+        System.Console.BackgroundColor = backgroundColour;
         System.Console.WriteLine(message);
 
-        System.Console.ForegroundColor = previousForegroundColor;
+        System.Console.ForegroundColor = previousForegroundColour;
+        System.Console.BackgroundColor = previousBackgroundColour;
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="header"></param>
-    public static void DisplayHeader(string header)
-        => WriteMessageInColor(header, ConsoleColor.Blue);
 }
