@@ -6,7 +6,7 @@
 // <summary>Contains the RenderMode enum.</summary>
 //-------------------------------------------------------------------
 
-namespace Verse_Interpreter.Console;
+namespace Verse_Interpreter.Console.Renderer;
 
 /// <summary>
 /// Enum <see cref="RenderMode"/> specifies constants that define different rendering modes.

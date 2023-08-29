@@ -10,7 +10,7 @@ using Verse_Interpreter.Model;
 using Verse_Interpreter.Model.SyntaxTree;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 
-namespace Verse_Interpreter.Console;
+namespace Verse_Interpreter.Console.Renderer;
 
 /// <summary>
 /// Class <see cref="ConsoleRenderer"/> serves as an <see cref="IRenderer"/> for the console.
