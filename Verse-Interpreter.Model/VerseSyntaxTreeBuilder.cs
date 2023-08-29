@@ -154,10 +154,19 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         Value v1 = GetValue(context.v(0));
         Value v2 = GetValue(context.v(1));
 
-        return new Application
+        Application application = new()
         {
             V1 = v1,
             V2 = v2
+        };
+
+        if (context.e() is null)
+            return application;
+
+        return new Eqe
+        {
+            Eq = application,
+            E = GetExpression(context.e())
         };
     }
 

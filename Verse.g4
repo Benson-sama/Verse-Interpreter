@@ -10,7 +10,7 @@ e			: '(' e ')'								#parenthesisExp
 			| v (ASTERISK | SLASH) v				#multOrDivExp
 			| v (PLUS | MINUS) v					#plusOrMinusExp
 			| v (GREATERTHAN | LESSTHAN) v (';' e)?	#comparisonExp
-			| (v v | v '(' v ')')					#valueApplicationExp
+			| (v v | v '(' v ')') (';' e)?			#valueApplicationExp
 			| v										#valueExp
 			| FAIL									#failExp
 			| INTEGER '..' INTEGER					#rangeChoiceExp
