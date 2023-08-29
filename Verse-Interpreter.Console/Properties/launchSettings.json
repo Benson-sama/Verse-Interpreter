@@ -2,15 +2,15 @@
   "profiles": {
     "Code Command": {
       "commandName": "Project",
-      "commandLineArgs": "-silent -all -code \"x:=(1..100); f:=([a] => (a*a)); f[x]\""
+      "commandLineArgs": "-default -one -code \"\""
     },
     "Interactive Command": {
       "commandName": "Project",
-      "commandLineArgs": "-silent -one -interactive"
+      "commandLineArgs": "-default -one -interactive"
     },
     "File Command": {
       "commandName": "Project",
-      "commandLineArgs": "-silent -one -file \"Input.verse\""
+      "commandLineArgs": "-default -one -file \"\""
     },
     "Missing Command": {
       "commandName": "Project"
