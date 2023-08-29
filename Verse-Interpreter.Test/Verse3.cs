@@ -20,7 +20,13 @@ public class Verse3
     public void TestFunkyOrder()
     {
         // Arrange.
-        string verseCode = "x:any; y:=x+9; x=3; x+y";
+        string verseCode = """
+            x:any;
+            y:=x+9;
+            x=3;
+            x+y
+            """;
+
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
 
@@ -32,7 +38,13 @@ public class Verse3
     public void TestFlatMap()
     {
         // Arrange.
-        string verseCode = "flatMap:=([f,xs] => for{i:any; t:=xs(i); f[t]}); numbers:=[1,2,3,4,5]; add:=([a] => (a+1)); flatMap[add,numbers]";
+        string verseCode = """
+            flatMap:=([f,xs] => for{i:any; t:=xs(i); f[t]});
+            numbers:=[1,2,3,4,5];
+            add:=([a] => (a+1));
+            flatMap[add,numbers]
+            """;
+
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
         ICollection tuple = (result as VerseTuple)!.ToArray();
@@ -42,10 +54,34 @@ public class Verse3
     }
 
     [TestMethod]
+    public void TestAppend()
+    {
+        // Arrange.
+        string verseCode = """
+            a:=[1,2];
+            b:=[3,4];
+            append:=([x,y] => (for{(i:any; x(i)) | (j:any; y(j))}));
+            append[a,b]
+            """;
+
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
+        ICollection tuple = (result as VerseTuple)!.ToArray();
+
+        // Assert.
+        CollectionAssert.AreEqual(tuple, new Value[] { new Integer(1), new Integer(2), new Integer(3), new Integer(4) });
+    }
+
+    [TestMethod]
     public void TestRunFunctionBackwards()
     {
         // Arrange.
-        string verseCode = "a:any; f:=([x,y] => [y,x]); [1,2]=(f(a)); a";
+        string verseCode = """
+            a:any;
+            f:=([x,y] => [y,x]);
+            [1,2]=(f(a));
+            a
+            """;
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
@@ -59,7 +95,11 @@ public class Verse3
     public void TestFunctionApplicationWithChoiceEvaluatesAllChoices()
     {
         // Arrange.
-        string verseCode = "x:=(1..5); f:=([a] => (a*a)); f[x]";
+        string verseCode = """
+            x:=(1..5);
+            f:=([a] => (a*a));
+            f[x]
+            """;
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new All { E = e });
@@ -70,10 +110,15 @@ public class Verse3
     }
 
     [TestMethod]
-    public void TestFunctionGivesVariableValue()
+    public void TestFunctionApplicationGivesVariableValue()
     {
         // Arrange.
-        string verseCode = "x:any; f:=([a] => (a=10; a)); f[x]; x";
+        string verseCode = """
+            x:any;
+            f:=([a] => (a=10; a));
+            f[x];
+            x
+            """;
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
