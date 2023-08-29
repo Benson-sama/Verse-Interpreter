@@ -176,7 +176,16 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         Expression e2 = GetExpression(context.e(1));
         Expression e3 = GetExpression(context.e(2));
 
-        return _desugar.IfThenElse(e1, e2, e3);
+        Expression ifThenElseExpression = _desugar.IfThenElse(e1, e2, e3);
+
+        if (context.e(3) is null)
+            return ifThenElseExpression;
+
+        return new Eqe
+        {
+            Eq = ifThenElseExpression,
+            E = GetExpression(context.e(3))
+        };
     }
 
     private Expression GetConcreteExpression(VerseParser.ForExpContext context)

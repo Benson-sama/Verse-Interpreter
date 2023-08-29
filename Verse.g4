@@ -15,7 +15,7 @@ e			: '(' e ')'								#parenthesisExp
 			| FAIL									#failExp
 			| INTEGER '..' INTEGER					#rangeChoiceExp
 			| <assoc=right> e CHOICE e				#choiceExp
-			| 'if' '(' e '):' e 'else:' e			#ifElseExp
+			| 'if' '(' e '):' e 'else:' e (';' e)?	#ifElseExp
 			| 'for' '{' e '}'						#forExp
 			| 'for' '(' e ')' 'do' e				#forDoExp
 			;
@@ -35,6 +35,7 @@ lambda		: tuple LAMBDA e ;
 
 // -- Lexer Rules --
 
+fragment NUMBER		:	[0-9] ;
 fragment LOWERCASE	:	[a-z] ;
 fragment UPPERCASE	:	[A-Z] ;
 
@@ -51,8 +52,8 @@ SLASH		: '/' ;
 GREATERTHAN	: '>' ;
 LESSTHAN	: '<' ;
 LAMBDA		: '=>' ;
-INTEGER		: [0-9]+ ;
-VARIABLE    : LOWERCASE (LOWERCASE | UPPERCASE)* ;
+INTEGER		: NUMBER+ ;
+VARIABLE    : LOWERCASE (LOWERCASE | UPPERCASE | NUMBER)* ;
 NEWLINE		: [\r?\n] -> skip ;
 TAB			: '\t' -> skip ;
 WS			: ' ' -> skip ;
