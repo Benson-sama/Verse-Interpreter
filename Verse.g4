@@ -16,6 +16,7 @@ e			: '(' e ')'								#parenthesisExp
 			| INTEGER '..' INTEGER					#rangeChoiceExp
 			| <assoc=right> e CHOICE e				#choiceExp
 			| 'if' '(' e '):' e 'else:' e (';' e)?	#ifElseExp
+			| 'one' '{' e '}'						#oneExp
 			| 'for' '{' e '}'						#forExp
 			| 'for' '(' e ')' 'do' e				#forDoExp
 			;

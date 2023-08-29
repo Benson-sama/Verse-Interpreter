@@ -40,6 +40,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         VerseParser.ChoiceExpContext c => GetConcreteExpression(c),
         VerseParser.ValueApplicationExpContext c => GetConcreteExpression(c),
         VerseParser.IfElseExpContext c => GetConcreteExpression(c),
+        VerseParser.OneExpContext c => GetConcreteExpression(c),
         VerseParser.ForExpContext c => GetConcreteExpression(c),
         VerseParser.ForDoExpContext c => GetConcreteExpression(c),
         { } => throw new Exception($"Unable to match context type: {context.GetType()}"),
@@ -185,6 +186,16 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
         {
             Eq = ifThenElseExpression,
             E = GetExpression(context.e(3))
+        };
+    }
+
+    private Expression GetConcreteExpression(VerseParser.OneExpContext context)
+    {
+        Expression e = GetExpression(context.e());
+
+        return new One
+        {
+            E = e
         };
     }
 
