@@ -16,7 +16,7 @@ namespace Verse_Interpreter.Model;
 
 /// <summary>
 /// Class <see cref="VerseInterpreter"/> serves as an interpreter for the
-/// functional logic programming language Verse proposed by Epic Games.
+/// functional logic programming language Verse proposed by Epic Games in 2023.
 /// </summary>
 public class VerseInterpreter
 {
