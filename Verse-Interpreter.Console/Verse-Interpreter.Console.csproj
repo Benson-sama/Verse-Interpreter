@@ -8,10 +8,10 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+	<!--<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="copy ..\Input.Verse bin\Debug\net7.0\Input.verse" />
-		<Exec Command="call antlr4 -no-listener -visitor -Dlanguage=CSharp -o ../Verse-Interpreter.Model/ANTLR ../Verse.g4" LogStandardErrorAsError="true" />
-	</Target>
+		<Exec Command="call antlr4 -no-listener -no-visitor -Dlanguage=CSharp -o ../Verse-Interpreter.Model/ANTLR ../Verse.g4" LogStandardErrorAsError="true" />
+	</Target>-->
 
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
