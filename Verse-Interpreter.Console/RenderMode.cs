@@ -9,11 +9,22 @@
 namespace Verse_Interpreter.Console;
 
 /// <summary>
-/// 
+/// Enum <see cref="RenderMode"/> specifies constants that define different rendering modes.
 /// </summary>
 public enum RenderMode
 {
+    /// <summary>
+    /// The default rendering mode.
+    /// </summary>
     Default,
+
+    /// <summary>
+    /// The silent rendering mode used to provide less rendering.
+    /// </summary>
     Silent,
+
+    /// <summary>
+    /// The debug rendering mode used to provide additional rendering.
+    /// </summary>
     Debug
 }
