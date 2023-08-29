@@ -35,5 +35,5 @@ public class VerseString : HeadNormalForm
     public override VerseString DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
         => new(Text);
 
-    public override string ToString() => Text;
+    public override string ToString() => $"\"{Text}\"";
 }
