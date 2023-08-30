@@ -1,4 +1,4 @@
-﻿namespace Verse_Interpreter.Test;
+namespace Verse_Interpreter.Test;
 
 [TestClass]
 public class Verse3

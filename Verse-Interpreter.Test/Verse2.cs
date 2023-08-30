@@ -1,8 +1,4 @@
-﻿using Verse_Interpreter.Model.Build;
-using Verse_Interpreter.Model.Render;
-using Verse_Interpreter.Model.Rewrite;
-
-namespace Verse_Interpreter.Test;
+﻿namespace Verse_Interpreter.Test;
 
 [TestClass]
 public class Verse2
