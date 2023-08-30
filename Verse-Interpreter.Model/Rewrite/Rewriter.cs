@@ -690,7 +690,7 @@ public class Rewriter : IRewriter
 
             if (FreeVariables.Of(expression).Contains(x) && FreeVariables.Of(e).Contains(x) && !FreeVariables.Of(v).Contains(x))
             {
-                if (v is not Variable || v is Variable y && VariableBoundInsideVariable(x, y))
+                if (v is not Variable || (v is Variable y && VariableBoundInsideVariable(x, y)))
                 {
                     expression.SubstituteUntilEqe(finalEqe, x, v.DeepCopy());
                     RuleApplied = true;
