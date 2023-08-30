@@ -1,4 +1,8 @@
-﻿namespace Verse_Interpreter.Test;
+﻿using Verse_Interpreter.Model.Build;
+using Verse_Interpreter.Model.Render;
+using Verse_Interpreter.Model.Rewrite;
+
+namespace Verse_Interpreter.Test;
 
 [TestClass]
 public class Verse2
@@ -58,5 +62,22 @@ public class Verse2
 
         // Assert.
         CollectionAssert.AreEqual(tuple, new Value[] { new Integer(2), new Integer(4), new Integer(6) });
+    }
+
+    [TestMethod]
+    public void TestBindingWithChoice()
+    {
+        // Arrange.
+        string verseCode = """
+            x:=(1|7|2);
+            x+1
+            """;
+
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new All { E = e });
+        ICollection tuple = (result as VerseTuple)!.ToArray();
+
+        // Assert.
+        CollectionAssert.AreEqual(tuple, new Value[] { new Integer(2), new Integer(8), new Integer(3) });
     }
 }
