@@ -1353,7 +1353,8 @@ public class Rewriter : IRewriter
         if (result.isFound)
             return result;
 
-        if (eq is Eqe { Eq: IExpressionOrEquation ce, E: Expression cx3 } && IsChoiceFreeExpression(ce))
+        // Note: ce should be checked for IsChoiceFreeExpression instead of the following according to the paper.
+        if (eq is Eqe { Eq: IExpressionOrEquation ce, E: Expression cx3 } && IsChoiceFreeExpressionOrEquation(ce))
             result = IsChoiceContextIncludingHole(cx3);
 
         if (result.isFound)
