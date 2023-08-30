@@ -1,6 +1,6 @@
 ﻿using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
 
-namespace Verse_Interpreter.Model;
+namespace Verse_Interpreter.Model.SyntaxTree.Utility;
 
 public class VariableBuffer
 {

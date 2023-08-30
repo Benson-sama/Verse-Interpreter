@@ -7,7 +7,7 @@ using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
 
-namespace Verse_Interpreter.Model;
+namespace Verse_Interpreter.Model.Build;
 
 public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 {
@@ -325,7 +325,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
     {
         if (e1 is Value v1 && e2 is Value v2)
         {
-            if ((v1 is Integer or Variable) && (v2 is Integer or Variable))
+            if (v1 is Integer or Variable && v2 is Integer or Variable)
             {
                 return new Application
                 {

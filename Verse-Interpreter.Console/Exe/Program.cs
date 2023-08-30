@@ -8,8 +8,11 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Verse_Interpreter.Console.Renderer;
+using Verse_Interpreter.Console.Render;
 using Verse_Interpreter.Model;
+using Verse_Interpreter.Model.Build;
+using Verse_Interpreter.Model.Render;
+using Verse_Interpreter.Model.Rewrite;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
 

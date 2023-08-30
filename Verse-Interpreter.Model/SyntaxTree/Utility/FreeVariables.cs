@@ -4,7 +4,7 @@ using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
 
-namespace Verse_Interpreter.Model.SyntaxTree;
+namespace Verse_Interpreter.Model.SyntaxTree.Utility;
 
 public static class FreeVariables
 {

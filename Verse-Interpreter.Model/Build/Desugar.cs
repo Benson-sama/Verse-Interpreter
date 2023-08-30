@@ -5,7 +5,7 @@ using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
 
-namespace Verse_Interpreter.Model;
+namespace Verse_Interpreter.Model.Build;
 
 public class Desugar
 {

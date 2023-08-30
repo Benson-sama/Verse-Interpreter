@@ -2,7 +2,7 @@
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
 
-namespace Verse_Interpreter.Model;
+namespace Verse_Interpreter.Model.Build;
 
 public interface IVerseSyntaxTreeBuilder
 {

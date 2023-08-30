@@ -6,11 +6,11 @@
 // <summary>Contains the ConsoleRenderer class.</summary>
 //-------------------------------------------------------------------
 
-using Verse_Interpreter.Model;
+using Verse_Interpreter.Model.Render;
 using Verse_Interpreter.Model.SyntaxTree;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 
-namespace Verse_Interpreter.Console.Renderer;
+namespace Verse_Interpreter.Console.Render;
 
 /// <summary>
 /// Class <see cref="ConsoleRenderer"/> serves as an <see cref="IRenderer"/> for the console.

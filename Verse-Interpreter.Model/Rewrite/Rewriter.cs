@@ -1,12 +1,16 @@
-﻿using Verse_Interpreter.Model.SyntaxTree;
+﻿using Verse_Interpreter.Model.Build;
+using Verse_Interpreter.Model.Render;
+using Verse_Interpreter.Model.Rewrite.Utility;
+using Verse_Interpreter.Model.SyntaxTree;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
+using Verse_Interpreter.Model.SyntaxTree.Utility;
 
-namespace Verse_Interpreter.Model;
+namespace Verse_Interpreter.Model.Rewrite;
 
 public class Rewriter : IRewriter
 {
@@ -110,7 +114,7 @@ public class Rewriter : IRewriter
 
             if (RuleApplied)
                 return rewrittenExpression;
-            }
+        }
 
         return rewrittenExpression;
     }
@@ -686,7 +690,7 @@ public class Rewriter : IRewriter
 
             if (FreeVariables.Of(expression).Contains(x) && FreeVariables.Of(e).Contains(x) && !FreeVariables.Of(v).Contains(x))
             {
-                if (v is not Variable || (v is Variable y && VariableBoundInsideVariable(x, y)))
+                if (v is not Variable || v is Variable y && VariableBoundInsideVariable(x, y))
                 {
                     expression.SubstituteUntilEqe(finalEqe, x, v.DeepCopy());
                     RuleApplied = true;
@@ -794,7 +798,7 @@ public class Rewriter : IRewriter
         if (expression is Eqe { Eq: IExpressionOrEquation eq, E: Eqe { Eq: Equation { V: Variable x, E: Value v }, E: Expression e } })
         {
             if (eq is not Equation { V: Variable, E: Value }
-            || (eq is Equation { V: Variable y, E: Value } && !(x.Equals(y) || VariableBoundInsideVariable(y, x))))
+            || eq is Equation { V: Variable y, E: Value } && !(x.Equals(y) || VariableBoundInsideVariable(y, x)))
             {
                 RuleApplied = true;
                 Renderer.DisplayRuleApplied("SEQ-SWAP");
