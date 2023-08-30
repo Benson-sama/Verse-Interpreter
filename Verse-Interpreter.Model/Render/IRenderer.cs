@@ -13,5 +13,5 @@ public interface IRenderer
 
     void DisplayIntermediateResult(Expression expression);
 
-    void DisplayResult(Expression expression);
+    void DisplayResult(Expression expression, TimeSpan elapsedTime);
 }

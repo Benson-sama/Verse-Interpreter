@@ -116,18 +116,20 @@ public class ConsoleRenderer : IRenderer
     }
 
     /// <summary>
-    /// This method prints the <paramref name="expression"/> to the console in green foreground
-    /// and current background colour without changing the <see cref="System.Console.ForegroundColor"/>
-    /// and <see cref="System.Console.BackgroundColor"/>. It additionally adds two newlines if the
-    /// <c>Mode</c> is not <see cref="RenderMode.Silent"/>.
+    /// This method prints the <paramref name="elapsedTime"/> and the <paramref name="expression"/>
+    /// to the console in green foreground and current background colour without changing the
+    /// <see cref="System.Console.ForegroundColor"/> and <see cref="System.Console.BackgroundColor"/>.
     /// </summary>
     /// <param name="expression"><c>expression</c> represents the result to display.</param>
-    public void DisplayResult(Expression expression)
+    /// <param name="elapsedTime"><c>elapsedTime</c> represents the time it took to get the result.</param>
+    public void DisplayResult(Expression expression, TimeSpan elapsedTime)
     {
-        if (Mode != RenderMode.Silent)
-            System.Console.WriteLine("\n");
+        if (Mode == RenderMode.Debug)
+            System.Console.WriteLine();
 
-        System.Console.Write("Result: ");
+        DisplayMessage($"Finished rewriting in {elapsedTime.TotalSeconds} seconds.");
+
+        System.Console.Write("\nResult: ");
         WriteMessageInColour(
             expression.ToString() ?? "null",
             foregroundColour: ConsoleColor.Green,

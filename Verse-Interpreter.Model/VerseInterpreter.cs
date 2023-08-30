@@ -92,12 +92,11 @@ public class VerseInterpreter
         }
 
         _renderer.DisplayParsedProgram(verseProgram);
-        _renderer.DisplayMessage("\nRewriting parse tree...");
+        _renderer.DisplayMessage("\nRewriting parse tree...\n");
         Stopwatch stopwatch = Stopwatch.StartNew();
         Expression result = _rewriter.Rewrite(verseProgram);
         stopwatch.Stop();
-        _renderer.DisplayMessage($"Finished rewriting in {stopwatch.Elapsed.TotalSeconds} seconds.\n");
-        _renderer.DisplayResult(result);
+        _renderer.DisplayResult(result, stopwatch.Elapsed);
 
         return result;
     }
