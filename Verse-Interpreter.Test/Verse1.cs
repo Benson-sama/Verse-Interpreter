@@ -1,4 +1,8 @@
-﻿namespace Verse_Interpreter.Test;
+﻿using Verse_Interpreter.Model.Build;
+using Verse_Interpreter.Model.Render;
+using Verse_Interpreter.Model.Rewrite;
+
+namespace Verse_Interpreter.Test;
 
 [TestClass]
 public class Verse1
@@ -163,6 +167,25 @@ public class Verse1
 
         // Assert.
         Assert.IsTrue(result is Integer { Value: 4 });
+    }
+
+    [TestMethod]
+    public void TestTupleIndexing()
+    {
+        // Arrange.
+        string verseCode = """
+            a:=[1,2,3,4];
+            b:=[5,6,7,8];
+            x:=(a(0));
+            y:=(b(3));
+            x+y
+            """;
+
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
+
+        // Assert.
+        Assert.IsTrue(result is Integer { Value: 9 });
     }
 
     [TestMethod]
