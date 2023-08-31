@@ -1,10 +1,10 @@
-﻿//-------------------------------------------------------------------
+﻿//-----------------------------------------------------------
 // <copyright file="Program.cs" company="FH Wiener Neustadt">
 //     Copyright (c) FH Wiener Neustadt. All rights reserved.
 // </copyright>
 // <author>Benjamin Bogner</author>
 // <summary>Contains the Program class.</summary>
-//-------------------------------------------------------------------
+//-----------------------------------------------------------
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
