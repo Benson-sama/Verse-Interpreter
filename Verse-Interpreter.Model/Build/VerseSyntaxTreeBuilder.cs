@@ -251,12 +251,12 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder
 
     private IEnumerable<Value> GetTupleElements(VerseParser.ElementsContext context)
     {
-        if (context.ChildCount is 0)
+        if (context.ChildCount == 0)
             yield break;
 
         yield return GetValue(context.v());
 
-        if (context.ChildCount is 1)
+        if (context.ChildCount == 1)
             yield break;
 
         foreach (Value value in GetTupleElements(context.elements(0)))
