@@ -1,7 +1,4 @@
-﻿using System.Xml.Linq;
-using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators;
-
-namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
+﻿namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 
 public class Integer : HeadNormalForm
 {
@@ -28,6 +25,12 @@ public class Integer : HeadNormalForm
 
         return false;
     }
+
+    public static bool operator ==(Integer firstInteger, Integer secondInteger)
+        => firstInteger.Equals(secondInteger);
+
+    public static bool operator !=(Integer firstInteger, Integer secondInteger)
+        => !firstInteger.Equals(secondInteger);
 
     public override int GetHashCode()
         => Value.GetHashCode();

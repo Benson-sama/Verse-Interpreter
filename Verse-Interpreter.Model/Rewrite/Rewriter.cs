@@ -131,15 +131,15 @@ public class Rewriter : IRewriter
 
         foreach (Variable variable in FreeVariables.VariableBuffer.BoundVariables)
         {
-            if (variable.Equals(y))
+            if (variable == y)
             {
                 foundY = true;
                 continue;
             }
 
-            if (variable.Equals(x) && !foundY)
+            if (variable == x && !foundY)
                 return false;
-            else if (variable.Equals(x) && foundY)
+            else if (variable == x && foundY)
                 return true;
         }
 
@@ -593,7 +593,7 @@ public class Rewriter : IRewriter
     {
         if (expression is Eqe { Eq: Equation { V: Integer k1, E: Integer k2 }, E: Expression e })
         {
-            if (k1.Value == k2.Value)
+            if (k1 == k2)
             {
                 RuleApplied = true;
                 Renderer.DisplayRuleApplied("U-LIT");
@@ -670,7 +670,7 @@ public class Rewriter : IRewriter
         {
             isOccured = value switch
             {
-                Variable v => v.Equals(x),
+                Variable v => v == x,
                 VerseTuple nestedTuple => VariableOccursInVerseTuple(x, nestedTuple),
                 _ => isOccured
             };
@@ -774,7 +774,7 @@ public class Rewriter : IRewriter
     private Expression VarSwap(Expression expression)
     {
         if (expression is Eqe { Eq: Equation { V: Variable y, E: Variable x }, E: Expression e }
-            && !x.Equals(y) && VariableBoundInsideVariable(x, y))
+            && x != y && VariableBoundInsideVariable(x, y))
         {
             RuleApplied = true;
             Renderer.DisplayRuleApplied("VAR-SWAP");
@@ -799,7 +799,7 @@ public class Rewriter : IRewriter
         if (expression is Eqe { Eq: IExpressionOrEquation eq, E: Eqe { Eq: Equation { V: Variable x, E: Value v }, E: Expression e } })
         {
             if (eq is not Equation { V: Variable, E: Value }
-            || eq is Equation { V: Variable y, E: Value } && !(x.Equals(y) || VariableBoundInsideVariable(y, x)))
+            || (eq is Equation { V: Variable y, E: Value } && !(x == y || VariableBoundInsideVariable(y, x))))
             {
                 RuleApplied = true;
                 Renderer.DisplayRuleApplied("SEQ-SWAP");
@@ -865,7 +865,7 @@ public class Rewriter : IRewriter
                 if (eqe is not Eqe { Eq: Equation { V: Variable equationX, E: Value v }, E: Expression equationE } finalEqe)
                     throw new Exception("Final Eqe in EQN-ELIM must match the rule.");
 
-                if (existsX.Equals(equationX)
+                if (existsX == equationX
                     && !FreeVariables.Of(existsE, finalEqe).Contains(existsX)
                     && !FreeVariables.Of(v).Contains(existsX)
                     && !FreeVariables.Of(equationE).Contains(existsX))

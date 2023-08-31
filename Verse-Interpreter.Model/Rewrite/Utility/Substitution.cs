@@ -12,7 +12,7 @@ public static class Substitution
     {
         if (expression == finalEqe)
         {
-            if (finalEqe.E is Variable x && x.Equals(variable))
+            if (finalEqe.E is Variable x && x == variable)
                 finalEqe.E = replacingValue;
             else
                 finalEqe.E.AvoidCapturingSubstitute(variable, replacingValue);
@@ -62,7 +62,7 @@ public static class Substitution
 
         for (int i = 0; i < values.Length; i++)
         {
-            if (values[i] is Variable v && v.Equals(variable))
+            if (values[i] is Variable v && v == variable)
                 values[i] = replacingValue;
             else
                 values[i].SubstituteUntilEqe(finalEqe, variable, replacingValue);
@@ -73,7 +73,7 @@ public static class Substitution
 
     private static void SubstituteUntilEqe(this Lambda lambda, Eqe finalEqe, Variable variable, Value replacingValue)
     {
-        if (lambda.E is Variable v2 && v2.Equals(variable))
+        if (lambda.E is Variable v2 && v2 == variable)
             lambda.E = replacingValue;
         else
             lambda.E.SubstituteUntilEqe(finalEqe, variable, replacingValue);
@@ -81,12 +81,12 @@ public static class Substitution
 
     private static void SubstituteUntilEqe(this Eqe eqe, Eqe finalEqe, Variable variable, Value replacingValue)
     {
-        if (eqe.Eq is Variable v1 && v1.Equals(variable))
+        if (eqe.Eq is Variable v1 && v1 == variable)
             eqe.Eq = replacingValue;
         else
             eqe.Eq.SubstituteUntilEqe(finalEqe, variable, replacingValue);
 
-        if (eqe.E is Variable v2 && v2.Equals(variable))
+        if (eqe.E is Variable v2 && v2 == variable)
             eqe.E = replacingValue;
         else
             eqe.E.SubstituteUntilEqe(finalEqe, variable, replacingValue);
@@ -107,12 +107,12 @@ public static class Substitution
 
     private static void SubstituteUntilEqe(this Equation equation, Eqe finalEqe, Variable variable, Value replacingValue)
     {
-        if (equation.V is Variable v1 && v1.Equals(variable))
+        if (equation.V is Variable v1 && v1 == variable)
             equation.V = replacingValue;
         else
             equation.V.SubstituteUntilEqe(finalEqe, variable, replacingValue);
 
-        if (equation.E is Variable v2 && v2.Equals(variable))
+        if (equation.E is Variable v2 && v2 == variable)
             equation.E = replacingValue;
         else
             equation.E.SubstituteUntilEqe(finalEqe, variable, replacingValue);
@@ -120,7 +120,7 @@ public static class Substitution
 
     private static void SubstituteUntilEqe(this Exists exists, Eqe finalEqe, Variable variable, Value replacingValue)
     {
-        if (exists.E is Variable v && v.Equals(variable))
+        if (exists.E is Variable v && v == variable)
             exists.E = replacingValue;
         else
             exists.E.SubstituteUntilEqe(finalEqe, variable, replacingValue);
@@ -128,12 +128,12 @@ public static class Substitution
 
     private static void SubstituteUntilEqe(this Choice choice, Eqe finalEqe, Variable variable, Value replacingValue)
     {
-        if (choice.E1 is Variable v1 && v1.Equals(variable))
+        if (choice.E1 is Variable v1 && v1 == variable)
             choice.E1 = replacingValue;
         else
             choice.E1.SubstituteUntilEqe(finalEqe, variable, replacingValue);
 
-        if (choice.E2 is Variable v2 && v2.Equals(variable))
+        if (choice.E2 is Variable v2 && v2 == variable)
             choice.E2 = replacingValue;
         else
             choice.E2.SubstituteUntilEqe(finalEqe, variable, replacingValue);
@@ -141,12 +141,12 @@ public static class Substitution
 
     private static void SubstituteUntilEqe(this Application application, Eqe finalEqe, Variable variable, Value replacingValue)
     {
-        if (application.V1 is Variable v1 && v1.Equals(variable))
+        if (application.V1 is Variable v1 && v1 == variable)
             application.V1 = replacingValue;
         else
             application.V1.SubstituteUntilEqe(finalEqe, variable, replacingValue);
 
-        if (application.V2 is Variable v2 && v2.Equals(variable))
+        if (application.V2 is Variable v2 && v2 == variable)
             application.V2 = replacingValue;
         else
             application.V2.SubstituteUntilEqe(finalEqe, variable, replacingValue);
@@ -154,7 +154,7 @@ public static class Substitution
 
     private static void SubstituteUntilEqe(this Wrapper wrapper, Eqe finalEqe, Variable variable, Value replacingValue)
     {
-        if (wrapper.E is Variable v && v.Equals(variable))
+        if (wrapper.E is Variable v && v == variable)
             wrapper.E = replacingValue;
         else
             wrapper.E.SubstituteUntilEqe(finalEqe, variable, replacingValue);
@@ -204,7 +204,7 @@ public static class Substitution
 
         for (int i = 0; i < values.Length; i++)
         {
-            if (values[i] is Variable v && v.Equals(variable))
+            if (values[i] is Variable v && v == variable)
                 values[i] = replacingValue;
             else
                 values[i].AvoidCapturingSubstitute(variable, replacingValue);
@@ -215,10 +215,10 @@ public static class Substitution
 
     private static void AvoidCapturingSubstitute(this Lambda lambda, Variable variable, Value replacingValue)
     {
-        if (lambda.Parameter is Variable v1 && v1.Equals(variable))
+        if (lambda.Parameter is Variable v1 && v1 == variable)
             return;
 
-        if (lambda.E is Variable v2 && v2.Equals(variable))
+        if (lambda.E is Variable v2 && v2 == variable)
             lambda.E = replacingValue;
         else
             lambda.E.AvoidCapturingSubstitute(variable, replacingValue);
@@ -226,12 +226,12 @@ public static class Substitution
 
     private static void AvoidCapturingSubstitute(this Eqe eqe, Variable variable, Value replacingValue)
     {
-        if (eqe.Eq is Variable v1 && v1.Equals(variable))
+        if (eqe.Eq is Variable v1 && v1 == variable)
             eqe.Eq = replacingValue;
         else
             eqe.Eq.AvoidCapturingSubstitute(variable, replacingValue);
 
-        if (eqe.E is Variable v2 && v2.Equals(variable))
+        if (eqe.E is Variable v2 && v2 == variable)
             eqe.E = replacingValue;
         else
             eqe.E.AvoidCapturingSubstitute(variable, replacingValue);
@@ -252,12 +252,12 @@ public static class Substitution
 
     private static void AvoidCapturingSubstitute(this Equation equation, Variable variable, Value replacingValue)
     {
-        if (equation.V is Variable v1 && v1.Equals(variable))
+        if (equation.V is Variable v1 && v1 == variable)
             equation.V = replacingValue;
         else
             equation.V.AvoidCapturingSubstitute(variable, replacingValue);
 
-        if (equation.E is Variable v2 && v2.Equals(variable))
+        if (equation.E is Variable v2 && v2 == variable)
             equation.E = replacingValue;
         else
             equation.E.AvoidCapturingSubstitute(variable, replacingValue);
@@ -265,10 +265,10 @@ public static class Substitution
 
     private static void AvoidCapturingSubstitute(this Exists exists, Variable variable, Value replacingValue)
     {
-        if (exists.V.Equals(variable))
+        if (exists.V == variable)
             return;
 
-        if (exists.E is Variable v && v.Equals(variable))
+        if (exists.E is Variable v && v == variable)
             exists.E = replacingValue;
         else
             exists.E.AvoidCapturingSubstitute(variable, replacingValue);
@@ -276,12 +276,12 @@ public static class Substitution
 
     private static void AvoidCapturingSubstitute(this Choice choice, Variable variable, Value replacingValue)
     {
-        if (choice.E1 is Variable v1 && v1.Equals(variable))
+        if (choice.E1 is Variable v1 && v1 == variable)
             choice.E1 = replacingValue;
         else
             choice.E1.AvoidCapturingSubstitute(variable, replacingValue);
 
-        if (choice.E2 is Variable v2 && v2.Equals(variable))
+        if (choice.E2 is Variable v2 && v2 == variable)
             choice.E2 = replacingValue;
         else
             choice.E2.AvoidCapturingSubstitute(variable, replacingValue);
@@ -289,12 +289,12 @@ public static class Substitution
 
     private static void AvoidCapturingSubstitute(this Application application, Variable variable, Value replacingValue)
     {
-        if (application.V1 is Variable v1 && v1.Equals(variable))
+        if (application.V1 is Variable v1 && v1 == variable)
             application.V1 = replacingValue;
         else
             application.V1.AvoidCapturingSubstitute(variable, replacingValue);
 
-        if (application.V2 is Variable v2 && v2.Equals(variable))
+        if (application.V2 is Variable v2 && v2 == variable)
             application.V2 = replacingValue;
         else
             application.V2.AvoidCapturingSubstitute(variable, replacingValue);
@@ -302,7 +302,7 @@ public static class Substitution
 
     private static void AvoidCapturingSubstitute(this Wrapper wrapper, Variable variable, Value replacingValue)
     {
-        if (wrapper.E is Variable v && v.Equals(variable))
+        if (wrapper.E is Variable v && v == variable)
             wrapper.E = replacingValue;
         else
             wrapper.E.AvoidCapturingSubstitute(variable, replacingValue);

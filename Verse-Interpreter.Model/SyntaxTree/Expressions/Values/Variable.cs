@@ -26,6 +26,12 @@ public class Variable : Value, IEquatable<Variable>
         return false;
     }
 
+    public static bool operator ==(Variable firstVariable, Variable secondVariable)
+        => firstVariable.Equals(secondVariable);
+
+    public static bool operator !=(Variable firstVariable, Variable secondVariable)
+        => !firstVariable.Equals(secondVariable);
+
     public override int GetHashCode()
         => Name.GetHashCode();
 
