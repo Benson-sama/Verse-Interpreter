@@ -483,7 +483,7 @@ public class Rewriter : IRewriter
         {
             int count = tuple.Count();
 
-            if (count is > 0)
+            if (count > 0)
             {
                 RuleApplied = true;
                 Renderer.DisplayRuleApplied("APP-TUP");
@@ -493,7 +493,7 @@ public class Rewriter : IRewriter
                 if (FreeVariables.Of(tuple).Contains(variable))
                     throw new Exception($"Variable {variable} must not be an element of fvs({tuple})");
 
-                if (count is 1)
+                if (count == 1)
                 {
                     return new Eqe
                     {
@@ -572,7 +572,7 @@ public class Rewriter : IRewriter
     {
         if (expression is Application { V1: VerseTuple tuple, V2: Value })
         {
-            if (tuple.Count() is 0)
+            if (!tuple.Any())
             {
                 Expression rewrittenExpression = new Fail();
                 Renderer.DisplayRuleApplied("APP-TUP-0");
@@ -622,12 +622,12 @@ public class Rewriter : IRewriter
 
     private Expression BuildTupleEqeRecursively(IEnumerable<(Value leftSideValue, Value rightSideValue)> values, Expression e)
     {
-        if (values.Count() is 0)
+        if (!values.Any())
             return e;
 
         Equation equation = new() { V = values.First().leftSideValue, E = values.First().rightSideValue };
 
-        if (values.Count() is 1)
+        if (values.Count() == 1)
             return new Eqe { Eq = equation, E = e };
 
         return new Eqe { Eq = equation, E = BuildTupleEqeRecursively(values.Skip(1), e) };
@@ -1359,6 +1359,7 @@ public class Rewriter : IRewriter
             return result;
 
         // Note: ce should be checked for IsChoiceFreeExpression instead of the following according to the paper.
+        // But this is okay since a context here can never be a hole and therefore never let an equation stand on its own.
         if (eq is Eqe { Eq: IExpressionOrEquation ce, E: Expression cx3 } && IsChoiceFreeExpressionOrEquation(ce))
             result = IsChoiceContextIncludingHole(cx3);
 
