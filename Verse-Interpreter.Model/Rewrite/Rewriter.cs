@@ -9,6 +9,7 @@ using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
 using Verse_Interpreter.Model.SyntaxTree.Utility;
+using Verse_Interpreter.Model.Visitor;
 
 namespace Verse_Interpreter.Model.Rewrite;
 
@@ -1288,7 +1289,8 @@ public class Rewriter : IRewriter
             if (cx is null || foundChoice is null || expression is not Wrapper outerScopeContext)
                 throw new Exception("Choice context or found choice cannot be null when the method states they have been found.");
 
-            outerScopeContext.DuplicateChoiceContextUsingChoice(cx, foundChoice);
+            ChoiceFloater choiceFloater = new(cx, foundChoice);
+            choiceFloater.FloatChoiceToTheTop(outerScopeContext);
 
             RuleApplied = true;
             Renderer.DisplayRuleApplied("CHOOSE");
