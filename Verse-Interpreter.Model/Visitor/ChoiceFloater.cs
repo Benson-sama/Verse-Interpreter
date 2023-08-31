@@ -17,11 +17,15 @@ public class ChoiceFloater : ISyntaxTreeNodeVisitor
     public ChoiceFloater(Expression choiceContext, Choice targetChoice)
         => (_choiceContext, _targetChoice) = (choiceContext, targetChoice);
 
-    public void FloatChoiceToTheTop(Wrapper outerScopeContext)
+    public Expression ChoiceContext => _choiceContext;
+
+    public Choice TargetChoice => _targetChoice;
+
+    public void FloatChoiceToTheTopIn(Wrapper outerScopeContext)
     {
-        if (outerScopeContext.E == _choiceContext)
+        if (outerScopeContext.E == ChoiceContext)
         {
-            outerScopeContext.E = DuplicateUsingDeepCopy(_choiceContext, _targetChoice);
+            outerScopeContext.E = DuplicateUsingDeepCopy(ChoiceContext, TargetChoice);
 
             return;
         }
@@ -43,29 +47,29 @@ public class ChoiceFloater : ISyntaxTreeNodeVisitor
 
     public void Visit(Equation equation)
     {
-        if (equation.E == _choiceContext)
-            equation.E = DuplicateUsingDeepCopy(_choiceContext, _targetChoice);
+        if (equation.E == ChoiceContext)
+            equation.E = DuplicateUsingDeepCopy(ChoiceContext, TargetChoice);
         else
             equation.E.Accept(this);
     }
 
     public void Visit(Eqe eqe)
     {
-        if (eqe.Eq == _choiceContext)
-            eqe.Eq = DuplicateUsingDeepCopy(_choiceContext, _targetChoice);
+        if (eqe.Eq == ChoiceContext)
+            eqe.Eq = DuplicateUsingDeepCopy(ChoiceContext, TargetChoice);
         else
             eqe.Eq.Accept(this);
 
-        if (eqe.E == _choiceContext)
-            eqe.E = DuplicateUsingDeepCopy(_choiceContext, _targetChoice);
+        if (eqe.E == ChoiceContext)
+            eqe.E = DuplicateUsingDeepCopy(ChoiceContext, TargetChoice);
         else
             eqe.E.Accept(this);
     }
 
     public void Visit(Exists exists)
     {
-        if (exists.E == _choiceContext)
-            exists.E = DuplicateUsingDeepCopy(_choiceContext, _targetChoice);
+        if (exists.E == ChoiceContext)
+            exists.E = DuplicateUsingDeepCopy(ChoiceContext, TargetChoice);
         else
             exists.E.Accept(this);
     }
@@ -74,13 +78,13 @@ public class ChoiceFloater : ISyntaxTreeNodeVisitor
 
     public void Visit(Choice choice)
     {
-        if (choice.E1 == _choiceContext)
-            choice.E1 = DuplicateUsingDeepCopy(_choiceContext, _targetChoice);
+        if (choice.E1 == ChoiceContext)
+            choice.E1 = DuplicateUsingDeepCopy(ChoiceContext, TargetChoice);
         else
             choice.E1.Accept(this);
 
-        if (choice.E2 == _choiceContext)
-            choice.E2 = DuplicateUsingDeepCopy(_choiceContext, _targetChoice);
+        if (choice.E2 == ChoiceContext)
+            choice.E2 = DuplicateUsingDeepCopy(ChoiceContext, TargetChoice);
         else
             choice.E2.Accept(this);
     }
