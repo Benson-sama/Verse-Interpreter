@@ -935,7 +935,8 @@ public class Rewriter : IRewriter
                 exists.V = newVariable;
             }
 
-            expression.ReplaceExistsWithItsExpression(exists);
+            ExistsEliminator existsEliminator = new(exists);
+            existsEliminator.EliminateExistsIn(expression);
             exists.E = expression;
 
             RuleApplied = true;
@@ -1290,7 +1291,7 @@ public class Rewriter : IRewriter
                 throw new Exception("Choice context or found choice cannot be null when the method states they have been found.");
 
             ChoiceFloater choiceFloater = new(cx, foundChoice);
-            choiceFloater.FloatChoiceToTheTop(outerScopeContext);
+            choiceFloater.FloatChoiceToTheTopIn(outerScopeContext);
 
             RuleApplied = true;
             Renderer.DisplayRuleApplied("CHOOSE");
