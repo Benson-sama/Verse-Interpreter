@@ -870,7 +870,9 @@ public class Rewriter : IRewriter
                     && !FreeVariables.Of(v).Contains(existsX)
                     && !FreeVariables.Of(equationE).Contains(existsX))
                 {
-                    expression.EliminateEquation(finalEqe);
+                    EquationEliminator equationEliminator = new(finalEqe);
+                    equationEliminator.EliminateEquationIn(expression);
+
                     RuleApplied = true;
                     Renderer.DisplayRuleApplied("EQN-ELIM");
                 }
