@@ -1,4 +1,6 @@
-﻿namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
+﻿using Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
+
+namespace Verse_Interpreter.Model.SyntaxTree.Expressions;
 
 public class Eqe : Expression
 {
@@ -23,6 +25,12 @@ public class Eqe : Expression
             E = E.DeepCopyButReplaceChoice(choice, newExpression)
         };
     }
+
+    public override void Accept(ISyntaxTreeNodeVisitor visitor)
+        => visitor.Visit(this);
+
+    public override T Accept<T>(ISyntaxTreeNodeVisitor<T> visitor)
+        => visitor.Visit(this);
 
     public override string ToString() => $"{Eq}; {E}";
 }

@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.SyntaxTreeNode">
+    <Position X="6" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\SyntaxTreeNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.VerseProgram">
+    <Position X="1" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAEIAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>SyntaxTree\VerseProgram.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Utility.FreeVariables">
+    <Position X="22.75" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAAAAQAAA=</HashCode>
+      <FileName>SyntaxTree\Utility\FreeVariables.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Utility.VariableBuffer">
+    <Position X="22.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAQAAAIAAAAAAAAgBAAAA=</HashCode>
+      <FileName>SyntaxTree\Utility\VariableBuffer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators.Add">
+    <Position X="0.5" Y="17" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAEIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Operators\Add.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators.Div">
+    <Position X="8" Y="17" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAEIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Operators\Div.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators.Gt">
+    <Position X="10.5" Y="17" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAEIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Operators\Gt.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators.Lt">
+    <Position X="13" Y="17" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAEIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Operators\Lt.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators.Mult">
+    <Position X="5.5" Y="17" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAEIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Operators\Mult.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators.Operator">
+    <Position X="5.5" Y="12.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAEIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Operators\Operator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators.Sub">
+    <Position X="3" Y="17" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAEIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Operators\Sub.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.HeadNormalForm">
+    <Position X="5.5" Y="9" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\HeadNormalForm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Integer">
+    <Position X="0.5" Y="12.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAEgAAAAAAAAAEIAIAAAAAgAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Integer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Lambda">
+    <Position X="10.5" Y="12.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAEAAAAAAAAAAEYAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Lambda.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.VerseString">
+    <Position X="3" Y="12.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAEgAAAAAAAAAEIAIAAAAAACAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\VerseString.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.VerseTuple">
+    <Position X="8" Y="12.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAABAEAAIAAAAAAAEIAAQEAAAgAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\VerseTuple.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.Value">
+    <Position X="5.5" Y="6" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Values\Value.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.Variable">
+    <Position X="3" Y="9" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAEgAAAAAQAAAEIAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Values\Variable.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Equations.Equation">
+    <Position X="2" Y="6" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAEAAAAAAAAAAgAQQAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Equations\Equation.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers.Wrapper">
+    <Position X="20.5" Y="6" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEIAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Wrappers\Wrapper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers.One">
+    <Position X="19.25" Y="9" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAEAAAAAAAAAAEIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Wrappers\One.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers.All">
+    <Position X="21.75" Y="9" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAEAAAAAAAAAAEIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Wrappers\All.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Eqe">
+    <Position X="8" Y="6" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAEAAAAEAAAAAEIAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Eqe.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Expression">
+    <Position X="8.5" Y="3.25" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAQAAAAAAAAEIAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Expression.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Fail">
+    <Position X="13" Y="6" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAEAAAAAAAAAAEIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Fail.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Choice">
+    <Position X="15.5" Y="6" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAEAAAAAAAgAAEIAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Choice.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Application">
+    <Position X="18" Y="6" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAEAAAABAAAAAEIAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Application.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Exists">
+    <Position X="10.5" Y="6" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAEIAAAAAAAAAgAQAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Exists.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Verse_Interpreter.Model.SyntaxTree.ISyntaxTreeNodeVisitor">
+    <Position X="17.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\ISyntaxTreeNodeVisitor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Verse_Interpreter.Model.SyntaxTree.ISyntaxTreeNodeVisitor&lt;T&gt;">
+    <Position X="19.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\ISyntaxTreeNodeVisitor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Verse_Interpreter.Model.SyntaxTree.ISyntaxTreeNodeVisitable">
+    <Position X="14.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\ISyntaxTreeNodeVisitable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Equations.IExpressionOrEquation">
+    <Position X="14.5" Y="2" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>SyntaxTree\Expressions\Equations\IExpressionOrEquation.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

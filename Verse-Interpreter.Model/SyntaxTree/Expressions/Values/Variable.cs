@@ -1,6 +1,4 @@
-﻿using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators;
-
-namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
+﻿namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
 
 public class Variable : Value, IEquatable<Variable>
 {
@@ -36,6 +34,12 @@ public class Variable : Value, IEquatable<Variable>
 
     public override Variable DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
         => new(Name);
+
+    public override void Accept(ISyntaxTreeNodeVisitor visitor)
+        => visitor.Visit(this);
+
+    public override T Accept<T>(ISyntaxTreeNodeVisitor<T> visitor)
+        => visitor.Visit(this);
 
     public override string ToString()
     {

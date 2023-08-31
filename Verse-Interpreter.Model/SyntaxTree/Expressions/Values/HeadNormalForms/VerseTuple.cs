@@ -41,6 +41,12 @@ public class VerseTuple : HeadNormalForm, IEnumerable<Value>
         return new VerseTuple(values);
     }
 
+    public override void Accept(ISyntaxTreeNodeVisitor visitor)
+        => visitor.Visit(this);
+
+    public override T Accept<T>(ISyntaxTreeNodeVisitor<T> visitor)
+        => visitor.Visit(this);
+
     public override string ToString()
     {
         if (!Values.Any())

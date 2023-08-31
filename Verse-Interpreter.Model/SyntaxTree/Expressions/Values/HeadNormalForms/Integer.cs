@@ -38,5 +38,11 @@ public class Integer : HeadNormalForm
     public override Integer DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
         => new(Value);
 
+    public override void Accept(ISyntaxTreeNodeVisitor visitor)
+        => visitor.Visit(this);
+
+    public override T Accept<T>(ISyntaxTreeNodeVisitor<T> visitor)
+        => visitor.Visit(this);
+
     public override string ToString() => $"{Value}";
 }

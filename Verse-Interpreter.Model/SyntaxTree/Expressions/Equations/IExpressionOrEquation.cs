@@ -1,6 +1,6 @@
 ﻿namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
 
-public interface IExpressionOrEquation
+public interface IExpressionOrEquation : ISyntaxTreeNodeVisitable
 {
     public IExpressionOrEquation DeepCopy();
 

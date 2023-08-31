@@ -35,5 +35,11 @@ public class VerseString : HeadNormalForm
     public override VerseString DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
         => new(Text);
 
+    public override void Accept(ISyntaxTreeNodeVisitor visitor)
+        => visitor.Visit(this);
+
+    public override T Accept<T>(ISyntaxTreeNodeVisitor<T> visitor)
+        => visitor.Visit(this);
+
     public override string ToString() => $"\"{Text}\"";
 }

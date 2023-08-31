@@ -2,7 +2,7 @@
 
 namespace Verse_Interpreter.Model.SyntaxTree.Expressions;
 
-public abstract class Expression : SyntaxTreeNode, IExpressionOrEquation
+public abstract class Expression : SyntaxTreeNode, IExpressionOrEquation, ISyntaxTreeNodeVisitable
 {
     public abstract override Expression DeepCopy();
 
@@ -12,4 +12,8 @@ public abstract class Expression : SyntaxTreeNode, IExpressionOrEquation
 
     IExpressionOrEquation IExpressionOrEquation.DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
         => DeepCopyButReplaceChoice(choice, newExpression);
+
+    public abstract void Accept(ISyntaxTreeNodeVisitor visitor);
+
+    public abstract T Accept<T>(ISyntaxTreeNodeVisitor<T> visitor);
 }

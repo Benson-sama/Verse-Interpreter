@@ -26,5 +26,11 @@ public class Equation : IExpressionOrEquation
         };
     }
 
+    public void Accept(ISyntaxTreeNodeVisitor visitor)
+        => visitor.Visit(this);
+
+    public T Accept<T>(ISyntaxTreeNodeVisitor<T> visitor)
+        => visitor.Visit(this);
+
     public override string ToString() => $"{V}={E}";
 }
