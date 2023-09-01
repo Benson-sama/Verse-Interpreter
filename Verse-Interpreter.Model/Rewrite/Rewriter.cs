@@ -464,7 +464,7 @@ public class Rewriter : IRewriter
 
     private void ApplyAlphaConversionWithoutCapturingVariablesOfValue(Lambda lambda, Value v)
     {
-        Variable previousVariable = lambda.Parameter;
+        Variable targetVariable = lambda.Parameter;
         Variable newVariable;
 
         do
@@ -472,8 +472,8 @@ public class Rewriter : IRewriter
             newVariable = _variableFactory.Next();
         } while (FreeVariables.Of(v).Contains(newVariable));
 
-        lambda.Parameter = newVariable;
-        lambda.E.ApplyAlphaConversion(previousVariable, newVariable);
+        AlphaConversionHandler alphaConversionHandler = new(targetVariable, newVariable);
+        alphaConversionHandler.ApplyAlphaConversionIncludingParameter(lambda);
     }
 
     [RewriteRule]
@@ -933,8 +933,8 @@ public class Rewriter : IRewriter
             if (FreeVariables.Of(expression, finalExpression: exists).Contains(exists.V))
             {
                 Variable newVariable = _variableFactory.Next();
-                exists.E.ApplyAlphaConversion(exists.V, newVariable);
-                exists.V = newVariable;
+                AlphaConversionHandler alphaConversionHandler = new(exists.V, newVariable);
+                alphaConversionHandler.ApplyAlphaConversionIncludingBinder(exists);
             }
 
             ExistsEliminator existsEliminator = new(exists);
