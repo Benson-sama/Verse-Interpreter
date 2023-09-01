@@ -8,7 +8,6 @@ using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
-using Verse_Interpreter.Model.SyntaxTree.Utility;
 using Verse_Interpreter.Model.Visitor;
 
 namespace Verse_Interpreter.Model.Rewrite;
@@ -20,6 +19,8 @@ public class Rewriter : IRewriter
     private readonly IVariableFactory _variableFactory;
 
     private readonly Func<Expression, Expression>[] _rewriteRules;
+
+    private readonly VariablesAnalyser _variablesAnalyser = new();
 
     public Rewriter(IRenderer renderer, IVariableFactory variableFactory)
     {
@@ -72,7 +73,9 @@ public class Rewriter : IRewriter
         };
     }
 
-    private IRenderer Renderer { get => _renderer; }
+    private IRenderer Renderer => _renderer;
+
+    private VariablesAnalyser VariablesAnalyser => _variablesAnalyser;
 
     private bool RuleApplied { get; set; }
 
@@ -127,9 +130,9 @@ public class Rewriter : IRewriter
 
         bool foundY = false;
 
-        FreeVariables.Of(CurrentVerseProgram.E);
+        VariablesAnalyser.AnalyseVariablesOf(CurrentVerseProgram.E);
 
-        foreach (Variable variable in FreeVariables.VariableBuffer.BoundVariables)
+        foreach (Variable variable in VariablesAnalyser.BoundVariables)
         {
             if (variable == y)
             {
@@ -441,7 +444,7 @@ public class Rewriter : IRewriter
             RuleApplied = true;
             Renderer.DisplayRuleApplied("APP-BETA");
 
-            if (FreeVariables.Of(v).Contains(lambda.Parameter))
+            if (VariablesAnalyser.FreeVariablesOf(v).Contains(lambda.Parameter))
                 ApplyAlphaConversionWithoutCapturingVariablesOfValue(lambda, v);
 
             return new Exists
@@ -470,7 +473,7 @@ public class Rewriter : IRewriter
         do
         {
             newVariable = _variableFactory.Next();
-        } while (FreeVariables.Of(v).Contains(newVariable));
+        } while (VariablesAnalyser.FreeVariablesOf(v).Contains(newVariable));
 
         AlphaConversionHandler alphaConversionHandler = new(targetVariable, newVariable);
         alphaConversionHandler.ApplyAlphaConversionIncludingParameter(lambda);
@@ -490,7 +493,7 @@ public class Rewriter : IRewriter
 
                 Variable variable = _variableFactory.Next();
 
-                if (FreeVariables.Of(tuple).Contains(variable))
+                if (VariablesAnalyser.FreeVariablesOf(tuple).Contains(variable))
                     throw new Exception($"Variable {variable} must not be an element of fvs({tuple})");
 
                 if (count == 1)
@@ -689,7 +692,9 @@ public class Rewriter : IRewriter
             if (eqe is not Eqe { Eq: Equation { V: Variable x, E: Value v }, E: Expression e } finalEqe)
                 throw new Exception("Final Eqe in substitute must match the rule.");
 
-            if (FreeVariables.Of(expression).Contains(x) && FreeVariables.Of(e).Contains(x) && !FreeVariables.Of(v).Contains(x))
+            if (VariablesAnalyser.FreeVariablesOf(expression).Contains(x)
+                && VariablesAnalyser.FreeVariablesOf(e).Contains(x)
+                && !VariablesAnalyser.FreeVariablesOf(v).Contains(x))
             {
                 if (v is not Variable || (v is Variable y && VariableBoundInsideVariable(x, y)))
                 {
@@ -843,7 +848,7 @@ public class Rewriter : IRewriter
     [RewriteRule]
     private Expression ExiElim(Expression expression)
     {
-        if (expression is Exists { V: Variable v, E: Expression e } && !FreeVariables.Of(e).Contains(v))
+        if (expression is Exists { V: Variable v, E: Expression e } && !VariablesAnalyser.FreeVariablesOf(e).Contains(v))
         {
             RuleApplied = true;
             Renderer.DisplayRuleApplied("EXI-ELIM");
@@ -866,9 +871,9 @@ public class Rewriter : IRewriter
                     throw new Exception("Final Eqe in EQN-ELIM must match the rule.");
 
                 if (existsX == equationX
-                    && !FreeVariables.Of(existsE, finalEqe).Contains(existsX)
-                    && !FreeVariables.Of(v).Contains(existsX)
-                    && !FreeVariables.Of(equationE).Contains(existsX))
+                    && !VariablesAnalyser.FreeVariablesOf(existsE, finalEqe).Contains(existsX)
+                    && !VariablesAnalyser.FreeVariablesOf(v).Contains(existsX)
+                    && !VariablesAnalyser.FreeVariablesOf(equationE).Contains(existsX))
                 {
                     EquationEliminator equationEliminator = new(finalEqe);
                     equationEliminator.EliminateEquationIn(expression);
@@ -930,7 +935,7 @@ public class Rewriter : IRewriter
             if (exists is null)
                 throw new Exception("Exists cannot be null if execution context matched in EXI-FLOAT.");
 
-            if (FreeVariables.Of(expression, finalExpression: exists).Contains(exists.V))
+            if (VariablesAnalyser.FreeVariablesOf(expression, finalExpression: exists).Contains(exists.V))
             {
                 Variable newVariable = _variableFactory.Next();
                 AlphaConversionHandler alphaConversionHandler = new(exists.V, newVariable);

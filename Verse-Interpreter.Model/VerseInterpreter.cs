@@ -14,7 +14,7 @@ using Verse_Interpreter.Model.Rewrite;
 using Verse_Interpreter.Model.SyntaxTree;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
-using Verse_Interpreter.Model.SyntaxTree.Utility;
+using Verse_Interpreter.Model.Visitor;
 
 namespace Verse_Interpreter.Model;
 
@@ -74,7 +74,7 @@ public class VerseInterpreter
         VerseParser parser = new(tokens) { BuildParseTree = true };
         VerseParser.ProgramContext programContext = parser.program();
         
-        if (parser.NumberOfSyntaxErrors is not 0)
+        if (parser.NumberOfSyntaxErrors != 0)
         {
             _renderer.DisplayMessage("Unable to parse verse program.");
 
@@ -83,8 +83,9 @@ public class VerseInterpreter
 
         _renderer.DisplayMessage("Converting and desugaring parse tree...");
         VerseProgram verseProgram = _syntaxTreeBuilder.BuildCustomSyntaxTree(programContext, wrapperFactory);
+        VariablesAnalyser variablesAnalyser = new();
 
-        if (FreeVariables.Of(verseProgram.E).Count() is not 0)
+        if (variablesAnalyser.FreeVariablesOf(verseProgram.E).Any())
         {
             _renderer.DisplayMessage("Invalid verse program, free variables must be zero.");
 
