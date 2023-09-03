@@ -1,6 +1,5 @@
 ﻿using Verse_Interpreter.Model.Build;
 using Verse_Interpreter.Model.Render;
-using Verse_Interpreter.Model.Rewrite.Utility;
 using Verse_Interpreter.Model.SyntaxTree;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
@@ -689,7 +688,7 @@ public class Rewriter : IRewriter
 
         if (isFound)
         {
-            if (eqe is not Eqe { Eq: Equation { V: Variable x, E: Value v }, E: Expression e } finalEqe)
+            if (eqe is not Eqe { Eq: Equation { V: Variable x, E: Value v } equation, E: Expression e })
                 throw new Exception("Final Eqe in substitute must match the rule.");
 
             if (VariablesAnalyser.FreeVariablesOf(expression).Contains(x)
@@ -698,7 +697,9 @@ public class Rewriter : IRewriter
             {
                 if (v is not Variable || (v is Variable y && VariableBoundInsideVariable(x, y)))
                 {
-                    expression.SubstituteUntilEqe(finalEqe, x, v.DeepCopy());
+                    SubstitutionHandler substitutionHandler = new(equation);
+                    substitutionHandler.SubstituteButLeaveEquationUntouched(expression);
+
                     RuleApplied = true;
                     Renderer.DisplayRuleApplied("SUBST");
                 }
