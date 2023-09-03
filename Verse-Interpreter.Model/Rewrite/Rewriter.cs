@@ -735,33 +735,6 @@ public class Rewriter : IRewriter
         return result;
     }
 
-    private IEnumerable<Eqe> AlternativeIsExecutionContextWithEquationIncludingHole(Expression expression)
-    {
-        if (expression is Eqe { Eq: Equation { V: Variable, E: Value }, E: Expression } eqe)
-            yield return eqe;
-
-        if (expression is Eqe { Eq: Equation { V: Value, E: Expression x }, E: Expression })
-        {
-            foreach (Eqe foundEqe in AlternativeIsExecutionContextWithEquationIncludingHole(x))
-            {
-                yield return foundEqe;
-            }
-        }
-
-        if (expression is Eqe { Eq: Expression eq, E: Expression e })
-        {
-            foreach (Eqe foundEqe in AlternativeIsExecutionContextWithEquationIncludingHole(eq))
-            {
-                yield return foundEqe;
-            }
-
-            foreach (Eqe foundEqe in AlternativeIsExecutionContextWithEquationIncludingHole(e))
-            {
-                yield return foundEqe;
-            }
-        }
-    }
-
     [RewriteRule]
     private Expression HnfSwap(Expression expression)
     {
