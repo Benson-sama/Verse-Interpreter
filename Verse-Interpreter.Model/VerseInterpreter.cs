@@ -63,6 +63,15 @@ public class VerseInterpreter
     /// </returns>
     public Expression Interpret(string verseCode, Func<Expression, Wrapper> wrapperFactory)
     {
+        VerseParser.ProgramContext programContext = ParseAntlrProgramContext(verseCode);
+        VerseProgram verseProgram = ConvertAndDesugar(programContext, wrapperFactory);
+        Expression result = Rewrite(verseProgram);
+
+        return result;
+    }
+
+    private VerseParser.ProgramContext ParseAntlrProgramContext(string verseCode)
+    {
         _renderer.DisplayMessage($"Input was:\n{verseCode}\n");
         _renderer.DisplayMessage("Getting character stream...");
         ICharStream stream = CharStreams.fromString(verseCode);
@@ -73,26 +82,30 @@ public class VerseInterpreter
         _renderer.DisplayMessage("Constructing parse tree...");
         VerseParser parser = new(tokens) { BuildParseTree = true };
         VerseParser.ProgramContext programContext = parser.program();
-        
-        if (parser.NumberOfSyntaxErrors != 0)
-        {
-            _renderer.DisplayMessage("Unable to parse verse program.");
 
-            return new Fail();
-        }
+        if (parser.NumberOfSyntaxErrors != 0)
+            throw new VerseParseException("Number of syntax errors in ANTLR4 is not zero.");
+
+        return programContext;
+    }
+
+    private VerseProgram ConvertAndDesugar(VerseParser.ProgramContext programContext, Func<Expression, Wrapper> wrapperFactory)
+    {
 
         _renderer.DisplayMessage("Converting and desugaring parse tree...");
         VerseProgram verseProgram = _syntaxTreeBuilder.BuildCustomSyntaxTree(programContext, wrapperFactory);
         VariablesAnalyser variablesAnalyser = new();
 
         if (variablesAnalyser.FreeVariablesOf(verseProgram.E).Any())
-        {
-            _renderer.DisplayMessage("Invalid verse program, free variables must be zero.");
-
-            return new Fail();
-        }
+            throw new VerseParseException("Invalid verse program, free variables must be zero.");
 
         _renderer.DisplayParsedProgram(verseProgram);
+
+        return verseProgram;
+    }
+
+    private Expression Rewrite(VerseProgram verseProgram)
+    {
         _renderer.DisplayMessage("\nRewriting parse tree...\n");
         Stopwatch stopwatch = Stopwatch.StartNew();
         Expression result = _rewriter.Rewrite(verseProgram);
