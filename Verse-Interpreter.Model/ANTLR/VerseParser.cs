@@ -101,6 +101,12 @@ public partial class VerseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_program; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitProgram(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -145,10 +151,22 @@ public partial class VerseParser : Parser {
 			return GetRuleContext<EContext>(i);
 		}
 		public IfElseExpContext(EContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitIfElseExp(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class FailExpContext : EContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode FAIL() { return GetToken(VerseParser.FAIL, 0); }
 		public FailExpContext(EContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitFailExp(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class EqualityExpContext : EContext {
 		[System.Diagnostics.DebuggerNonUserCode] public VContext v() {
@@ -162,6 +180,12 @@ public partial class VerseParser : Parser {
 			return GetRuleContext<EContext>(i);
 		}
 		public EqualityExpContext(EContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitEqualityExp(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class PlusOrMinusExpContext : EContext {
 		[System.Diagnostics.DebuggerNonUserCode] public VContext[] v() {
@@ -173,12 +197,24 @@ public partial class VerseParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode PLUS() { return GetToken(VerseParser.PLUS, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode MINUS() { return GetToken(VerseParser.MINUS, 0); }
 		public PlusOrMinusExpContext(EContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitPlusOrMinusExp(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class ForExpContext : EContext {
 		[System.Diagnostics.DebuggerNonUserCode] public EContext e() {
 			return GetRuleContext<EContext>(0);
 		}
 		public ForExpContext(EContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitForExp(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class AssignmentExpContext : EContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode VARIABLE() { return GetToken(VerseParser.VARIABLE, 0); }
@@ -190,6 +226,12 @@ public partial class VerseParser : Parser {
 			return GetRuleContext<EContext>(i);
 		}
 		public AssignmentExpContext(EContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitAssignmentExp(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class ForDoExpContext : EContext {
 		[System.Diagnostics.DebuggerNonUserCode] public EContext[] e() {
@@ -199,6 +241,12 @@ public partial class VerseParser : Parser {
 			return GetRuleContext<EContext>(i);
 		}
 		public ForDoExpContext(EContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitForDoExp(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class MultOrDivExpContext : EContext {
 		[System.Diagnostics.DebuggerNonUserCode] public VContext[] v() {
@@ -210,6 +258,12 @@ public partial class VerseParser : Parser {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode ASTERISK() { return GetToken(VerseParser.ASTERISK, 0); }
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode SLASH() { return GetToken(VerseParser.SLASH, 0); }
 		public MultOrDivExpContext(EContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitMultOrDivExp(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class ChoiceExpContext : EContext {
 		[System.Diagnostics.DebuggerNonUserCode] public EContext[] e() {
@@ -220,12 +274,24 @@ public partial class VerseParser : Parser {
 		}
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode CHOICE() { return GetToken(VerseParser.CHOICE, 0); }
 		public ChoiceExpContext(EContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitChoiceExp(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class OneExpContext : EContext {
 		[System.Diagnostics.DebuggerNonUserCode] public EContext e() {
 			return GetRuleContext<EContext>(0);
 		}
 		public OneExpContext(EContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitOneExp(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class ComparisonExpContext : EContext {
 		[System.Diagnostics.DebuggerNonUserCode] public VContext[] v() {
@@ -240,6 +306,12 @@ public partial class VerseParser : Parser {
 			return GetRuleContext<EContext>(0);
 		}
 		public ComparisonExpContext(EContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitComparisonExp(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class BringIntoScopeExpContext : EContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode VARIABLE() { return GetToken(VerseParser.VARIABLE, 0); }
@@ -248,12 +320,24 @@ public partial class VerseParser : Parser {
 			return GetRuleContext<EContext>(0);
 		}
 		public BringIntoScopeExpContext(EContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBringIntoScopeExp(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class ParenthesisExpContext : EContext {
 		[System.Diagnostics.DebuggerNonUserCode] public EContext e() {
 			return GetRuleContext<EContext>(0);
 		}
 		public ParenthesisExpContext(EContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitParenthesisExp(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class ValueApplicationExpContext : EContext {
 		[System.Diagnostics.DebuggerNonUserCode] public VContext[] v() {
@@ -266,12 +350,24 @@ public partial class VerseParser : Parser {
 			return GetRuleContext<EContext>(0);
 		}
 		public ValueApplicationExpContext(EContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitValueApplicationExp(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class ValueExpContext : EContext {
 		[System.Diagnostics.DebuggerNonUserCode] public VContext v() {
 			return GetRuleContext<VContext>(0);
 		}
 		public ValueExpContext(EContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitValueExp(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class RangeChoiceExpContext : EContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode[] INTEGER() { return GetTokens(VerseParser.INTEGER); }
@@ -279,6 +375,12 @@ public partial class VerseParser : Parser {
 			return GetToken(VerseParser.INTEGER, i);
 		}
 		public RangeChoiceExpContext(EContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitRangeChoiceExp(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -649,12 +751,24 @@ public partial class VerseParser : Parser {
 	public partial class VariableValueContext : VContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode VARIABLE() { return GetToken(VerseParser.VARIABLE, 0); }
 		public VariableValueContext(VContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitVariableValue(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class HnfValueContext : VContext {
 		[System.Diagnostics.DebuggerNonUserCode] public HnfContext hnf() {
 			return GetRuleContext<HnfContext>(0);
 		}
 		public HnfValueContext(VContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitHnfValue(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -715,22 +829,46 @@ public partial class VerseParser : Parser {
 			return GetRuleContext<StringContext>(0);
 		}
 		public StringHnfContext(HnfContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitStringHnf(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class LambdaHnfContext : HnfContext {
 		[System.Diagnostics.DebuggerNonUserCode] public LambdaContext lambda() {
 			return GetRuleContext<LambdaContext>(0);
 		}
 		public LambdaHnfContext(HnfContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitLambdaHnf(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class TupleHnfContext : HnfContext {
 		[System.Diagnostics.DebuggerNonUserCode] public TupleContext tuple() {
 			return GetRuleContext<TupleContext>(0);
 		}
 		public TupleHnfContext(HnfContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTupleHnf(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 	public partial class IntegerHnfContext : HnfContext {
 		[System.Diagnostics.DebuggerNonUserCode] public ITerminalNode INTEGER() { return GetToken(VerseParser.INTEGER, 0); }
 		public IntegerHnfContext(HnfContext context) { CopyFrom(context); }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitIntegerHnf(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -799,6 +937,12 @@ public partial class VerseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_string; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitString(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -837,6 +981,12 @@ public partial class VerseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_content; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitContent(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -890,6 +1040,12 @@ public partial class VerseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_tuple; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitTuple(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -942,6 +1098,12 @@ public partial class VerseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_elements; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitElements(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
@@ -998,6 +1160,12 @@ public partial class VerseParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_lambda; } }
+		[System.Diagnostics.DebuggerNonUserCode]
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			IVerseVisitor<TResult> typedVisitor = visitor as IVerseVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitLambda(this);
+			else return visitor.VisitChildren(this);
+		}
 	}
 
 	[RuleVersion(0)]
