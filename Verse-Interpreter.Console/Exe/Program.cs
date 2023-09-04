@@ -36,7 +36,7 @@ var host = Host.CreateDefaultBuilder(args)
         services.AddSingleton<IVariableFactory, VariableFactory>();
         services.AddSingleton<IRenderer>(consoleRenderer);
         services.AddSingleton<IVerseSyntaxTreeBuilder, VerseSyntaxTreeBuilder>();
-        services.AddSingleton<Desugar>();
+        services.AddSingleton<SyntaxDesugarer>();
         services.AddSingleton<IRewriter, Rewriter>();
         services.AddSingleton<VerseInterpreter>();
     })

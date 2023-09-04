@@ -7,11 +7,11 @@ using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
 
 namespace Verse_Interpreter.Model.Build;
 
-public class Desugar
+public class SyntaxDesugarer
 {
     private readonly IVariableFactory _variableFactory;
 
-    public Desugar(IVariableFactory variableFactory)
+    public SyntaxDesugarer(IVariableFactory variableFactory)
         => _variableFactory = variableFactory;
 
     public Expression Plus(Expression e1, Expression e2) =>
@@ -68,7 +68,7 @@ public class Desugar
     public Exists ExpressionTuple(IEnumerable<Expression> expressions)
     {
         if (expressions.Count() is 0)
-            throw new Exception("Unable to parse empty expression tuple.");
+            throw new Exception("Expression tuple should never be empty in desugaring.");
 
         return BuildExpressionTupleRecursively(expressions, Enumerable.Empty<Variable>());
     }
