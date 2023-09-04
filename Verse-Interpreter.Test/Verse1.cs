@@ -10,7 +10,7 @@ public class Verse1
     {
         IRenderer renderer = Mock.Of<IRenderer>();
         IVariableFactory variableFactory = new VariableFactory();
-        Desugar desugar = new(variableFactory);
+        SyntaxDesugarer desugar = new(variableFactory);
         IVerseSyntaxTreeBuilder verseSyntaxTreeBuilder = new VerseSyntaxTreeBuilder(variableFactory, desugar);
         IRewriter rewriter = new Rewriter(renderer, variableFactory);
         _verseInterpreter = new(renderer, verseSyntaxTreeBuilder, rewriter);
