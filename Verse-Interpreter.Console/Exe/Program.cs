@@ -15,6 +15,7 @@ using Verse_Interpreter.Model.Render;
 using Verse_Interpreter.Model.Rewrite;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
+using Verse_Interpreter.Model.Visitor;
 
 string header = """
      _   _                      _____      _                           _            

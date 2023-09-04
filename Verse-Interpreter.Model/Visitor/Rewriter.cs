@@ -1,5 +1,6 @@
 ﻿using Verse_Interpreter.Model.Build;
 using Verse_Interpreter.Model.Render;
+using Verse_Interpreter.Model.Rewrite;
 using Verse_Interpreter.Model.SyntaxTree;
 using Verse_Interpreter.Model.SyntaxTree.Expressions;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Equations;
@@ -7,11 +8,10 @@ using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators;
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
-using Verse_Interpreter.Model.Visitor;
 
-namespace Verse_Interpreter.Model.Rewrite;
+namespace Verse_Interpreter.Model.Visitor;
 
-public class Rewriter : IRewriter
+public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
 {
     private readonly IRenderer _renderer;
 
@@ -20,6 +20,8 @@ public class Rewriter : IRewriter
     private readonly Func<Expression, Expression>[] _rewriteRules;
 
     private readonly VariablesAnalyser _variablesAnalyser = new();
+
+    private VerseProgram? _currentVerseProgram;
 
     public Rewriter(IRenderer renderer, IVariableFactory variableFactory)
     {
@@ -78,18 +80,32 @@ public class Rewriter : IRewriter
 
     private bool RuleApplied { get; set; }
 
-    private VerseProgram? CurrentVerseProgram { get; set; }
+    private VerseProgram CurrentVerseProgram
+    {
+        get
+        {
+            return _currentVerseProgram
+                ?? throw new ArgumentNullException(nameof(_currentVerseProgram), "Is null");
+        }
+
+        set
+        {
+            _currentVerseProgram = value
+                ?? throw new ArgumentNullException(nameof(value), "Cannot be null.");
+        }
+    }
 
     public Expression Rewrite(VerseProgram verseProgram)
     {
         CurrentVerseProgram = verseProgram;
+
         do
         {
             RuleApplied = false;
             verseProgram.E = ApplyRules(verseProgram.E);
 
             if (!RuleApplied)
-                RewriteInnerExpressions(verseProgram.E);
+                verseProgram.E.Accept(this);
 
             if (RuleApplied)
                 Renderer.DisplayIntermediateResult(verseProgram.E);
@@ -122,75 +138,44 @@ public class Rewriter : IRewriter
         return rewrittenExpression;
     }
 
-    public bool VariableBoundInsideVariable(Variable x, Variable y)
+    public void Visit(Variable variable) { }
+
+    public void Visit(Integer integer) { }
+
+    public void Visit(VerseString verseString) { }
+
+    public void Visit(Operator verseOperator) { }
+
+    public void Visit(VerseTuple verseTuple) { }
+
+    public void Visit(Lambda lambda)
     {
-        if (CurrentVerseProgram is null)
-            throw new Exception("Cannot check bound variable order if verse program is null.");
+        lambda.E = ApplyRules(lambda.E);
 
-        bool foundY = false;
+        if (RuleApplied)
+            return;
 
-        VariablesAnalyser.AnalyseVariablesOf(CurrentVerseProgram.E);
-
-        foreach (Variable variable in VariablesAnalyser.BoundVariables)
-        {
-            if (variable == y)
-            {
-                foundY = true;
-                continue;
-            }
-
-            if (variable == x && !foundY)
-                return false;
-            else if (variable == x && foundY)
-                return true;
-        }
-
-        throw new Exception($"Did not find bound variable {x}");
+        lambda.E.Accept(this);
     }
 
-    private void RewriteInnerExpressions(IExpressionOrEquation eq)
+    public void Visit(Equation equation)
     {
-        switch (eq)
-        {
-            case Expression e:
-                RewriteInnerExpressions(e);
-                break;
-            case Equation equation:
-                Rewrite(equation);
-                break;
-        }
+        equation.E = ApplyRules(equation.E);
+
+        if (RuleApplied)
+            return;
+
+        equation.E.Accept(this);
     }
 
-    private void RewriteInnerExpressions(Expression expression)
-    {
-        switch (expression)
-        {
-            case Lambda lambda:
-                Rewrite(lambda);
-                break;
-            case Eqe eqe:
-                Rewrite(eqe);
-                break;
-            case Exists exists:
-                Rewrite(exists);
-                break;
-            case Choice choice:
-                Rewrite(choice);
-                break;
-            case Wrapper wrapper:
-                Rewrite(wrapper);
-                break;
-        }
-    }
-
-    private void Rewrite(Eqe eqe)
+    public void Visit(Eqe eqe)
     {
         eqe.Eq = ApplyRules(eqe.Eq);
 
         if (RuleApplied)
             return;
 
-        RewriteInnerExpressions(eqe.Eq);
+        eqe.Eq.Accept(this);
 
         if (RuleApplied)
             return;
@@ -200,37 +185,29 @@ public class Rewriter : IRewriter
         if (RuleApplied)
             return;
 
-        RewriteInnerExpressions(eqe.E);
+        eqe.E.Accept(this);
     }
 
-    private void Rewrite(Equation eq)
+    public void Visit(Exists exists)
     {
-        eq.E = ApplyRules(eq.E);
+        exists.E = ApplyRules(exists.E);
 
         if (RuleApplied)
             return;
 
-        RewriteInnerExpressions(eq.E);
+        exists.E.Accept(this);
     }
 
-    private void Rewrite(Lambda lambda)
-    {
-        lambda.E = ApplyRules(lambda.E);
+    public void Visit(Fail fail) { }
 
-        if (RuleApplied)
-            return;
-
-        RewriteInnerExpressions(lambda.E);
-    }
-
-    private void Rewrite(Choice choice)
+    public void Visit(Choice choice)
     {
         choice.E1 = ApplyRules(choice.E1);
 
         if (RuleApplied)
             return;
 
-        RewriteInnerExpressions(choice.E1);
+        choice.E1.Accept(this);
 
         if (RuleApplied)
             return;
@@ -240,27 +217,23 @@ public class Rewriter : IRewriter
         if (RuleApplied)
             return;
 
-        RewriteInnerExpressions(choice.E2);
+        choice.E2.Accept(this);
     }
 
-    private void Rewrite(Exists exists)
-    {
-        exists.E = ApplyRules(exists.E);
+    public void Visit(Application application) { }
 
-        if (RuleApplied)
-            return;
+    public void Visit(One one) => VisitWrapper(one);
 
-        RewriteInnerExpressions(exists.E);
-    }
+    public void Visit(All all) => VisitWrapper(all);
 
-    private void Rewrite(Wrapper wrapper)
+    private void VisitWrapper(Wrapper wrapper)
     {
         wrapper.E = ApplyRules(wrapper.E);
 
         if (RuleApplied)
             return;
 
-        RewriteInnerExpressions(wrapper.E);
+        wrapper.E.Accept(this);
     }
 
     #region Application
@@ -695,7 +668,8 @@ public class Rewriter : IRewriter
                 && VariablesAnalyser.FreeVariablesOf(e).Contains(x)
                 && !VariablesAnalyser.FreeVariablesOf(v).Contains(x))
             {
-                if (v is not Variable || (v is Variable y && VariableBoundInsideVariable(x, y)))
+                if (v is not Variable || (v is Variable y
+                    && VariablesAnalyser.VariableBoundInsideVariable(CurrentVerseProgram.E, x, y)))
                 {
                     SubstitutionHandler substitutionHandler = new(equation);
                     substitutionHandler.SubstituteButLeaveEquationUntouched(expression);
@@ -753,7 +727,7 @@ public class Rewriter : IRewriter
     private Expression VarSwap(Expression expression)
     {
         if (expression is Eqe { Eq: Equation { V: Variable y, E: Variable x }, E: Expression e }
-            && x != y && VariableBoundInsideVariable(x, y))
+            && x != y && VariablesAnalyser.VariableBoundInsideVariable(CurrentVerseProgram.E, x, y))
         {
             RuleApplied = true;
             Renderer.DisplayRuleApplied("VAR-SWAP");
@@ -778,7 +752,8 @@ public class Rewriter : IRewriter
         if (expression is Eqe { Eq: IExpressionOrEquation eq, E: Eqe { Eq: Equation { V: Variable x, E: Value v }, E: Expression e } })
         {
             if (eq is not Equation { V: Variable, E: Value }
-            || (eq is Equation { V: Variable y, E: Value } && !(x == y || VariableBoundInsideVariable(y, x))))
+            || (eq is Equation { V: Variable y, E: Value }
+            && !(x == y || VariablesAnalyser.VariableBoundInsideVariable(CurrentVerseProgram.E, y, x))))
             {
                 RuleApplied = true;
                 Renderer.DisplayRuleApplied("SEQ-SWAP");

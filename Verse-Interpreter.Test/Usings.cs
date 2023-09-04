@@ -2,6 +2,7 @@ global using System.Collections;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using Moq;
 global using Verse_Interpreter.Model;
+global using Verse_Interpreter.Model.Visitor;
 global using Verse_Interpreter.Model.Build;
 global using Verse_Interpreter.Model.Render;
 global using Verse_Interpreter.Model.Rewrite;

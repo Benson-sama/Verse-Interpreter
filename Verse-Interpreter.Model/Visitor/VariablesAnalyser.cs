@@ -45,6 +45,32 @@ public class VariablesAnalyser : ISyntaxTreeNodeVisitor
         AcceptUnlessFinalExpressionReached(expression);
     }
 
+    public bool VariableBoundInsideVariable(Expression expression, Variable x, Variable y)
+    {
+        if (expression is null)
+            throw new Exception("Cannot check bound variable order if verse program is null.");
+
+        bool foundY = false;
+
+        AnalyseVariablesOf(expression);
+
+        foreach (Variable variable in BoundVariables)
+        {
+            if (variable == y)
+            {
+                foundY = true;
+                continue;
+            }
+
+            if (variable == x && !foundY)
+                return false;
+            else if (variable == x && foundY)
+                return true;
+        }
+
+        throw new Exception($"Did not find bound variable {x}");
+    }
+
     public bool IsBound(Variable variable)
         => BoundVariables.Contains(variable);
 
