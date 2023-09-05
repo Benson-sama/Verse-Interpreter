@@ -11,22 +11,25 @@ namespace Verse_Interpreter.Model.Visitor;
 public class SubstitutionHandler : ISyntaxTreeNodeVisitor
 {
     private readonly Equation _originalEquation;
-    private readonly Variable _variable;
-    private readonly Value _value;
+    private readonly Variable _targetVariable;
+    private readonly Value _replacingValue;
+    private readonly DeepCopyHandler _deepCopyHandler = new();
 
     public SubstitutionHandler(Equation originalEquation)
     {
         if (originalEquation.V is not Variable variable || originalEquation.E is not Value value)
             throw new Exception("Equation must consist of Variable=Value when used in substitution.");
 
-        (_originalEquation, _variable, _value) = (originalEquation, variable, value.DeepCopy());
+        (_originalEquation, _targetVariable, _replacingValue) = (originalEquation, variable, value);
     }
 
     public Equation OriginalEquation => _originalEquation;
 
-    public Variable TargetVariable => _variable;
+    public Variable TargetVariable => _targetVariable;
 
-    public Value ReplacingValue => _value;
+    public Value ReplacingValue => _replacingValue;
+
+    private DeepCopyHandler DeepCopyHandler => _deepCopyHandler;
 
     public void SubstituteButLeaveEquationUntouched(IExpressionOrEquation eq) => eq.Accept(this);
 
@@ -45,7 +48,7 @@ public class SubstitutionHandler : ISyntaxTreeNodeVisitor
         for (int i = 0; i < values.Length; i++)
         {
             if (IsTargetVariable(values[i]))
-                values[i] = ReplacingValue;
+                values[i] = DeepCopiedValue();
             else
                 values[i].Accept(this);
         }
@@ -59,7 +62,7 @@ public class SubstitutionHandler : ISyntaxTreeNodeVisitor
             return;
 
         if (IsTargetVariable(lambda.E))
-            lambda.E = ReplacingValue;
+            lambda.E = DeepCopiedValue();
         else
             AcceptUnlessEquation(lambda.E);
     }
@@ -67,12 +70,12 @@ public class SubstitutionHandler : ISyntaxTreeNodeVisitor
     public void Visit(Equation equation)
     {
         if (IsTargetVariable(equation.V))
-            equation.V = ReplacingValue;
+            equation.V = DeepCopiedValue();
         else
             equation.V.Accept(this);
 
         if (IsTargetVariable(equation.E))
-            equation.E = ReplacingValue;
+            equation.E = DeepCopiedValue();
         else
             AcceptUnlessEquation(equation.E);
     }
@@ -80,12 +83,12 @@ public class SubstitutionHandler : ISyntaxTreeNodeVisitor
     public void Visit(Eqe eqe)
     {
         if (IsTargetVariable(eqe.Eq))
-            eqe.Eq = ReplacingValue;
+            eqe.Eq = DeepCopiedValue();
         else
             AcceptUnlessEquation(eqe.Eq);
 
         if (IsTargetVariable(eqe.E))
-            eqe.E = ReplacingValue;
+            eqe.E = DeepCopiedValue();
         else
             AcceptUnlessEquation(eqe.E);
     }
@@ -96,7 +99,7 @@ public class SubstitutionHandler : ISyntaxTreeNodeVisitor
             return;
 
         if (IsTargetVariable(exists.E))
-            exists.E = ReplacingValue;
+            exists.E = DeepCopiedValue();
         else
             AcceptUnlessEquation(exists.E);
     }
@@ -106,12 +109,12 @@ public class SubstitutionHandler : ISyntaxTreeNodeVisitor
     public void Visit(Choice choice)
     {
         if (IsTargetVariable(choice.E1))
-            choice.E1 = ReplacingValue;
+            choice.E1 = DeepCopiedValue();
         else
             AcceptUnlessEquation(choice.E1);
 
         if (IsTargetVariable(choice.E2))
-            choice.E2 = ReplacingValue;
+            choice.E2 = DeepCopiedValue();
         else
             AcceptUnlessEquation(choice.E2);
     }
@@ -119,12 +122,12 @@ public class SubstitutionHandler : ISyntaxTreeNodeVisitor
     public void Visit(Application application)
     {
         if (IsTargetVariable(application.V1))
-            application.V1 = ReplacingValue;
+            application.V1 = DeepCopiedValue();
         else
             application.V1.Accept(this);
 
         if (IsTargetVariable(application.V2))
-            application.V2 = ReplacingValue;
+            application.V2 = DeepCopiedValue();
         else
             application.V2.Accept(this);
     }
@@ -136,10 +139,12 @@ public class SubstitutionHandler : ISyntaxTreeNodeVisitor
     public void VisitWrapper(Wrapper wrapper)
     {
         if (IsTargetVariable(wrapper.E))
-            wrapper.E = ReplacingValue;
+            wrapper.E = DeepCopiedValue();
         else
             AcceptUnlessEquation(wrapper.E);
     }
+
+    private Value DeepCopiedValue() => DeepCopyHandler.DeepCopy(ReplacingValue);
 
     private void AcceptUnlessEquation(IExpressionOrEquation eq)
     {

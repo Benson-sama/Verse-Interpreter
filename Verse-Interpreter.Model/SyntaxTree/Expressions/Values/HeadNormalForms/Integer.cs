@@ -35,12 +35,6 @@ public class Integer : HeadNormalForm
     public override int GetHashCode()
         => Value.GetHashCode();
 
-    public override Integer DeepCopy()
-        => new(Value);
-
-    public override Integer DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
-        => new(Value);
-
     public override void Accept(ISyntaxTreeNodeVisitor visitor)
         => visitor.Visit(this);
 

@@ -8,24 +8,6 @@ public class Equation : IExpressionOrEquation
 
     public required Value V { get; set; }
 
-    IExpressionOrEquation IExpressionOrEquation.DeepCopy()
-    {
-        return new Equation
-        {
-            V = V.DeepCopy(),
-            E = E.DeepCopy()
-        };
-    }
-
-    public IExpressionOrEquation DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
-    {
-        return new Equation
-        {
-            V = V.DeepCopyButReplaceChoice(choice, newExpression),
-            E = E.DeepCopyButReplaceChoice(choice, newExpression)
-        };
-    }
-
     public void Accept(ISyntaxTreeNodeVisitor visitor)
         => visitor.Visit(this);
 

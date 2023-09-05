@@ -13,14 +13,11 @@ namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.
 /// </summary>
 public class Div : Operator
 {
-    /// <summary>
-    /// This method creates a deep copy of this <see cref="Div"/> to avoid shared references.
-    /// </summary>
-    /// <returns>The new <see cref="Div"/> as a deep copy of this instance.</returns>
-    public override Div DeepCopy() => new();
+    public override void Accept(ISyntaxTreeNodeVisitor visitor)
+        => visitor.Visit(this);
 
-    public override Div DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
-        => new();
+    public override T Accept<T>(ISyntaxTreeNodeVisitor<T> visitor)
+        => visitor.Visit(this);
 
     /// <summary>
     /// This method creates a string representation of this <see cref="Div"/>.

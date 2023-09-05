@@ -50,7 +50,17 @@ public interface ISyntaxTreeNodeVisitor<T>
 
     T Visit(Lambda lambda);
 
-    T Visit(Operator verseOperator);
+    T Visit(Add add);
+
+    T Visit(Sub sub);
+
+    T Visit(Mult mult);
+
+    T Visit(Div div);
+
+    T Visit(Gt gt);
+
+    T Visit(Lt lt);
 
     T Visit(Equation equation);
 

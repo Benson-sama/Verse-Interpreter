@@ -97,10 +97,12 @@ public class ChoiceFloater : ISyntaxTreeNodeVisitor
 
     private static Expression DuplicateUsingDeepCopy(Expression choiceContext, Choice choice)
     {
+        DeepCopyHandler deepCopyExceptChoiceHandler = new(choice);
+
         return new Choice
         {
-            E1 = choiceContext.DeepCopyButReplaceChoice(choice, choice.E1),
-            E2 = choiceContext.DeepCopyButReplaceChoice(choice, choice.E2)
+            E1 = deepCopyExceptChoiceHandler.DeepCopyExceptChoice(choiceContext, choice.E1),
+            E2 = deepCopyExceptChoiceHandler.DeepCopyExceptChoice(choiceContext, choice.E2)
         };
     }
 }

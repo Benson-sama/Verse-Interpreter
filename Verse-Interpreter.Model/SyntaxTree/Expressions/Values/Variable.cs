@@ -35,12 +35,6 @@ public class Variable : Value, IEquatable<Variable>
     public override int GetHashCode()
         => Name.GetHashCode();
 
-    public override Variable DeepCopy()
-        => new(Name);
-
-    public override Variable DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
-        => new(Name);
-
     public override void Accept(ISyntaxTreeNodeVisitor visitor)
         => visitor.Visit(this);
 

@@ -29,12 +29,6 @@ public class VerseString : HeadNormalForm
     public override int GetHashCode()
         => Text.GetHashCode();
 
-    public override VerseString DeepCopy()
-        => new(Text);
-
-    public override VerseString DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
-        => new(Text);
-
     public override void Accept(ISyntaxTreeNodeVisitor visitor)
         => visitor.Visit(this);
 

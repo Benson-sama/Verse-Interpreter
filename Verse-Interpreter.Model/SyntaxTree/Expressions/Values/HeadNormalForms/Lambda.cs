@@ -8,24 +8,6 @@ public class Lambda : HeadNormalForm
 
     public required Expression E { get; set; }
 
-    public override Lambda DeepCopy()
-    {
-        return new Lambda
-        {
-            Parameter = Parameter.DeepCopy(),
-            E = E.DeepCopy()
-        };
-    }
-
-    public override Lambda DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
-    {
-        return new Lambda
-        {
-            Parameter = Parameter.DeepCopyButReplaceChoice(choice, newExpression),
-            E = E.DeepCopyButReplaceChoice(choice, newExpression)
-        };
-    }
-
     public override void Accept(ISyntaxTreeNodeVisitor visitor)
         => visitor.Visit(this);
 

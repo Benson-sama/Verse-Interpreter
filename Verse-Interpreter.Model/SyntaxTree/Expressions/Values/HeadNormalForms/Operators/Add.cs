@@ -13,14 +13,11 @@ namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.
 /// </summary>
 public class Add : Operator
 {
-    /// <summary>
-    /// This method creates a deep copy of this <see cref="Add"/> to avoid shared references.
-    /// </summary>
-    /// <returns>The new <see cref="Add"/> as a deep copy of this instance.</returns>
-    public override Add DeepCopy() => new();
+    public override void Accept(ISyntaxTreeNodeVisitor visitor)
+        => visitor.Visit(this);
 
-    public override Add DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
-        => new();
+    public override T Accept<T>(ISyntaxTreeNodeVisitor<T> visitor)
+        => visitor.Visit(this);
 
     /// <summary>
     /// This method creates a string representation of this <see cref="Add"/>.

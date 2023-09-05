@@ -2,22 +2,6 @@
 
 public class One : Wrapper
 {
-    public override One DeepCopy()
-    {
-        return new One
-        {
-            E = E.DeepCopy()
-        };
-    }
-
-    public override One DeepCopyButReplaceChoice(Choice choice, Expression newExpression)
-    {
-        return new One
-        {
-            E = E.DeepCopyButReplaceChoice(choice, newExpression)
-        };
-    }
-
     public override void Accept(ISyntaxTreeNodeVisitor visitor)
         => visitor.Visit(this);
 
