@@ -50,7 +50,7 @@ public class Verse2
     public void TestForOneToThreeDoTimesTwo()
     {
         // Arrange.
-        string verseCode = "for(i:=1..3; i) do i+i";
+        string verseCode = "for(i:=1..3; i) do (i+i)";
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });
