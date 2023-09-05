@@ -4,7 +4,7 @@ namespace Verse_Interpreter.Model.Build;
 
 public class VariableFactory : IVariableFactory
 {
-    private List<string> _registeredNames = new List<string>();
+    private readonly List<string> _registeredNames = new();
 
     private char? _currentCharacter = 'x';
 
