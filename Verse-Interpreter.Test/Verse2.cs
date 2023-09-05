@@ -17,7 +17,7 @@ public class Verse2
     }
 
     [TestMethod]
-    public void TestLambdaWithReturningFalseQuestionMarkAppliedResultsInFailure()
+    public void TestLambdaWithReturningFalseQuestionMarkResultsInFailure()
     {
         // Arrange.
         string verseCode = "f:=([x, y] => (z:=69; s:=5; false?)); f[1, 2]";
