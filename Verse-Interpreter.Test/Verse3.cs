@@ -1,4 +1,4 @@
-namespace Verse_Interpreter.Test;
+﻿namespace Verse_Interpreter.Test;
 
 [TestClass]
 public class Verse3
@@ -32,6 +32,25 @@ public class Verse3
 
         // Assert.
         Assert.IsTrue(result is Integer { Value: 15 });
+    }
+
+    [TestMethod]
+    public void TestFunkyOrderWithChoice()
+    {
+        // Arrange.
+        string verseCode = """
+            x:any; y:any;
+            x=(y|2);
+            y=(7|8);
+            [x,y]
+            """;
+        string expectedResult = "[[7, 7], [8, 8], [2, 7], [2, 8]]";
+
+        // Act.
+        Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new All { E = e });
+
+        // Assert.
+        Assert.AreEqual(expectedResult, result.ToString());
     }
 
     [TestMethod]
