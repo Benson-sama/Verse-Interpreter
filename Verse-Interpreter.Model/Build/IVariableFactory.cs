@@ -1,10 +1,10 @@
-﻿//-------------------------------------------------------------------
+﻿//--------------------------------------------------------------------
 // <copyright file="IVariableFactory.cs" company="FH Wiener Neustadt">
 //     Copyright (c) FH Wiener Neustadt. All rights reserved.
 // </copyright>
 // <author>Benjamin Bogner</author>
 // <summary>Contains the IVariableFactory class.</summary>
-//-------------------------------------------------------------------
+//--------------------------------------------------------------------
 
 using Verse_Interpreter.Model.SyntaxTree.Expressions.Values;
 
