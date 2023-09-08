@@ -90,7 +90,7 @@ void ExecuteCodeCommand(string? verseCode, Func<Expression, Wrapper> wrapperFact
         return;
     }
 
-    verseInterpreter.Interpret(verseCode, wrapperFactory);
+    Interpret(verseCode, wrapperFactory);
 }
 
 void ExecuteInteractiveCommand(Func<Expression, Wrapper> wrapperFactory)
@@ -101,14 +101,14 @@ void ExecuteInteractiveCommand(Func<Expression, Wrapper> wrapperFactory)
     if (verseCode is null)
         Console.WriteLine("No verse code entered.");
     else
-        verseInterpreter.Interpret(verseCode, wrapperFactory);
+        Interpret(verseCode, wrapperFactory);
 }
 
 void ExecuteFileCommand(string? filePath, Func<Expression, Wrapper> wrapperFactory)
 {
     using StreamReader sr = File.OpenText(filePath ?? GetFilePathFromUser());
     string verseCode = sr.ReadToEnd();
-    verseInterpreter.Interpret(verseCode, wrapperFactory);
+    Interpret(verseCode, wrapperFactory);
 }
 
 void ExecuteUnknownCommand()
@@ -129,6 +129,18 @@ void ExecuteInvalidArgumentsCommand()
           {command}: -code {code} | -interactive | -file {filePath}
         """);
     Environment.Exit(1);
+}
+
+void Interpret(string verseCode, Func<Expression, Wrapper> wrapperFactory)
+{
+    try
+    {
+        verseInterpreter.Interpret(verseCode, wrapperFactory);
+    }
+    catch (VerseParseException e)
+    {
+        consoleRenderer.DisplayMessage(e.Message);
+    }
 }
 
 static string GetFilePathFromUser()
