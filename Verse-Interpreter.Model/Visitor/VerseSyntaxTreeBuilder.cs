@@ -36,7 +36,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder, IVerseVisitor<Exp
         Expression e2 = GetExpression(context.e(1));
         Expression e3 = GetExpression(context.e(2));
 
-        Expression ifThenElseExpression = _syntaxDesugarer.IfThenElse(e1, e2, e3);
+        Expression ifThenElseExpression = _syntaxDesugarer.DesugarIfThenElse(e1, e2, e3);
 
         if (context.e(3) is null)
             return ifThenElseExpression;
@@ -97,7 +97,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder, IVerseVisitor<Exp
         Expression e1 = GetExpression(context.e(0));
         Expression e2 = GetExpression(context.e(1));
 
-        return SyntaxDesugarer.Assignment(x, e1, e2);
+        return SyntaxDesugarer.DesugarAssignment(x, e1, e2);
     }
 
     public Expression VisitForDoExp([NotNull] VerseParser.ForDoExpContext context)
@@ -105,7 +105,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder, IVerseVisitor<Exp
         Expression e1 = GetExpression(context.e(0));
         Expression e2 = GetExpression(context.e(1));
 
-        return _syntaxDesugarer.ForDo(e1, e2);
+        return _syntaxDesugarer.DesugarForDo(e1, e2);
     }
 
     public Expression VisitMultOrDivExp([NotNull] VerseParser.MultOrDivExpContext context)
@@ -268,7 +268,7 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder, IVerseVisitor<Exp
 
         Expression e = GetExpression(context.e());
 
-        return _syntaxDesugarer.Lambda(variableTuple, e);
+        return _syntaxDesugarer.DesugarLambda(variableTuple, e);
     }
 
     public Expression Visit(IParseTree tree) => throw new NotSupportedException();
@@ -364,6 +364,6 @@ public class VerseSyntaxTreeBuilder : IVerseSyntaxTreeBuilder, IVerseVisitor<Exp
         Variable x1 = _variableFactory.Next();
         Variable x2 = _variableFactory.Next();
 
-        return SyntaxDesugarer.Assignment(x1, e1, SyntaxDesugarer.Assignment(x2, e2, new VerseTuple(x1, x2)));
+        return SyntaxDesugarer.DesugarAssignment(x1, e1, SyntaxDesugarer.DesugarAssignment(x2, e2, new VerseTuple(x1, x2)));
     }
 }
