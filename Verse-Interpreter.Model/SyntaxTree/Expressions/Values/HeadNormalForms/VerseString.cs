@@ -11,7 +11,7 @@ namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 /// <summary>
 /// Class <see cref="VerseString"/> serves as a <see cref="HeadNormalForm"/> for <see cref="string"/> values in the Verse syntax.
 /// </summary>
-public class VerseString : HeadNormalForm
+public class VerseString : HeadNormalForm, IEquatable<VerseString>
 {
     /// <summary>
     /// Initialises a new instance of the <see cref="VerseString"/> class.

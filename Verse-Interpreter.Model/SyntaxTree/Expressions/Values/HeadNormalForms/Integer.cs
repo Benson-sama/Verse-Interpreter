@@ -11,7 +11,7 @@ namespace Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms;
 /// <summary>
 /// Class <see cref="Integer"/> serves as a <see cref="HeadNormalForm"/> for <see cref="int"/> values in the Verse syntax.
 /// </summary>
-public class Integer : HeadNormalForm
+public class Integer : HeadNormalForm, IEquatable<Integer>
 {
     /// <summary>
     /// Initialises a new instance of the <see cref="Integer"/> class.
