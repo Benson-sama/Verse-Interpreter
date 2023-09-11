@@ -126,7 +126,7 @@ void ExecuteInvalidArgumentsCommand()
 
           {renderMode}: -default | -silent | -debug
           {resultMode}: -one | -all
-          {command}: -code {code} | -interactive | -file {filePath}
+          {command}: -code "your code here" | -interactive | -file "your file path here"
         """);
     Environment.Exit(1);
 }
