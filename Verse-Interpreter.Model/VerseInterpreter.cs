@@ -70,6 +70,13 @@ public class VerseInterpreter
         return result;
     }
 
+    /// <summary>
+    /// This method uses the generated <see cref="VerseLexer"/> and <see cref="VerseParser"/> by ANTLR4
+    /// to build the <see cref="VerseParser.ProgramContext"/>.
+    /// </summary>
+    /// <param name="verseCode"><c>verseCode</c> represents the Verse code to parse with ANTLR4.</param>
+    /// <returns>The parsed <see cref="VerseParser.ProgramContext"/>.</returns>
+    /// <exception cref="VerseParseException">Is raised when the number of syntax errors while parsing is not zero.</exception>
     private VerseParser.ProgramContext ParseAntlrProgramContext(string verseCode)
     {
         _renderer.DisplayMessage($"Input was:\n{verseCode}\n");
@@ -89,6 +96,19 @@ public class VerseInterpreter
         return programContext;
     }
 
+    /// <summary>
+    /// This method converts and desugars the <paramref name="programContext"/> using the <c>_syntaxTreeBuilder</c>
+    /// and the <paramref name="wrapperFactory"/>. Displays the parsed program when done.
+    /// </summary>
+    /// <param name="programContext"><c>programContext</c> represents the original ANTLR4 parse tree to convert and desugar.</param>
+    /// <param name="wrapperFactory">
+    /// <c>wrapperFactory</c> represents the factory used to
+    /// place the converted and desugared <see cref="Expression"/> in.
+    /// </param>
+    /// <returns>The resulting <see cref="VerseProgram"/> of the conversion and desugaring.</returns>
+    /// <exception cref="VerseParseException">
+    /// Is raised when the free variables of the parsed <see cref="VerseProgram"/> are not zero.
+    /// </exception>
     private VerseProgram ConvertAndDesugar(VerseParser.ProgramContext programContext, Func<Expression, Wrapper> wrapperFactory)
     {
 
@@ -104,6 +124,12 @@ public class VerseInterpreter
         return verseProgram;
     }
 
+    /// <summary>
+    /// This method rewrites the <paramref name="verseProgram"/> using the <c>_rewriter</c> while measuring the
+    /// time using a <see cref="Stopwatch"/>. Displays the result when done.
+    /// </summary>
+    /// <param name="verseProgram"><c>verseProgram</c> represents the <see cref="VerseProgram"/> to rewrite.</param>
+    /// <returns>The result of rewriting the <paramref name="verseProgram"/>.</returns>
     private Expression Rewrite(VerseProgram verseProgram)
     {
         _renderer.DisplayMessage("\nRewriting parse tree...\n");
