@@ -1,263 +1,330 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Equations.Eqe">
-    <Position X="7.5" Y="5" Width="2.75" />
+  <Class Name="VerseBaseVisitor&lt;Result&gt;">
+    <Position X="39.5" Y="7.5" Width="4.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAEAAAAAAIAAAAAAAAAgAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Equations\Eqe.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Equations.Equation">
-    <Position X="18.5" Y="0.5" Width="4" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAgAQQAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Equations\Equation.cs</FileName>
+      <HashCode>BCAgIAIAIAgEABiAAoEQKADoAAAAAAAAAAYIgQAEBAA=</HashCode>
+      <FileName>ANTLR\VerseBaseVisitor.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators.Add">
-    <Position X="0.5" Y="15.75" Width="1.75" />
+  <Class Name="VerseLexer">
+    <Position X="29.25" Y="0.5" Width="4.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Operators\Add.cs</FileName>
+      <HashCode>AQhgDAwS8P8FoAAIABRAAAAiAiFAIAIDAAAAAATAACQ=</HashCode>
+      <FileName>ANTLR\VerseLexer.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators.Gt">
-    <Position X="4.25" Y="15.75" Width="1.5" />
+  <Class Name="VerseParser">
+    <Position X="34.25" Y="0.5" Width="5" />
+    <NestedTypes>
+      <Class Name="VerseParser.EqualityExpContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.VariableValueContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.HnfContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.ContentContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.HnfValueContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.ForDoExpContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.ForExpContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.LambdaContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.IntegerHnfContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.ProgramContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.MultOrDivExpContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.StringHnfContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.OneExpContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.IfElseExpContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.TupleHnfContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.PlusOrMinusExpContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.ParenthesisExpContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.AssignmentExpContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.ChoiceExpContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.StringContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.VContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.ValueExpContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.LambdaHnfContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.BringIntoScopeExpContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.ComparisonExpContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.TupleContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.ElementsContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.FailExpContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.EContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.ValueApplicationExpContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="VerseParser.RangeChoiceExpContext" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ANTLR\VerseParser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Operators\Gt.cs</FileName>
+      <HashCode>CQhiHBwa8P8FqhAAABRAAAgiAiFAJgADABAAAETAACU=</HashCode>
+      <FileName>ANTLR\VerseParser.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators.Mult">
-    <Position X="7.75" Y="15.75" Width="1.75" />
+  <Class Name="Verse_Interpreter.Model.Build.SyntaxDesugarer">
+    <Position X="16.75" Y="7.5" Width="7" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Operators\Mult.cs</FileName>
+      <HashCode>EAAgAAAAQAEAIkEgAAAAAIAAAIAEAAAABCAACgAAAAA=</HashCode>
+      <FileName>Build\SyntaxDesugarer.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators.Operator">
-    <Position X="4.75" Y="11.5" Width="2" />
+  <Class Name="Verse_Interpreter.Model.Build.VariableFactory">
+    <Position X="16.75" Y="2.25" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Operators\Operator.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.HeadNormalForm">
-    <Position X="6.25" Y="8" Width="2.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\HeadNormalForm.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Integer">
-    <Position X="2.5" Y="11.5" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAIAAAAAAAgAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Integer.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Lambda">
-    <Position X="11" Y="11.5" Width="2.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAYAAAAAAAAAgAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Lambda.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.VerseTuple">
-    <Position X="7.25" Y="11.5" Width="3.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAABAEAAIAAAAAAAAIAAQEAAAgAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\VerseTuple.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.Value">
-    <Position X="5.25" Y="5" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Values\Value.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.Variable">
-    <Position X="3.75" Y="8" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEgAAAAAQAAAAIAIAAAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Values\Variable.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers.All">
-    <Position X="19.5" Y="7.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Wrappers\All.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers.One">
-    <Position X="21.5" Y="7.75" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Wrappers\One.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers.Wrapper">
-    <Position X="20.25" Y="5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAgAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Wrappers\Wrapper.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Application">
-    <Position X="17.75" Y="5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAABAAAAAAIAgAAAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Application.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Choice">
-    <Position X="15.25" Y="5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAgAAAIAAAQAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Choice.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Exists">
-    <Position X="10.75" Y="5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAIAAAAAAAAAgAQAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Exists.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Expression">
-    <Position X="13" Y="2.5" Width="4" />
-    <InheritanceLine Type="Verse_Interpreter.Model.SyntaxTree.SyntaxTreeNode" ManuallyRouted="true">
-      <Path>
-        <Point X="13.375" Y="1.603" />
-        <Point X="13.375" Y="1.937" />
-        <Point X="15" Y="1.937" />
-        <Point X="15" Y="2.5" />
-      </Path>
-    </InheritanceLine>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAQAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Expression.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Fail">
-    <Position X="13.25" Y="5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Fail.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.SyntaxTreeNode">
-    <Position X="12.25" Y="0.5" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\SyntaxTreeNode.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.VerseProgram">
-    <Position X="10" Y="2.25" Width="2.25" />
-    <InheritanceLine Type="Verse_Interpreter.Model.SyntaxTree.SyntaxTreeNode" ManuallyRouted="true">
-      <Path>
-        <Point X="13.375" Y="1.603" />
-        <Point X="13.375" Y="1.927" />
-        <Point X="11.125" Y="1.927" />
-        <Point X="11.125" Y="2.25" />
-      </Path>
-    </InheritanceLine>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAgAAAIAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\VerseProgram.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.VerseInterpreter">
-    <Position X="0.5" Y="18" Width="6.25" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAEAIAAAAAAAAAAAAgAAA=</HashCode>
-      <FileName>VerseInterpreter.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.VerseSyntaxTreeBuilder">
-    <Position X="15.25" Y="18" Width="7" />
-    <TypeIdentifier>
-      <HashCode>AAAQIAAAIABAAJAAoAAAAAAAAQEAAEAEAAEAAgAAQAA=</HashCode>
-      <FileName>VerseSyntaxTreeBuilder.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators.Div">
-    <Position X="9.75" Y="15.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Operators\Div.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators.Sub">
-    <Position X="2.5" Y="15.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Operators\Sub.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.SyntaxTree.Expressions.Values.HeadNormalForms.Operators.Lt">
-    <Position X="6" Y="15.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>SyntaxTree\Expressions\Values\HeadNormalForms\Operators\Lt.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.Desugar">
-    <Position X="0.5" Y="20.5" Width="7" />
-    <TypeIdentifier>
-      <HashCode>ACgAAAAAAAAAAEEAAAAQAQAAAABAACAAACAAAgCAAAA=</HashCode>
-      <FileName>Desugar.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Verse_Interpreter.Model.Rewriter">
-    <Position X="8" Y="18" Width="6.5" />
-    <TypeIdentifier>
-      <HashCode>YQAcABhQiSQQQCAAA4gAA7iBUEAQBkAgAUCQDwEBCCE=</HashCode>
-      <FileName>Rewriter.cs</FileName>
+      <HashCode>AgEAAAAAAAAAAAAAAAAAAAAAAAAQAAIBAAAAAAAAAAQ=</HashCode>
+      <FileName>Build\VariableFactory.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Verse_Interpreter.Model.RewriteRuleAttribute">
-    <Position X="5.75" Y="26.75" Width="1.75" />
+  <Class Name="Verse_Interpreter.Model.Build.VerseParseException">
+    <Position X="16.75" Y="5.5" Width="4.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>RewriteRuleAttribute.cs</FileName>
+      <FileName>Build\VerseParseException.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Verse_Interpreter.Model.VariableBuffer">
-    <Position X="4" Y="24.5" Width="3.5" />
+  <Class Name="Verse_Interpreter.Model.Rewrite.RewriteRuleAttribute">
+    <Position X="4.25" Y="10.75" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAQAAAIAAAAAAAAgBAAAA=</HashCode>
-      <FileName>VariableBuffer.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rewrite\RewriteRuleAttribute.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Interface Name="Verse_Interpreter.Model.IVerseSyntaxTreeBuilder">
-    <Position X="22.5" Y="21.5" Width="7" />
+  <Class Name="Verse_Interpreter.Model.Visitor.AlphaConversionHandler">
+    <Position X="7.25" Y="12.5" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>AIAgAAAAAIAAAgQAAAAAABAAAAAAAAAMAAAAAgAAAAA=</HashCode>
+      <FileName>Visitor\AlphaConversionHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Verse_Interpreter.Model.Visitor.ChoiceFloater">
+    <Position X="22.5" Y="12.5" Width="5.25" />
+    <TypeIdentifier>
+      <HashCode>gEAAAAAAAAAAAAQAAAAAAAQAAAAAAAAAAACAQAEAAAA=</HashCode>
+      <FileName>Visitor\ChoiceFloater.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Verse_Interpreter.Model.Visitor.DeepCopyHandler">
+    <Position X="12.25" Y="19.75" Width="5.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAhAAABAAQIAAAAAAgCAAAIAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Visitor\DeepCopyHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Verse_Interpreter.Model.Visitor.EquationEliminator">
+    <Position X="18.75" Y="12.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQRAAAAABAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Visitor\EquationEliminator.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Verse_Interpreter.Model.Visitor.ExistsEliminator">
+    <Position X="18.75" Y="18" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAQAAgAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Visitor\ExistsEliminator.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Verse_Interpreter.Model.Visitor.Rewriter">
+    <Position X="0.5" Y="12.5" Width="6.5" />
+    <TypeIdentifier>
+      <HashCode>ZQAMABgQiTQQwCQAA4gII7uBUEAABkAAAUKQDwMBGCE=</HashCode>
+      <FileName>Visitor\Rewriter.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Verse_Interpreter.Model.Visitor.SubstitutionHandler">
+    <Position X="7.25" Y="18.75" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAEAAQAAAwAAAAIABAAgAAABAAIAAAAAwAAgIA=</HashCode>
+      <FileName>Visitor\SubstitutionHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Verse_Interpreter.Model.Visitor.VariablesAnalyser">
+    <Position X="12.25" Y="12.5" Width="6.25" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAQAAAABAQABAQAAJAAQAAQIBAAAAEIAgAAAAA=</HashCode>
+      <FileName>Visitor\VariablesAnalyser.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Verse_Interpreter.Model.Visitor.VerseSyntaxTreeBuilder">
+    <Position X="9.5" Y="2.25" Width="7" />
+    <TypeIdentifier>
+      <HashCode>BCAwIAIAIAgEAJyAgoEQKADoAwEAAEAAgAcMgwgERAA=</HashCode>
+      <FileName>Visitor\VerseSyntaxTreeBuilder.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Verse_Interpreter.Model.VerseInterpreter">
+    <Position X="0.5" Y="0.5" Width="7.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAgAAACAAgEAIAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>VerseInterpreter.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_renderer" />
+      <Field Name="_rewriter" />
+      <Field Name="_syntaxTreeBuilder" />
+    </ShowAsAssociation>
+  </Class>
+  <Interface Name="IVerseVisitor&lt;Result&gt;">
+    <Position X="39.5" Y="0.5" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>BCAgIAIAIAgEABiAAoEQKADoAAAAAAAAAAYIgQAEBAA=</HashCode>
+      <FileName>ANTLR\VerseVisitor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Verse_Interpreter.Model.Build.IVariableFactory">
+    <Position X="16.75" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Build\IVariableFactory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Verse_Interpreter.Model.Build.IVerseSyntaxTreeBuilder">
+    <Position X="9.5" Y="0.5" Width="7" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
-      <FileName>IVerseSyntaxTreeBuilder.cs</FileName>
+      <FileName>Build\IVerseSyntaxTreeBuilder.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Verse_Interpreter.Model.IRewriter">
-    <Position X="22.5" Y="20" Width="4.25" />
+  <Interface Name="Verse_Interpreter.Model.Render.IRenderer">
+    <Position X="3.25" Y="3.25" Width="4.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>IRewriter.cs</FileName>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAIAAAAAAAAAAAAAAIAABAAAg=</HashCode>
+      <FileName>Render\IRenderer.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="Verse_Interpreter.Model.IRenderer">
-    <Position X="22.5" Y="18" Width="4" />
+  <Interface Name="Verse_Interpreter.Model.Rewrite.IRewriter">
+    <Position X="0.5" Y="10.75" Width="3.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAIAAAAAAAAAAAAAAIAAAAAAAAAAAAAAIAABAAAA=</HashCode>
-      <FileName>IRenderer.cs</FileName>
+      <HashCode>AAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rewrite\IRewriter.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />
