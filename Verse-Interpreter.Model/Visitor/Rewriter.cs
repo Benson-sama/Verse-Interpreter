@@ -1,4 +1,12 @@
-﻿using Verse_Interpreter.Model.Build;
+﻿//------------------------------------------------------------
+// <copyright file="Rewriter.cs" company="FH Wiener Neustadt">
+//     Copyright (c) FH Wiener Neustadt. All rights reserved.
+// </copyright>
+// <author>Benjamin Bogner</author>
+// <summary>Contains the Rewriter class.</summary>
+//------------------------------------------------------------
+
+using Verse_Interpreter.Model.Build;
 using Verse_Interpreter.Model.Render;
 using Verse_Interpreter.Model.Rewrite;
 using Verse_Interpreter.Model.SyntaxTree;
@@ -11,18 +19,44 @@ using Verse_Interpreter.Model.SyntaxTree.Expressions.Wrappers;
 
 namespace Verse_Interpreter.Model.Visitor;
 
+/// <summary>
+/// Class <see cref="Rewriter"/> serves as an <see cref="ISyntaxTreeNodeVisitor"/> that
+/// rewrites <see cref="Expression"/> instances using rewrite rules described in the
+/// Verse Paper from March 2023.
+/// </summary>
 public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
 {
+    /// <summary>
+    /// Field <c>_renderer</c> represents the component for displaying messages to the user.
+    /// </summary>
     private readonly IRenderer _renderer;
 
+    /// <summary>
+    /// Field <c>_variableFactory</c> represents the component used for retrieving fresh variables.
+    /// </summary>
     private readonly IVariableFactory _variableFactory;
 
+    /// <summary>
+    /// Field <c>_rewriteRules</c> represents the collection of rewrite rules in the form of methods.
+    /// </summary>
     private readonly Func<Expression, Expression>[] _rewriteRules;
 
+    /// <summary>
+    /// Field <c>_variablesAnalyser</c> represents a helper component used to determine the
+    /// free and bound variables of expressions.
+    /// </summary>
     private readonly VariablesAnalyser _variablesAnalyser = new();
 
+    /// <summary>
+    /// Field <c>_currentVerseProgram</c> represents the Verse program that is currently being rewritten.
+    /// </summary>
     private VerseProgram? _currentVerseProgram;
 
+    /// <summary>
+    /// Initialises a new instance of the <see cref="Rewriter"/> class.
+    /// </summary>
+    /// <param name="renderer"><c>renderer</c> represents the component for displaying messages to the user.</param>
+    /// <param name="variableFactory"><c>variableFactory</c> represents the component used for retrieving fresh variables.</param>
     public Rewriter(IRenderer renderer, IVariableFactory variableFactory)
     {
         _renderer = renderer;
@@ -74,12 +108,28 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         };
     }
 
+    /// <summary>
+    /// Property <c>Renderer</c> represents the component for displaying messages to the user.
+    /// </summary>
     private IRenderer Renderer => _renderer;
 
+    /// <summary>
+    /// Property <c>VariablesAnalyser</c> represents a helper component used to determine the
+    /// free and bound variables of expressions.
+    /// </summary>
     private VariablesAnalyser VariablesAnalyser => _variablesAnalyser;
 
+    /// <summary>
+    /// Property <c>RuleApplied</c> represents the value indicating whether or not a rule has been previously applied.
+    /// </summary>
     private bool RuleApplied { get; set; }
 
+    /// <summary>
+    /// Property <c>_currentVerseProgram</c> represents the Verse program that is currently being rewritten.
+    /// </summary>
+    /// <exception cref="ArgumentNullException">
+    /// Is raised when <c>_currentVerseProgram</c> or <c>value</c> is null.
+    /// </exception>
     private VerseProgram CurrentVerseProgram
     {
         get
@@ -95,6 +145,12 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         }
     }
 
+    /// <summary>
+    /// This method continuosly applies rewrite rules while they match and returns the
+    /// child expression of <paramref name="verseProgram"/> when done.
+    /// </summary>
+    /// <param name="verseProgram"><c>verseProgram</c> represents the Verse program to rewrite ("execute").</param>
+    /// <returns>The result of rewriting the <paramref name="verseProgram"/>.</returns>
     public Expression Rewrite(VerseProgram verseProgram)
     {
         CurrentVerseProgram = verseProgram;
@@ -115,6 +171,12 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         return verseProgram.E;
     }
 
+    /// <summary>
+    /// This method applies rewrite rules to <paramref name="eq"/> if it is an <see cref="Expression"/>.
+    /// Otherwise returns <paramref name="eq"/> unchanged.
+    /// </summary>
+    /// <param name="eq"><c>eq</c> represents the <see cref="IExpressionOrEquation"/> to possibly apply rewrite rules on.</param>
+    /// <returns>The result of this rewrite attempt.</returns>
     public IExpressionOrEquation ApplyRules(IExpressionOrEquation eq)
     {
         if (eq is Expression e)
@@ -123,6 +185,12 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         return eq;
     }
 
+    /// <summary>
+    /// This method tries to match every rewrite rule on <paramref name="expression"/> until one matches successfully.
+    /// </summary>
+    /// <param name="expression"><c>expression</c> represents the target of this rewriting.</param>
+    /// <returns>The rewritten <see cref="Expression"/> or the <paramref name="expression"/> unchanged
+    /// if no rewrite rule matched at all.</returns>
     public Expression ApplyRules(Expression expression)
     {
         Expression rewrittenExpression = expression;
@@ -138,16 +206,41 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         return rewrittenExpression;
     }
 
-    public void Visit(Variable variable) { }
+    /// <summary>
+    /// This method does nothing.
+    /// </summary>
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(Variable _) { }
 
-    public void Visit(Integer integer) { }
+    /// <summary>
+    /// This method does nothing.
+    /// </summary>
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(Integer _) { }
 
-    public void Visit(VerseString verseString) { }
+    /// <summary>
+    /// This method does nothing.
+    /// </summary>
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(VerseString _) { }
 
-    public void Visit(Operator verseOperator) { }
+    /// <summary>
+    /// This method does nothing.
+    /// </summary>
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(Operator _) { }
 
-    public void Visit(VerseTuple verseTuple) { }
+    /// <summary>
+    /// This method does nothing.
+    /// </summary>
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(VerseTuple _) { }
 
+    /// <summary>
+    /// This method tries to apply rules to <paramref name="lambda"/> and its child expressions until
+    /// a rewrite rule successfully matched and applied.
+    /// </summary>
+    /// <param name="lambda"><c>lambda</c> is the target of this rewriting attempt.</param>
     public void Visit(Lambda lambda)
     {
         lambda.E = ApplyRules(lambda.E);
@@ -158,6 +251,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         lambda.E.Accept(this);
     }
 
+    /// <summary>
+    /// This method tries to apply rules to <paramref name="equation"/> and its child expressions until
+    /// a rewrite rule successfully matched and applied.
+    /// </summary>
+    /// <param name="equation"><c>equation</c> is the target of this rewriting attempt.</param>
     public void Visit(Equation equation)
     {
         equation.E = ApplyRules(equation.E);
@@ -168,6 +266,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         equation.E.Accept(this);
     }
 
+    /// <summary>
+    /// This method tries to apply rules to <paramref name="eqe"/> and its child expressions until
+    /// a rewrite rule successfully matched and applied.
+    /// </summary>
+    /// <param name="eqe"><c>eqe</c> is the target of this rewriting attempt.</param>
     public void Visit(Eqe eqe)
     {
         eqe.Eq = ApplyRules(eqe.Eq);
@@ -188,6 +291,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         eqe.E.Accept(this);
     }
 
+    /// <summary>
+    /// This method tries to apply rules to <paramref name="exists"/> and its child expressions until
+    /// a rewrite rule successfully matched and applied.
+    /// </summary>
+    /// <param name="exists"><c>exists</c> is the target of this rewriting attempt.</param>
     public void Visit(Exists exists)
     {
         exists.E = ApplyRules(exists.E);
@@ -198,8 +306,17 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         exists.E.Accept(this);
     }
 
-    public void Visit(Fail fail) { }
+    /// <summary>
+    /// This method does nothing.
+    /// </summary>
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(Fail _) { }
 
+    /// <summary>
+    /// This method tries to apply rules to <paramref name="choice"/> and its child expressions until
+    /// a rewrite rule successfully matched and applied.
+    /// </summary>
+    /// <param name="choice"><c>choice</c> is the target of this rewriting attempt.</param>
     public void Visit(Choice choice)
     {
         choice.E1 = ApplyRules(choice.E1);
@@ -220,12 +337,33 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         choice.E2.Accept(this);
     }
 
-    public void Visit(Application application) { }
+    /// <summary>
+    /// This method does nothing.
+    /// </summary>
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(Application _) { }
 
+    /// <summary>
+    /// This method simply calls <see cref="VisitWrapper(Wrapper)"/> with <paramref name="one"/> to try
+    /// to apply rules to <paramref name="one"/> and its child expressions until a rewrite rule
+    /// successfully matched and applied.
+    /// </summary>
+    /// <param name="one"><c>one</c> is the target of this rewriting attempt.</param>
     public void Visit(One one) => VisitWrapper(one);
 
+    /// <summary>
+    /// This method simply calls <see cref="VisitWrapper(Wrapper)"/> with <paramref name="all"/> to try
+    /// to apply rules to <paramref name="all"/> and its child expressions until a rewrite rule
+    /// successfully matched and applied.
+    /// </summary>
+    /// <param name="all"><c>all</c> is the target of this rewriting attempt.</param>
     public void Visit(All all) => VisitWrapper(all);
 
+    /// <summary>
+    /// This method tries to apply rules to <paramref name="wrapper"/> and its child expressions until
+    /// a rewrite rule successfully matched and applied.
+    /// </summary>
+    /// <param name="wrapper"><c>wrapper</c> is the target of this rewriting attempt.</param>
     private void VisitWrapper(Wrapper wrapper)
     {
         wrapper.E = ApplyRules(wrapper.E);
@@ -238,6 +376,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
 
     #region Application
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "APP-ADD".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression AppAdd(Expression expression)
     {
@@ -260,6 +403,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "APP-SUB".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression AppSub(Expression expression)
     {
@@ -276,6 +424,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "APP-MULT".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression AppMult(Expression expression)
     {
@@ -292,6 +445,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "APP-DIV".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression AppDiv(Expression expression)
     {
@@ -308,6 +466,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "APP-GT".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression AppGt(Expression expression)
     {
@@ -336,6 +499,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "APP-LT".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression AppLt(Expression expression)
     {
@@ -355,6 +523,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "APP-GT-FAIL".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression AppGtFail(Expression expression)
     {
@@ -383,6 +556,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "APP-LT-FAIL".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression AppLtFail(Expression expression)
     {
@@ -408,18 +586,20 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "APP-BETA".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression AppBeta(Expression expression)
     {
         if (expression is Application { V1: Lambda { E: Expression e } lambda, V2: Value v })
         {
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("APP-BETA");
-
             if (VariablesAnalyser.FreeVariablesOf(v).Contains(lambda.Parameter))
                 ApplyAlphaConversionWithoutCapturingVariablesOfValue(lambda, v);
 
-            return new Exists
+            expression = new Exists
             {
                 V = lambda.Parameter,
                 E = new Eqe
@@ -432,6 +612,8 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
                     E = e
                 }
             };
+
+            OnRuleApplied("APP-BETA");
         }
 
         return expression;
@@ -451,6 +633,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         alphaConversionHandler.ApplyAlphaConversionIncludingParameter(lambda);
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "APP-TUP".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression AppTup(Expression expression)
     {
@@ -460,8 +647,7 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
 
             if (count > 0)
             {
-                RuleApplied = true;
-                Renderer.DisplayRuleApplied("APP-TUP");
+                OnRuleApplied("APP-TUP");
 
                 Variable variable = _variableFactory.Next();
 
@@ -542,6 +728,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         };
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "APP-TUP-0".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression AppTup0(Expression expression)
     {
@@ -549,10 +740,9 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         {
             if (!tuple.Any())
             {
-                Expression rewrittenExpression = new Fail();
-                Renderer.DisplayRuleApplied("APP-TUP-0");
-                RuleApplied = true;
-                return rewrittenExpression;
+                expression = new Fail();
+                
+                OnRuleApplied("APP-TUP-0");
             }
         }
 
@@ -563,6 +753,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
 
     #region Unification
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "U-LIT".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression ULit(Expression expression)
     {
@@ -570,15 +765,20 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         {
             if (k1 == k2)
             {
-                RuleApplied = true;
-                Renderer.DisplayRuleApplied("U-LIT");
-                return e;
+                expression = e;
+
+                OnRuleApplied("U-LIT");
             }
         }
 
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "U-TUP".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression UTup(Expression expression)
     {
@@ -586,9 +786,9 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         {
             if (t1.Count() == t2.Count())
             {
-                RuleApplied = true;
-                Renderer.DisplayRuleApplied("U-TUP");
-                return BuildTupleEqeRecursively(t1.Zip(t2), e);
+                expression = BuildTupleEqeRecursively(t1.Zip(t2), e);
+
+                OnRuleApplied("U-TUP");
             }
         }
 
@@ -608,19 +808,29 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         return new Eqe { Eq = equation, E = BuildTupleEqeRecursively(values.Skip(1), e) };
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "U-FAIL".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression UFail(Expression expression)
     {
         if (expression is Eqe { Eq: Equation { V: HeadNormalForm, E: HeadNormalForm }, E: Expression })
         {
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("U-FAIL");
-            return new Fail();
+            expression = new Fail();
+            
+            OnRuleApplied("U-FAIL");
         }
 
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "U-OCCURS".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression UOccurs(Expression expression)
     {
@@ -628,9 +838,9 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         {
             if (VariableOccursInVerseTuple(v, tuple))
             {
-                RuleApplied = true;
-                Renderer.DisplayRuleApplied("U-OCCURS");
-                return new Fail();
+                expression = new Fail();
+                
+                OnRuleApplied("U-OCCURS");
             }
         }
 
@@ -654,6 +864,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         return isOccured;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "SUBST".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression Subst(Expression expression)
     {
@@ -674,8 +889,7 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
                     SubstitutionHandler substitutionHandler = new(equation);
                     substitutionHandler.SubstituteButLeaveEquationUntouched(expression);
 
-                    RuleApplied = true;
-                    Renderer.DisplayRuleApplied("SUBST");
+                    OnRuleApplied("SUBST");
                 }
             }
         }
@@ -709,6 +923,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         return result;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "HNF-SWAP".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression HnfSwap(Expression expression)
     {
@@ -716,23 +935,25 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         {
             eq.V = v;
             eq.E = hnf;
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("HNF-SWAP");
+
+            OnRuleApplied("HNF-SWAP");
         }
 
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "VAR-SWAP".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression VarSwap(Expression expression)
     {
         if (expression is Eqe { Eq: Equation { V: Variable y, E: Variable x }, E: Expression e }
             && x != y && VariablesAnalyser.VariableBoundInsideVariable(CurrentVerseProgram.E, x, y))
         {
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("VAR-SWAP");
-
-            return new Eqe
+            expression = new Eqe
             {
                 Eq = new Equation
                 {
@@ -741,11 +962,18 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
                 },
                 E = e
             };
+
+            OnRuleApplied("VAR-SWAP");
         }
 
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "SEQ-SWAP".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression SeqSwap(Expression expression)
     {
@@ -755,10 +983,7 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
             || (eq is Equation { V: Variable y, E: Value }
             && !(x == y || VariablesAnalyser.VariableBoundInsideVariable(CurrentVerseProgram.E, y, x))))
             {
-                RuleApplied = true;
-                Renderer.DisplayRuleApplied("SEQ-SWAP");
-
-                return new Eqe
+                expression = new Eqe
                 {
                     Eq = new Equation
                     {
@@ -771,6 +996,8 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
                         E = e
                     }
                 };
+
+                OnRuleApplied("SEQ-SWAP");
             }
         }
 
@@ -781,32 +1008,47 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
 
     #region Elimination
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "VAL-ELIM".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression ValElim(Expression expression)
     {
         if (expression is Eqe { Eq: Value, E: Expression e })
         {
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("VAL-ELIM");
-            return e;
+            expression = e;
+
+            OnRuleApplied("VAL-ELIM");
         }
 
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "EXI-ELIM".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression ExiElim(Expression expression)
     {
         if (expression is Exists { V: Variable v, E: Expression e } && !VariablesAnalyser.FreeVariablesOf(e).Contains(v))
         {
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("EXI-ELIM");
-            return e;
+            expression = e;
+
+            OnRuleApplied("EXI-ELIM");
         }
 
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "EQN-ELIM".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression EqnElim(Expression expression)
     {
@@ -827,8 +1069,7 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
                     EquationEliminator equationEliminator = new(finalEqe);
                     equationEliminator.EliminateEquationIn(expression);
 
-                    RuleApplied = true;
-                    Renderer.DisplayRuleApplied("EQN-ELIM");
+                    OnRuleApplied("EQN-ELIM");
                 }
             }
         }
@@ -836,14 +1077,19 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         return expression;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "FAIL-ELIM".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression FailElim(Expression expression)
     {
         if (IsExecutionContextFailingExcludingHole(expression))
         {
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("FAIL-ELIM");
-            return new Fail();
+            expression = new Fail();
+
+            OnRuleApplied("FAIL-ELIM");
         }
 
         return expression;
@@ -874,6 +1120,11 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
 
     #region Normalisation
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "EXI-FLOAT".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression ExiFloat(Expression expression)
     {
@@ -894,11 +1145,9 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
             ExistsEliminator existsEliminator = new(exists);
             existsEliminator.EliminateExistsIn(expression);
             exists.E = expression;
+            expression = exists;
 
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("EXI-FLOAT");
-
-            return exists;
+            OnRuleApplied("EXI-FLOAT");
         }
 
         return expression;
@@ -935,14 +1184,17 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         return result;
     }
 
+    /// <summary>
+    /// Tries to rewrite the given expression using the rewrite rule "SEQ-ASSOC".
+    /// </summary>
+    /// <param name="expression">The given expression to rewrite.</param>
+    /// <returns>The rewritten expression if the rule applies, or the unchanged expression if not.</returns>
     [RewriteRule]
     private Expression SeqAssoc(Expression expression)
     {
         if (expression is Eqe { Eq: Eqe { Eq: IExpressionOrEquation eq, E: Expression e1 }, E: Expression e2 })
         {
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("SEQ-ASSOC");
-            return new Eqe
+            expression = new Eqe
             {
                 Eq = eq,
                 E = new Eqe
@@ -951,6 +1203,8 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
                     E = e2
                 }
             };
+
+            OnRuleApplied("SEQ-ASSOC");
         }
 
         return expression;
@@ -992,8 +1246,7 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
                 }
             };
 
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("EQN-FLOAT");
+            OnRuleApplied("EQN-FLOAT");
         }
 
         return expression;
@@ -1019,8 +1272,7 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
                 }
             };
 
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("EXI-SWAP");
+            OnRuleApplied("EXI-SWAP");
         }
 
         return expression;
@@ -1042,8 +1294,7 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         {
             expression = fail;
 
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("ONE-FAIL");
+            OnRuleApplied("ONE-FAIL");
         }
 
         return expression;
@@ -1061,8 +1312,7 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         {
             expression = value;
 
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("ONE-VALUE");
+            OnRuleApplied("ONE-VALUE");
         }
 
         return expression;
@@ -1080,8 +1330,7 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         {
             expression = v;
 
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("ONE-CHOICE");
+            OnRuleApplied("ONE-CHOICE");
         }
 
         return expression;
@@ -1099,8 +1348,7 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         {
             expression = VerseTuple.Empty;
 
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("ALL-FAIL");
+            OnRuleApplied("ALL-FAIL");
         }
 
         return expression;
@@ -1118,8 +1366,7 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         {
             expression = new VerseTuple(v);
 
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("ALL-VALUE");
+            OnRuleApplied("ALL-VALUE");
         }
 
         return expression;
@@ -1137,8 +1384,7 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         {
             expression = new VerseTuple(BuildTupleFromChoiceRecursively(choice).ToArray());
 
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("ALL-CHOICE");
+            OnRuleApplied("ALL-CHOICE");
         }
 
         return expression;
@@ -1176,8 +1422,7 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         {
             expression = e;
 
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("CHOOSE-R");
+            OnRuleApplied("CHOOSE-R");
         }
 
         return expression;
@@ -1195,8 +1440,7 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
         {
             expression = e;
 
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("CHOOSE-L");
+            OnRuleApplied("CHOOSE-L");
         }
 
         return expression;
@@ -1222,8 +1466,7 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
                 }
             };
 
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("CHOOSE-ASSOC");
+            OnRuleApplied("CHOOSE-ASSOC");
         }
 
         return expression;
@@ -1249,8 +1492,7 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
             ChoiceFloater choiceFloater = new(cx, foundChoice);
             choiceFloater.FloatChoiceToTheTopIn(outerScopeContext);
 
-            RuleApplied = true;
-            Renderer.DisplayRuleApplied("CHOOSE");
+            OnRuleApplied("CHOOSE");
         }
 
         return expression;
@@ -1353,6 +1595,10 @@ public class Rewriter : IRewriter, ISyntaxTreeNodeVisitor
 
     #endregion
 
+    /// <summary>
+    /// This method sets <c>RuleApplied</c> to true and displays the <paramref name="ruleName"/> as an applied rule.
+    /// </summary>
+    /// <param name="ruleName"><c>ruleName</c> is the rule to display as applied.</param>
     private void OnRuleApplied(string ruleName)
     {
         RuleApplied = true;
