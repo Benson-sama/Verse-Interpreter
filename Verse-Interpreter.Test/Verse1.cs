@@ -1,4 +1,12 @@
-﻿namespace Verse_Interpreter.Test;
+﻿//-----------------------------------------------------------
+// <copyright file="Verse1.cs" company="FH Wiener Neustadt">
+//     Copyright (c) FH Wiener Neustadt. All rights reserved.
+// </copyright>
+// <author>Benjamin Bogner</author>
+// <summary>Contains the Verse1 class.</summary>
+//-----------------------------------------------------------
+
+namespace Verse_Interpreter.Test;
 
 [TestClass]
 public class Verse1
@@ -84,7 +92,7 @@ public class Verse1
     public void Test3Plus4Equals7()
     {
         // Arrange.
-        string verseCode = "x:=3+4; x=7; x";
+        string verseCode = "x:=(3+4); x=7; x";
 
         // Act.
         Expression result = _verseInterpreter!.Interpret(verseCode, (e) => new One { E = e });

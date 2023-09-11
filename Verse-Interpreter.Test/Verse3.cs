@@ -1,4 +1,12 @@
-﻿namespace Verse_Interpreter.Test;
+﻿//-----------------------------------------------------------
+// <copyright file="Verse3.cs" company="FH Wiener Neustadt">
+//     Copyright (c) FH Wiener Neustadt. All rights reserved.
+// </copyright>
+// <author>Benjamin Bogner</author>
+// <summary>Contains the Verse3 class.</summary>
+//-----------------------------------------------------------
+
+namespace Verse_Interpreter.Test;
 
 [TestClass]
 public class Verse3
