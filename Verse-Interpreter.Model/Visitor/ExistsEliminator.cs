@@ -49,38 +49,38 @@ public class ExistsEliminator : ISyntaxTreeNodeVisitor
     /// <summary>
     /// This method does nothing.
     /// </summary>
-    /// <param name="variable"><c>variable</c> represents an unused argument.</param>
-    public void Visit(Variable variable) { }
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(Variable _) { }
 
     /// <summary>
     /// This method does nothing.
     /// </summary>
-    /// <param name="integer"><c>integer</c> represents an unused argument.</param>
-    public void Visit(Integer integer) { }
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(Integer _) { }
 
     /// <summary>
     /// This method does nothing.
     /// </summary>
-    /// <param name="verseString"><c>verseString</c> represents an unused argument.</param>
-    public void Visit(VerseString verseString) { }
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(VerseString _) { }
 
     /// <summary>
     /// This method does nothing.
     /// </summary>
-    /// <param name="verseOperator"><c>verseOperator</c> represents an unused argument.</param>
-    public void Visit(Operator verseOperator) { }
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(Operator _) { }
 
     /// <summary>
     /// This method does nothing.
     /// </summary>
-    /// <param name="verseTuple"><c>verseTuple</c> represents an unused argument.</param>
-    public void Visit(VerseTuple verseTuple) { }
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(VerseTuple _) { }
 
     /// <summary>
     /// This method does nothing.
     /// </summary>
-    /// <param name="lambda"><c>lambda</c> represents an unused argument.</param>
-    public void Visit(Lambda lambda) { }
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(Lambda _) { }
 
     /// <summary>
     /// This method tries to eliminate the <c>TargetExists</c> in the <paramref name="equation"/>,
@@ -116,36 +116,36 @@ public class ExistsEliminator : ISyntaxTreeNodeVisitor
     /// <summary>
     /// This method does nothing.
     /// </summary>
-    /// <param name="exists"><c>exists</c> represents an unused argument.</param>
-    public void Visit(Exists exists) { }
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(Exists _) { }
 
     /// <summary>
     /// This method does nothing.
     /// </summary>
-    /// <param name="fail"><c>fail</c> represents an unused argument.</param>
-    public void Visit(Fail fail) { }
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(Fail _) { }
 
     /// <summary>
     /// This method does nothing.
     /// </summary>
-    /// <param name="choice"><c>choice</c> represents an unused argument.</param>
-    public void Visit(Choice choice) { }
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(Choice _) { }
 
     /// <summary>
     /// This method does nothing.
     /// </summary>
-    /// <param name="application"><c>application</c> represents an unused argument.</param>
-    public void Visit(Application application) { }
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(Application _) { }
 
     /// <summary>
     /// This method does nothing.
     /// </summary>
-    /// <param name="one"><c>one</c> represents an unused argument.</param>
-    public void Visit(One one) { }
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(One _) { }
 
     /// <summary>
     /// This method does nothing.
     /// </summary>
-    /// <param name="all"><c>all</c> represents an unused argument.</param>
-    public void Visit(All all) { }
+    /// <param name="_"><c>_</c> represents an unused argument.</param>
+    public void Visit(All _) { }
 }
